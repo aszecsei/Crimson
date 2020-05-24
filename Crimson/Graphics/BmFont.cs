@@ -1,55 +1,46 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Xml;
-using Microsoft.Xna.Framework;
+using System.Text.RegularExpressions;
+using System.IO;
 
 namespace Crimson
 {
-    public class PixelFontCharacter
+    public class BmFontCharacter
     {
-        public readonly int Character;
-        public readonly Dictionary<int, int> Kerning = new Dictionary<int, int>();
+        public int Character;
         public readonly CTexture Texture;
-        public readonly int XAdvance;
         public readonly int XOffset;
         public readonly int YOffset;
+        public readonly int XAdvance;
+        public readonly Dictionary<int, int> Kerning = new Dictionary<int, int>();
 
-        public PixelFontCharacter(
-            int character,
-            CTexture texture,
-            int packX,
-            int packY,
-            int width,
-            int height,
-            int xOffset,
-            int yOffset,
-            int xAdvance
-        )
+        public BmFontCharacter(int character, CTexture texture, XmlElement xml)
         {
             Character = character;
-            Texture = texture.GetSubtexture(packX, packY, width, height);
-            XOffset = xOffset;
-            YOffset = yOffset;
-            XAdvance = xAdvance;
+            Texture = texture.GetSubtexture(xml.AttrInt("x"), xml.AttrInt("y"), xml.AttrInt("width"), xml.AttrInt("height"));
+            XOffset = xml.AttrInt("xoffset");
+            YOffset = xml.AttrInt("yoffset");
+            XAdvance = xml.AttrInt("xadvance");
         }
     }
 
-    public class PixelFontSize
+    public class BmFontSize
     {
-        private readonly StringBuilder _temp = new StringBuilder();
-        public Dictionary<int, PixelFontCharacter> Characters = new Dictionary<int, PixelFontCharacter>();
+        public List<CTexture> Textures = new List<CTexture>();
+        public Dictionary<int, BmFontCharacter> Characters = new Dictionary<int, BmFontCharacter>();
         public int LineHeight;
-
+        public float Size;
         public bool Outline;
 
-        // TODO: Implement ascent
-        public float Size;
-        public List<CTexture> Textures = new List<CTexture>();
+        private readonly StringBuilder _temp = new StringBuilder();
 
         public string AutoNewline(string text, int width)
         {
-            if (string.IsNullOrEmpty(text)) return text;
+            if (string.IsNullOrEmpty(text))
+                return text;
 
             _temp.Clear();
 
@@ -64,10 +55,11 @@ namespace Crimson
                     _temp.Append('\n');
                     lineWidth = 0;
 
-                    if (word.Equals(" ")) continue;
+                    if (word.Equals(" "))
+                        continue;
                 }
 
-                // this word is longer than the max width, split wherever we can
+                // this word is longer than the max-width, split where ever we can
                 if (wordWidth > width)
                 {
                     int i = 1, start = 0;
@@ -79,11 +71,11 @@ namespace Crimson
                             start = i - 1;
                         }
 
+
                     var remaining = word.Substring(start, word.Length - start);
                     _temp.Append(remaining);
                     lineWidth += Measure(remaining).X;
                 }
-
                 // normal word, add it
                 else
                 {
@@ -95,7 +87,7 @@ namespace Crimson
             return _temp.ToString();
         }
 
-        public PixelFontCharacter? Get(int id)
+        public BmFontCharacter? Get(int id)
         {
             return Characters.TryGetValue(id, out var val) ? val : null;
         }
@@ -107,17 +99,19 @@ namespace Crimson
 
         public Vector2 Measure(string text)
         {
-            if (string.IsNullOrEmpty(text)) return Vector2.Zero;
+            if (string.IsNullOrEmpty(text))
+                return Vector2.Zero;
 
             var size = new Vector2(0, LineHeight);
             var currentLineWidth = 0f;
 
             for (var i = 0; i < text.Length; i++)
+            {
                 if (text[i] == '\n')
                 {
                     size.Y += LineHeight;
-                    if (currentLineWidth > size.X) size.X = currentLineWidth;
-
+                    if (currentLineWidth > size.X)
+                        size.X = currentLineWidth;
                     currentLineWidth = 0f;
                 }
                 else
@@ -125,31 +119,37 @@ namespace Crimson
                     if (Characters.TryGetValue(text[i], out var c))
                     {
                         currentLineWidth += c.XAdvance;
+
                         if (i < text.Length - 1 && c.Kerning.TryGetValue(text[i + 1], out var kerning))
                             currentLineWidth += kerning;
                     }
                 }
+            }
 
-            if (currentLineWidth > size.X) size.X = currentLineWidth;
+            if (currentLineWidth > size.X)
+                size.X = currentLineWidth;
 
             return size;
         }
 
         public float WidthToNextLine(string text, int start)
         {
-            if (string.IsNullOrEmpty(text)) return 0;
+            if (string.IsNullOrEmpty(text))
+                return 0;
 
             var currentLineWidth = 0f;
 
             for (int i = start, j = text.Length; i < j; i++)
             {
-                if (text[i] == '\n') break;
+                if (text[i] == '\n')
+                    break;
 
                 if (Characters.TryGetValue(text[i], out var c))
                 {
                     currentLineWidth += c.XAdvance;
 
-                    if (i < j - 1 && c.Kerning.TryGetValue(text[i + 1], out var kerning)) currentLineWidth += kerning;
+                    if (i < j - 1 && c.Kerning.TryGetValue(text[i + 1], out var kerning))
+                        currentLineWidth += kerning;
                 }
             }
 
@@ -158,20 +158,21 @@ namespace Crimson
 
         public float HeightOf(string text)
         {
-            if (string.IsNullOrEmpty(text)) return 0;
+            if (string.IsNullOrEmpty(text))
+                return 0;
 
             var lines = 1;
             if (text.IndexOf('\n') >= 0)
                 for (var i = 0; i < text.Length; i++)
                     if (text[i] == '\n')
                         lines++;
-
             return lines * LineHeight;
         }
 
         public void Draw(char character, Vector2 position, Vector2 justify, Vector2 scale, Color color)
         {
-            if (char.IsWhiteSpace(character)) return;
+            if (char.IsWhiteSpace(character))
+                return;
 
             if (Characters.TryGetValue(character, out var c))
             {
@@ -182,22 +183,13 @@ namespace Crimson
             }
         }
 
-        public void Draw(
-            string text,
-            Vector2 position,
-            Vector2 justify,
-            Vector2 scale,
-            Color color,
-            float edgeDepth,
-            Color edgeColor,
-            float stroke,
-            Color strokeColor
-        )
+        public void Draw(string text, Vector2 position, Vector2 justify, Vector2 scale, Color color, float edgeDepth, Color edgeColor, float stroke, Color strokeColor)
         {
-            if (string.IsNullOrEmpty(text)) return;
+            if (string.IsNullOrEmpty(text))
+                return;
 
             var offset = Vector2.Zero;
-            var lineWidth = !Mathf.Approximately(justify.X, 0) ? WidthToNextLine(text, 0) : 0;
+            var lineWidth = (!Mathf.Approximately(justify.X, 0) ? WidthToNextLine(text, 0) : 0);
             var justified = new Vector2(lineWidth * justify.X, HeightOf(text) * justify.Y);
 
             for (var i = 0; i < text.Length; i++)
@@ -206,14 +198,14 @@ namespace Crimson
                 {
                     offset.X = 0;
                     offset.Y += LineHeight;
-                    if (!Mathf.Approximately(justify.X, 0)) justified.X = WidthToNextLine(text, i + 1) * justify.X;
-
+                    if (!Mathf.Approximately(justify.X, 0))
+                        justified.X = WidthToNextLine(text, i + 1) * justify.X;
                     continue;
                 }
 
                 if (Characters.TryGetValue(text[i], out var c))
                 {
-                    var pos = position + (offset + new Vector2(c.XOffset, c.YOffset) - justified) * scale;
+                    var pos = (position + (offset + new Vector2(c.XOffset, c.YOffset) - justified) * scale);
 
                     // draw stroke
                     if (stroke > 0 && !Outline)
@@ -226,12 +218,9 @@ namespace Crimson
                                 c.Texture.Draw(pos + new Vector2(-stroke, j), Vector2.Zero, strokeColor, scale);
                                 c.Texture.Draw(pos + new Vector2(stroke, j), Vector2.Zero, strokeColor, scale);
                             }
-
-                            c.Texture.Draw(pos + new Vector2(-stroke, edgeDepth + stroke), Vector2.Zero, strokeColor,
-                                scale);
+                            c.Texture.Draw(pos + new Vector2(-stroke, edgeDepth + stroke), Vector2.Zero, strokeColor, scale);
                             c.Texture.Draw(pos + new Vector2(0, edgeDepth + stroke), Vector2.Zero, strokeColor, scale);
-                            c.Texture.Draw(pos + new Vector2(stroke, edgeDepth + stroke), Vector2.Zero, strokeColor,
-                                scale);
+                            c.Texture.Draw(pos + new Vector2(stroke, edgeDepth + stroke), Vector2.Zero, strokeColor, scale);
                         }
                         else
                         {
@@ -247,16 +236,19 @@ namespace Crimson
                     }
 
                     // draw edge
-                    if (edgeDepth > 0) c.Texture.Draw(pos + Vector2.UnitY * edgeDepth, Vector2.Zero, edgeColor, scale);
+                    if (edgeDepth > 0)
+                        c.Texture.Draw(pos + Vector2.UnitY * edgeDepth, Vector2.Zero, edgeColor, scale);
 
                     // draw normal character
                     c.Texture.Draw(pos, Vector2.Zero, color, scale);
 
                     offset.X += c.XAdvance;
 
-                    if (i < text.Length - 1 && c.Kerning.TryGetValue(text[i + 1], out var kerning)) offset.X += kerning;
+                    if (i < text.Length - 1 && c.Kerning.TryGetValue(text[i + 1], out var kerning))
+                        offset.X += kerning;
                 }
             }
+
         }
 
         public void Draw(string text, Vector2 position, Color color)
@@ -269,30 +261,12 @@ namespace Crimson
             Draw(text, position, justify, scale, color, 0, Color.Transparent, 0, Color.Transparent);
         }
 
-        public void DrawOutline(
-            string text,
-            Vector2 position,
-            Vector2 justify,
-            Vector2 scale,
-            Color color,
-            float stroke,
-            Color strokeColor
-        )
+        public void DrawOutline(string text, Vector2 position, Vector2 justify, Vector2 scale, Color color, float stroke, Color strokeColor)
         {
             Draw(text, position, justify, scale, color, 0f, Color.Transparent, stroke, strokeColor);
         }
 
-        public void DrawEdgeOutline(
-            string text,
-            Vector2 position,
-            Vector2 justify,
-            Vector2 scale,
-            Color color,
-            float edgeDepth,
-            Color edgeColor,
-            float stroke = 0f,
-            Color strokeColor = default
-        )
+        public void DrawEdgeOutline(string text, Vector2 position, Vector2 justify, Vector2 scale, Color color, float edgeDepth, Color edgeColor, float stroke = 0f, Color strokeColor = default(Color))
         {
             Draw(text, position, justify, scale, color, edgeDepth, edgeColor, stroke, strokeColor);
         }
@@ -300,168 +274,145 @@ namespace Crimson
 
     /// <summary>
     /// A class to deal with rasterized fonts. This uses the data format provided by
-    /// <a href="https://chevyray.itch.io/pixel-fonts">Chevy Ray</a>.
+    /// <a href="https://www.angelcode.com/products/bmfont/">AngelCode BMFont</a>.
     /// </summary>
-    public class PixelFont
+    public class BmFont
     {
         public string Face;
-        public List<PixelFontSize> Sizes = new List<PixelFontSize>();
+        public List<BmFontSize> Sizes = new List<BmFontSize>();
         public List<CTexture> Textures = new List<CTexture>();
 
-        public PixelFont(string face)
+        public BmFont(string face)
         {
             Face = face;
         }
-
-        public PixelFontSize AddFontSize(string path, CTexture texture, bool outline = false)
+        
+        public BmFontSize AddFontSize(string path, Atlas atlas = null, bool outline = false)
         {
-            var data = Utils.LoadXML(path)["metrics"];
-            return AddFontSize(path, texture, data, outline);
+            var data = Utils.LoadXML(path)["font"];
+            return AddFontSize(path, data, atlas, outline);
         }
 
-        public PixelFontSize AddFontSize(string path, CTexture texture, XmlElement data, bool outline = false)
+        public BmFontSize AddFontSize(string path, XmlElement data, Atlas atlas = null, bool outline = false)
         {
             // check if size already exists
-            var size = data["size"].InnerFloat();
+            var size = data["info"].AttrFloat("size");
             foreach (var fs in Sizes)
                 if (Mathf.Approximately(fs.Size, size))
                     return fs;
 
+            // get textures
+            Textures = new List<CTexture>();
+            var pages = data["pages"];
+            foreach (XmlElement page in pages)
+            {
+                var file = page.Attr("file");
+                var atlasPath = Utils.NormalizePath(Path.Combine("Fonts", Path.GetFileNameWithoutExtension(file)));
+
+                if (atlas != null && atlas.Has(atlasPath))
+                {
+                    Textures.Add(atlas[atlasPath]);
+                }
+                else
+                {
+                    var dir = Path.GetDirectoryName(path);
+                    dir = dir.Substring(Engine.ContentDirectory.Length + 1);
+                    Textures.Add(CTexture.FromFile(Path.Combine(dir, file)));
+                }
+            }
+
             // create font size
-            var fontSize = new PixelFontSize
+            var fontSize = new BmFontSize()
             {
                 Textures = Textures,
-                Characters = new Dictionary<int, PixelFontCharacter>(),
-                LineHeight = data["ascent"].InnerInt() - data["descent"].InnerInt(),
+                Characters = new Dictionary<int, BmFontCharacter>(),
+                LineHeight = data["common"].AttrInt("lineHeight"),
                 Size = size,
                 Outline = outline
             };
 
             // get characters
-            var charCount = data["char_count"].InnerInt();
-            var charIds = Utils.ReadCSVInt(data["chars"].InnerText);
-            var advance = Utils.ReadCSVInt(data["advance"].InnerText);
-            var offsetX = Utils.ReadCSVInt(data["offset_x"].InnerText);
-            var offsetY = Utils.ReadCSVInt(data["offset_y"].InnerText);
-            var width = Utils.ReadCSVInt(data["width"].InnerText);
-            var height = Utils.ReadCSVInt(data["height"].InnerText);
-            var packX = Utils.ReadCSVInt(data["pack_x"].InnerText);
-            var packY = Utils.ReadCSVInt(data["pack_y"].InnerText);
-            for (var i = 0; i < charCount; i++)
+            foreach (XmlElement character in data["chars"])
             {
-                var id = charIds[i];
-                fontSize.Characters.Add(id, new PixelFontCharacter(
-                    id, texture, packX[i], packY[i], width[i], height[i], offsetX[i],
-                    offsetY[i], advance[i]
-                ));
+                var id = character.AttrInt("id");
+                var page = character.AttrInt("page", 0);
+                fontSize.Characters.Add(id, new BmFontCharacter(id, Textures[page], character));
             }
 
             // get kerning
-            var kerningCount = data["kerning_count"].InnerInt();
-            var kernings = Utils.ReadCSVInt(data["kerning"].InnerText);
-            for (var i = 0; i < kerningCount; i++)
-            {
-                var from = kernings[i * 3 + 0];
-                var to = kernings[i * 3 + 1];
-                var push = kernings[i * 3 + 2];
+            if (data["kernings"] != null)
+                foreach (XmlElement kerning in data["kernings"])
+                {
+                    var from = kerning.AttrInt("first");
+                    var to = kerning.AttrInt("second");
+                    var push = kerning.AttrInt("amount");
 
-                if (fontSize.Characters.TryGetValue(from, out var c)) c.Kerning.Add(to, push);
-            }
+                    if (fontSize.Characters.TryGetValue(from, out var c))
+                        c.Kerning.Add(to, push);
+                }
 
             // add font size
             Sizes.Add(fontSize);
-            Sizes.Sort((a, b) => { return Mathf.Sign(a.Size - b.Size); });
+            Sizes.Sort((a, b) => Math.Sign(a.Size - b.Size));
 
             return fontSize;
         }
 
-        public PixelFontSize Get(float size)
+        public BmFontSize Get(float size)
         {
             for (int i = 0, j = Sizes.Count - 1; i < j; i++)
                 if (Sizes[i].Size >= size)
                     return Sizes[i];
-
             return Sizes[Sizes.Count - 1];
         }
 
         public void Draw(float baseSize, char character, Vector2 position, Vector2 justify, Vector2 scale, Color color)
         {
-            var fontSize = Get(baseSize * Mathf.Max(scale.X, scale.Y));
-            scale *= baseSize / fontSize.Size;
+            var fontSize = Get(baseSize * Math.Max(scale.X, scale.Y));
+            scale *= (baseSize / fontSize.Size);
             fontSize.Draw(character, position, justify, scale, color);
         }
 
-        public void Draw(
-            float baseSize,
-            string text,
-            Vector2 position,
-            Vector2 justify,
-            Vector2 scale,
-            Color color,
-            float edgeDepth,
-            Color edgeColor,
-            float stroke,
-            Color strokeColor
-        )
+        public void Draw(float baseSize, string text, Vector2 position, Vector2 justify, Vector2 scale, Color color, float edgeDepth, Color edgeColor, float stroke, Color strokeColor)
         {
-            var fontSize = Get(baseSize * Mathf.Max(scale.X, scale.Y));
-            scale *= baseSize / fontSize.Size;
+            var fontSize = Get(baseSize * Math.Max(scale.X, scale.Y));
+            scale *= (baseSize / fontSize.Size);
             fontSize.Draw(text, position, justify, scale, color, edgeDepth, edgeColor, stroke, strokeColor);
         }
 
         public void Draw(float baseSize, string text, Vector2 position, Color color)
         {
             var scale = Vector2.One;
-            var fontSize = Get(baseSize * Mathf.Max(scale.X, scale.Y));
-            scale *= baseSize / fontSize.Size;
+            var fontSize = Get(baseSize * Math.Max(scale.X, scale.Y));
+            scale *= (baseSize / fontSize.Size);
             fontSize.Draw(text, position, Vector2.Zero, scale, color, 0, Color.Transparent, 0, Color.Transparent);
         }
 
         public void Draw(float baseSize, string text, Vector2 position, Vector2 justify, Vector2 scale, Color color)
         {
-            var fontSize = Get(baseSize * Mathf.Max(scale.X, scale.Y));
-            scale *= baseSize / fontSize.Size;
+            var fontSize = Get(baseSize * Math.Max(scale.X, scale.Y));
+            scale *= (baseSize / fontSize.Size);
             fontSize.Draw(text, position, justify, scale, color, 0, Color.Transparent, 0, Color.Transparent);
         }
 
-        public void DrawOutline(
-            float baseSize,
-            string text,
-            Vector2 position,
-            Vector2 justify,
-            Vector2 scale,
-            Color color,
-            float stroke,
-            Color strokeColor
-        )
+        public void DrawOutline(float baseSize, string text, Vector2 position, Vector2 justify, Vector2 scale, Color color, float stroke, Color strokeColor)
         {
-            var fontSize = Get(baseSize * Mathf.Max(scale.X, scale.Y));
-            scale *= baseSize / fontSize.Size;
+            var fontSize = Get(baseSize * Math.Max(scale.X, scale.Y));
+            scale *= (baseSize / fontSize.Size);
             fontSize.Draw(text, position, justify, scale, color, 0f, Color.Transparent, stroke, strokeColor);
         }
 
-        public void DrawEdgeOutline(
-            float baseSize,
-            string text,
-            Vector2 position,
-            Vector2 justify,
-            Vector2 scale,
-            Color color,
-            float edgeDepth,
-            Color edgeColor,
-            float stroke = 0f,
-            Color strokeColor = default
-        )
+        public void DrawEdgeOutline(float baseSize, string text, Vector2 position, Vector2 justify, Vector2 scale, Color color, float edgeDepth, Color edgeColor, float stroke = 0f, Color strokeColor = default(Color))
         {
-            var fontSize = Get(baseSize * Mathf.Max(scale.X, scale.Y));
-            scale *= baseSize / fontSize.Size;
+            var fontSize = Get(baseSize * Math.Max(scale.X, scale.Y));
+            scale *= (baseSize / fontSize.Size);
             fontSize.Draw(text, position, justify, scale, color, edgeDepth, edgeColor, stroke, strokeColor);
         }
 
         public void Dispose()
         {
-            foreach (var tex in Textures) tex.Dispose();
-
+            foreach (var tex in Textures)
+                tex.Dispose();
             Sizes.Clear();
         }
     }

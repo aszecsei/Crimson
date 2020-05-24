@@ -1,6 +1,4 @@
-﻿#region Using Statements
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -12,8 +10,6 @@ using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
-#endregion
 
 namespace Crimson
 {
@@ -1413,5 +1409,10 @@ namespace Crimson
         }
 
         #endregion
+        
+        public static string NormalizePath(string path)
+        {
+            return path.Replace('\\', '/');
+        }
     }
 }

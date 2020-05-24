@@ -51,17 +51,12 @@ namespace Crimson
             Graphics.DeviceReset += OnGraphicsReset;
             Graphics.DeviceCreated += OnGraphicsCreate;
             
-            // Provides a smoother experience than regular vsync
-            // (vsync drops to 30 when you go below 60hz for a fraction of a second)
-            Graphics.SynchronizeWithVerticalRetrace = false;
-            IsFixedTimeStep = true;
-            TargetElapsedTime = TimeSpan.FromMilliseconds(1000f / TARGET_FRAMERATE);
-            
-            Graphics.PreferMultiSampling = true;
+            Graphics.SynchronizeWithVerticalRetrace = true;
             Graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Graphics.PreferredBackBufferFormat = SurfaceFormat.Color;
             Graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
             Graphics.HardwareModeSwitch = false;
+
             Graphics.ApplyChanges();
 
 #if PS4 || XBOXONE

@@ -94,7 +94,7 @@ namespace Crimson
             GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
 
             Time.onFPSUpdate += OnFPSUpdate;
-            
+
             // Add base subsystems
             Subsystems.Register<AudioSubsystem>();
             Subsystems.Register<PhysicsSubsystem>();

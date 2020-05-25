@@ -7,7 +7,7 @@ namespace Crimson
 {
     public abstract class Scene : IEnumerable<Entity>, IEnumerable
     {
-        private readonly Dictionary<int, double> actualDepthLookup;
+        private readonly Dictionary<int, double> _actualDepthLookup;
 
         public bool HasFocus = true;
         public bool Paused;
@@ -21,7 +21,7 @@ namespace Crimson
             TagLists = new TagLists();
             RendererList = new RendererList(this);
 
-            actualDepthLookup = new Dictionary<int, double>();
+            _actualDepthLookup = new Dictionary<int, double>();
         }
 
         public bool Focused { get; private set; }
@@ -117,10 +117,10 @@ namespace Crimson
         {
             const double theta = 0.000001f;
 
-            if (actualDepthLookup.TryGetValue(entity.Depth, out var add))
-                actualDepthLookup[entity.Depth] += theta;
+            if (_actualDepthLookup.TryGetValue(entity.Depth, out var add))
+                _actualDepthLookup[entity.Depth] += theta;
             else
-                actualDepthLookup.Add(entity.Depth, theta);
+                _actualDepthLookup.Add(entity.Depth, theta);
 
             entity.ActualDepth = entity.Depth - add;
 

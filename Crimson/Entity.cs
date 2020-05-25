@@ -126,7 +126,7 @@ namespace Crimson
         }
 
         /// <summary>
-        ///     Draw the Entity here. Not called if the Entity is not Visible
+        /// Draw the Entity here. Not called if the Entity is not Visible
         /// </summary>
         public virtual void Render()
         {
@@ -134,7 +134,7 @@ namespace Crimson
         }
 
         /// <summary>
-        ///     Draw any debug visuals here. Only called if the console is open, but still called even if the Entity is not Visible
+        /// Draw any debug visuals here. Only called if the console is open, but still called even if the Entity is not Visible
         /// </summary>
         public virtual void DebugRender(Camera camera)
         {
@@ -142,8 +142,8 @@ namespace Crimson
         }
 
         /// <summary>
-        ///     Called when the graphics device resets. When this happens, any RenderTargets or other contents of VRAM will be
-        ///     wiped and need to be regenerated
+        /// Called when the graphics device resets. When this happens, any RenderTargets or other contents of VRAM will be
+        /// wiped and need to be regenerated
         /// </summary>
         public virtual void HandleGraphicsReset()
         {

@@ -409,6 +409,14 @@ namespace Crimson
             fontSize.Draw(text, position, justify, scale, color, edgeDepth, edgeColor, stroke, strokeColor);
         }
 
+        public Vector2 MeasureString(float baseSize, string text)
+        {
+            var scale = Vector2.One;
+            var fontSize = Get(baseSize * Math.Max(scale.X, scale.Y));
+            scale *= (baseSize / fontSize.Size);
+            return fontSize.Measure(text) * scale;
+        }
+
         public void Dispose()
         {
             foreach (var tex in Textures)

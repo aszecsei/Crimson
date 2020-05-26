@@ -7,7 +7,7 @@ namespace Crimson
 {
     public class EntityList : IEnumerable<Entity>, IEnumerable
     {
-        public static Comparison<Entity> CompareDepth = (a, b) => { return Math.Sign(b.ActualDepth - a.ActualDepth); };
+        public static Comparison<Entity> CompareDepth = (a, b) => Math.Sign(b.ActualDepth - a.ActualDepth);
 
         private readonly HashSet<Entity> adding;
 

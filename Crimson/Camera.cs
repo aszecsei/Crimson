@@ -15,6 +15,7 @@ namespace Crimson
 
         private Vector2 _position = Vector2.Zero;
         private Vector2 _zoom = Vector2.One;
+        private bool _lockToPixel = true;
 
         public Viewport Viewport;
 
@@ -28,6 +29,16 @@ namespace Crimson
         {
             Viewport = new Viewport {Width = width, Height = height};
             UpdateMatrices();
+        }
+
+        public bool LockToPixel
+        {
+            get => _lockToPixel;
+            set
+            {
+                _lockToPixel = value;
+                _dirty = true;
+            }
         }
 
         public Matrix Matrix
@@ -214,13 +225,27 @@ namespace Crimson
 
         private void UpdateMatrices()
         {
-            _matrix = Matrix.Identity *
-                      Matrix.CreateTranslation(
-                          new Vector3(-new Vector2(Mathf.FloorToInt(_position.X), Mathf.FloorToInt(_position.Y)), 0)) *
-                      Matrix.CreateRotationZ(_angle) *
-                      Matrix.CreateScale(new Vector3(_zoom, 1)) *
-                      Matrix.CreateTranslation(
-                          new Vector3(new Vector2(Mathf.FloorToInt(_origin.X), Mathf.FloorToInt(_origin.Y)), 0));
+            if (_lockToPixel)
+            {
+                _matrix = Matrix.Identity *
+                          Matrix.CreateTranslation(
+                              new Vector3(-new Vector2(Mathf.FloorToInt(_position.X), Mathf.FloorToInt(_position.Y)), 0)) *
+                          Matrix.CreateRotationZ(_angle) *
+                          Matrix.CreateScale(new Vector3(_zoom, 1)) *
+                          Matrix.CreateTranslation(
+                              new Vector3(new Vector2(Mathf.FloorToInt(_origin.X), Mathf.FloorToInt(_origin.Y)), 0));
+            }
+            else
+            {
+                _matrix = Matrix.Identity *
+                          Matrix.CreateTranslation(
+                              new Vector3(-new Vector2(_position.X, _position.Y), 0)) *
+                          Matrix.CreateRotationZ(_angle) *
+                          Matrix.CreateScale(new Vector3(_zoom, 1)) *
+                          Matrix.CreateTranslation(
+                              new Vector3(new Vector2(_origin.X, _origin.Y), 0));
+            }
+            
             _inverse = Matrix.Invert(_matrix);
             _dirty = false;
         }

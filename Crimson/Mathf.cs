@@ -251,7 +251,7 @@ namespace Crimson
             var digits = 1;
             var target = 10;
 
-            while (num >= target)
+            while (Mathf.Abs(num) >= target)
             {
                 digits++;
                 target *= 10;

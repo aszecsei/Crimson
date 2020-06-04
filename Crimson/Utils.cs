@@ -106,6 +106,11 @@ namespace Crimson
             return Enum.IsDefined(typeof(T), str);
         }
 
+        public static T[] GetEnumValues<T>()
+        {
+            return (T[])Enum.GetValues(typeof(T));
+        }
+
         #endregion
 
         #region Strings

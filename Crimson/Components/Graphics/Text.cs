@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Crimson.Spatial;
 using Microsoft.Xna.Framework;
 
 namespace Crimson
@@ -126,7 +126,7 @@ namespace Crimson
             else
                 Origin.Y = _size.Y;
 
-            Origin = Origin.Floor();
+            Origin = VectorExt.Floor(Origin);
         }
 
         public override void Render()

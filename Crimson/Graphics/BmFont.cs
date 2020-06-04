@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Text.RegularExpressions;
 using System.IO;
+using Crimson.Spatial;
 
 namespace Crimson
 {
@@ -179,7 +180,7 @@ namespace Crimson
                 var measure = Measure(character);
                 var justified = new Vector2(measure.X * justify.X, measure.Y * justify.Y);
                 var pos = position + (new Vector2(c.XOffset, c.YOffset) - justified) * scale;
-                c.Texture.Draw(pos.Floor(), Vector2.Zero, color, scale);
+                c.Texture.Draw(VectorExt.Floor(pos), Vector2.Zero, color, scale);
             }
         }
 

@@ -72,6 +72,21 @@ namespace Crimson.Spatial
         {
             return Mathf.Atan2(vector.Y, vector.X);
         }
+        
+        public static Vector2 Clamp(this Vector2 value, Vector2 min, Vector2 max)
+        {
+            var newX = Mathf.Clamp(value.X, min.X, max.X);
+            var newY = Mathf.Clamp(value.Y, min.Y, max.Y);
+            return new Vector2(newX, newY);
+        }
+
+        public static Vector3 Clamp(this Vector3 value, Vector3 min, Vector3 max)
+        {
+            var newX = Mathf.Clamp(value.X, min.X, max.X);
+            var newY = Mathf.Clamp(value.Y, min.Y, max.Y);
+            var newZ = Mathf.Clamp(value.Z, min.Z, max.Z);
+            return new Vector3(newX, newY, newZ);
+        }
 
         public static Vector2 Normalized(this Vector2 vector)
         {

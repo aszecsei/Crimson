@@ -86,6 +86,11 @@ namespace Crimson
             return Enum.GetNames(e).Length;
         }
 
+        public static int EnumLength<T>()
+        {
+            return Enum.GetNames(typeof(T)).Length;
+        }
+
         public static T StringToEnum<T>(string str) where T : struct
         {
             if (Enum.IsDefined(typeof(T), str)) return (T) Enum.Parse(typeof(T), str);

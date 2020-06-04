@@ -571,7 +571,7 @@ namespace Crimson
         }
 
         /// <summary>
-        ///     Converts the given value from gamma (sRGB) to linear color space.
+        /// Converts the given value from gamma (sRGB) to linear color space.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -581,7 +581,7 @@ namespace Crimson
         }
 
         /// <summary>
-        ///     Converts the given value from linear to gamma (sRGB) color space.
+        /// Converts the given value from linear to gamma (sRGB) color space.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -602,7 +602,7 @@ namespace Crimson
         }
 
         /// <summary>
-        ///     Generate 2D Perlin noise.
+        /// Generate 2D Perlin noise.
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -613,7 +613,7 @@ namespace Crimson
         }
 
         /// <summary>
-        ///     A spring approximation
+        /// A spring approximation
         /// </summary>
         public static float Wiggle(float t, float freq)
         {
@@ -621,7 +621,7 @@ namespace Crimson
         }
 
         /// <summary>
-        ///     A numeric spring calculation
+        /// A numeric spring calculation
         /// </summary>
         /// <param name="x">value</param>
         /// <param name="v">velocity</param>

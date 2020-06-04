@@ -76,9 +76,7 @@ namespace Crimson.Spatial
         /// <returns>The point on or inside the bounding box.</returns>
         public Vector2 ClosestPoint(Vector2 point)
         {
-            var dx = Mathf.Max(Min.X - point.X, 0, point.X - Max.X);
-            var dy = Mathf.Max(Min.Y - point.Y, 0, point.Y - Max.Y);
-            return new Vector2(point.X + dx, point.Y + dy);
+            return point.Clamp(Min, Max);
         }
 
         /// <summary>

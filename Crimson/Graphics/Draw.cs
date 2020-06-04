@@ -1,5 +1,6 @@
 ﻿#region Using Statements
 
+using Crimson.Spatial;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -222,7 +223,7 @@ namespace Crimson
 
         public static void Text(SpriteFont font, string text, Vector2 position, Color color)
         {
-            SpriteBatch.DrawString(font, text, position.Floor(), color);
+            SpriteBatch.DrawString(font, text, VectorExt.Floor(position), color);
         }
 
         public static void Text(
@@ -235,7 +236,7 @@ namespace Crimson
             float rotation
         )
         {
-            SpriteBatch.DrawString(font, text, position.Floor(), color, rotation, origin, scale, SpriteEffects.None,
+            SpriteBatch.DrawString(font, text, VectorExt.Floor(position), color, rotation, origin, scale, SpriteEffects.None,
                 0);
         }
 
@@ -245,7 +246,7 @@ namespace Crimson
             origin.X *= justify.X;
             origin.Y *= justify.Y;
 
-            SpriteBatch.DrawString(font, text, position.Floor(), color, 0, origin, 1, SpriteEffects.None, 0);
+            SpriteBatch.DrawString(font, text, VectorExt.Floor(position), color, 0, origin, 1, SpriteEffects.None, 0);
         }
 
         public static void TextJustified(
@@ -260,7 +261,7 @@ namespace Crimson
             var origin = font.MeasureString(text);
             origin.X *= justify.X;
             origin.Y *= justify.Y;
-            SpriteBatch.DrawString(font, text, position.Floor(), color, 0, origin, scale, SpriteEffects.None, 0);
+            SpriteBatch.DrawString(font, text, VectorExt.Floor(position), color, 0, origin, scale, SpriteEffects.None, 0);
         }
 
         public static void TextCentered(SpriteFont font, string text, Vector2 position)
@@ -297,10 +298,10 @@ namespace Crimson
             for (var i = -1; i < 2; i++)
             for (var j = -1; j < 2; j++)
                 if (i != 0 || j != 0)
-                    SpriteBatch.DrawString(font, text, position.Floor() + new Vector2(i, j), Color.Black, 0, origin,
+                    SpriteBatch.DrawString(font, text, VectorExt.Floor(position) + new Vector2(i, j), Color.Black, 0, origin,
                         scale, SpriteEffects.None, 0);
 
-            SpriteBatch.DrawString(font, text, position.Floor(), color, 0, origin, scale, SpriteEffects.None, 0);
+            SpriteBatch.DrawString(font, text, VectorExt.Floor(position), color, 0, origin, scale, SpriteEffects.None, 0);
         }
 
         public static void OutlineTextCentered(
@@ -316,10 +317,10 @@ namespace Crimson
             for (var i = -1; i < 2; i++)
             for (var j = -1; j < 2; j++)
                 if (i != 0 || j != 0)
-                    SpriteBatch.DrawString(font, text, position.Floor() + new Vector2(i, j), outlineColor, 0,
+                    SpriteBatch.DrawString(font, text, VectorExt.Floor(position) + new Vector2(i, j), outlineColor, 0,
                         origin, 1, SpriteEffects.None, 0);
 
-            SpriteBatch.DrawString(font, text, position.Floor(), color, 0, origin, 1, SpriteEffects.None, 0);
+            SpriteBatch.DrawString(font, text, VectorExt.Floor(position), color, 0, origin, 1, SpriteEffects.None, 0);
         }
 
         public static void OutlineTextCentered(
@@ -336,10 +337,10 @@ namespace Crimson
             for (var i = -1; i < 2; i++)
             for (var j = -1; j < 2; j++)
                 if (i != 0 || j != 0)
-                    SpriteBatch.DrawString(font, text, position.Floor() + new Vector2(i, j), outlineColor, 0,
+                    SpriteBatch.DrawString(font, text, VectorExt.Floor(position) + new Vector2(i, j), outlineColor, 0,
                         origin, scale, SpriteEffects.None, 0);
 
-            SpriteBatch.DrawString(font, text, position.Floor(), color, 0, origin, scale, SpriteEffects.None, 0);
+            SpriteBatch.DrawString(font, text, VectorExt.Floor(position), color, 0, origin, scale, SpriteEffects.None, 0);
         }
 
         public static void OutlineTextJustify(
@@ -356,10 +357,10 @@ namespace Crimson
             for (var i = -1; i < 2; i++)
             for (var j = -1; j < 2; j++)
                 if (i != 0 || j != 0)
-                    SpriteBatch.DrawString(font, text, position.Floor() + new Vector2(i, j), outlineColor, 0,
+                    SpriteBatch.DrawString(font, text, VectorExt.Floor(position) + new Vector2(i, j), outlineColor, 0,
                         origin, 1, SpriteEffects.None, 0);
 
-            SpriteBatch.DrawString(font, text, position.Floor(), color, 0, origin, 1, SpriteEffects.None, 0);
+            SpriteBatch.DrawString(font, text, VectorExt.Floor(position), color, 0, origin, 1, SpriteEffects.None, 0);
         }
 
         public static void OutlineTextJustify(
@@ -377,10 +378,10 @@ namespace Crimson
             for (var i = -1; i < 2; i++)
             for (var j = -1; j < 2; j++)
                 if (i != 0 || j != 0)
-                    SpriteBatch.DrawString(font, text, position.Floor() + new Vector2(i, j), outlineColor, 0,
+                    SpriteBatch.DrawString(font, text, VectorExt.Floor(position) + new Vector2(i, j), outlineColor, 0,
                         origin, scale, SpriteEffects.None, 0);
 
-            SpriteBatch.DrawString(font, text, position.Floor(), color, 0, origin, scale, SpriteEffects.None, 0);
+            SpriteBatch.DrawString(font, text, VectorExt.Floor(position), color, 0, origin, scale, SpriteEffects.None, 0);
         }
 
         #endregion

@@ -7,11 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Crimson\Crimson.csproj" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.7.0.7">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1375-develop" />
+    <ProjectReference Include="..\Crimson\Crimson.csproj" />
   </ItemGroup>
 
 </Project>

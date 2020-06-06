@@ -412,12 +412,7 @@ namespace Crimson
 
         #region Vector2
 
-        public static Vector2 Toward(Vector2 from, Vector2 to, float length)
-        {
-            if (from == to) return Vector2.Zero;
-
-            return (to - from).SafeNormalize(length);
-        }
+        
 
         public static Vector2 Perpendicular(this Vector2 vector)
         {
@@ -427,21 +422,6 @@ namespace Crimson
         public static float Angle(this Vector2 vector)
         {
             return Mathf.Atan2(vector.Y, vector.X);
-        }
-
-        public static Vector2 Clamp(this Vector2 val, float minX, float minY, float maxX, float maxY)
-        {
-            return new Vector2(MathHelper.Clamp(val.X, minX, maxX), MathHelper.Clamp(val.Y, minY, maxY));
-        }
-
-        public static Vector2 Floor(this Vector2 val)
-        {
-            return new Vector2(Mathf.Floor(val.X), Mathf.Floor(val.Y));
-        }
-
-        public static Vector2 Ceiling(this Vector2 val)
-        {
-            return new Vector2(Mathf.Ceil(val.X), Mathf.Ceil(val.Y));
         }
 
         public static Vector2 Abs(this Vector2 val)

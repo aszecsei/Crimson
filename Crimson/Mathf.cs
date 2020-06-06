@@ -457,46 +457,7 @@ namespace Crimson
         {
             return MathHelper.Lerp(value1, value2, MathHelper.Clamp(lerp, 0, 1));
         }
-
-        public static Vector2 LerpSnap(Vector2 value1, Vector2 value2, float amount, float snapThresholdSq = .1f)
-        {
-            var ret = Vector2.Lerp(value1, value2, amount);
-            if ((ret - value2).LengthSquared() < snapThresholdSq) return value2;
-
-            return ret;
-        }
-
-        public static Vector2 Sign(this Vector2 vec)
-        {
-            return new Vector2(Math.Sign(vec.X), Math.Sign(vec.Y));
-        }
-
-        public static Vector2 SafeNormalize(this Vector2 vec)
-        {
-            return SafeNormalize(vec, Vector2.Zero);
-        }
-
-        public static Vector2 SafeNormalize(this Vector2 vec, float length)
-        {
-            return SafeNormalize(vec, Vector2.Zero, length);
-        }
-
-        public static Vector2 SafeNormalize(this Vector2 vec, Vector2 ifZero)
-        {
-            if (vec == Vector2.Zero) return ifZero;
-
-            vec.Normalize();
-            return vec;
-        }
-
-        public static Vector2 SafeNormalize(this Vector2 vec, Vector2 ifZero, float length)
-        {
-            if (vec == Vector2.Zero) return ifZero * length;
-
-            vec.Normalize();
-            return vec * length;
-        }
-
+        
         public static float ReflectAngle(float angle, float axis = 0)
         {
             return -(angle + axis) - axis;
@@ -506,22 +467,7 @@ namespace Crimson
         {
             return ReflectAngle(angleRadians, axis.Angle());
         }
-
-        public static Vector2 ClosestPointOnLine(Vector2 lineA, Vector2 lineB, Vector2 closestTo)
-        {
-            var v = lineB - lineA;
-            var w = closestTo - lineA;
-            var t = Vector2.Dot(w, v) / Vector2.Dot(v, v);
-            t = MathHelper.Clamp(t, 0, 1);
-
-            return lineA + v * t;
-        }
-
-        public static Vector2 Round(this Vector2 vec)
-        {
-            return new Vector2((float) Math.Round(vec.X), (float) Math.Round(vec.Y));
-        }
-
+        
         public static float Snap(float value, float increment)
         {
             return (float) Math.Round(value / increment) * increment;

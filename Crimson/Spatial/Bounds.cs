@@ -19,7 +19,7 @@ namespace Crimson.Spatial
         /// </summary>
         public Vector3 Extents
         {
-            get => new Vector3(Size.X / 2, Size.Y / 2, Size.Z / 2);
+            readonly get => new Vector3(Size.X / 2, Size.Y / 2, Size.Z / 2);
             set => Size = new Vector3(value.X * 2, value.Y * 2, value.Z * 2);
         }
         
@@ -30,7 +30,7 @@ namespace Crimson.Spatial
         /// </summary>
         public Vector3 Max
         {
-            get => Center + Extents;
+            readonly get => Center + Extents;
             set
             {
                 var (x, y, z) = Min;
@@ -46,7 +46,7 @@ namespace Crimson.Spatial
         /// </summary>
         public Vector3 Min
         {
-            get => Center - Extents;
+            readonly get => Center - Extents;
             set
             {
                 var (x, y, z) = Max;
@@ -73,7 +73,7 @@ namespace Crimson.Spatial
         /// </remarks>
         /// <param name="point">Arbitrary point.</param>
         /// <returns>The point on or inside the bounding box.</returns>
-        public Vector3 ClosestPoint(Vector3 point)
+        public readonly Vector3 ClosestPoint(in Vector3 point)
         {
             return point.Clamp(Min, Max);
         }
@@ -81,7 +81,7 @@ namespace Crimson.Spatial
         /// <summary>
         /// Is <c>point</c> contained in the bounding box?
         /// </summary>
-        public bool Contains(Vector3 point)
+        public readonly bool Contains(in Vector3 point)
         {
             return point.X >= Min.X && point.Y >= Min.Y && point.Z >= Min.Z 
                    && point.X <= Max.X && point.Y <= Max.Y && point.Z <= Max.Z;
@@ -90,7 +90,7 @@ namespace Crimson.Spatial
         /// <summary>
         /// Grows the bounds to include the point.
         /// </summary>
-        public void Encapsulate(Vector3 point)
+        public void Encapsulate(in Vector3 point)
         {
             var newMin = new Vector3(Mathf.Min(Min.X, point.X),
                 Mathf.Min(Min.Y, point.Y),
@@ -104,7 +104,7 @@ namespace Crimson.Spatial
         /// <summary>
         /// Grows the bounds to include the bounds.
         /// </summary>
-        public void Encapsulate(Bounds bounds)
+        public void Encapsulate(in Bounds bounds)
         {
             var newMin = new Vector3(Mathf.Min(Min.X, bounds.Min.X),
                 Mathf.Min(Min.Y, bounds.Min.Y),
@@ -119,7 +119,7 @@ namespace Crimson.Spatial
         /// Expand the bounds by increasing its size by <c>amount</c> along each side.
         /// </summary>
         /// <param name="amount"></param>
-        public void Expand(Vector3 amount)
+        public void Expand(in Vector3 amount)
         {
             Size += amount;
         }
@@ -127,7 +127,7 @@ namespace Crimson.Spatial
         /// <summary>
         /// Does another bounding box intersect with this bounding box?
         /// </summary>
-        public bool Intersects(Bounds bounds)
+        public readonly bool Intersects(in Bounds bounds)
         {
             if (bounds.Min.X > Max.X || Min.X > bounds.Max.X)
                 return false;
@@ -145,7 +145,7 @@ namespace Crimson.Spatial
         /// <remarks>
         /// Using this function is faster than assigning <c>min</c> and <c>max</c> separately.
         /// </remarks>
-        public void SetMinMax(Vector3 min, Vector3 max)
+        public void SetMinMax(in Vector3 min, in Vector3 max)
         {
             Center = new Vector3((min.X + max.X) / 2, (min.Y + max.Y) / 2, (min.Z + max.Z) / 2);
             Size = new Vector3(Mathf.Abs(max.X - min.X), Mathf.Abs(max.Y - min.Y), Mathf.Abs(max.Z - min.Z));
@@ -154,7 +154,7 @@ namespace Crimson.Spatial
         /// <summary>
         /// The smallest squared distance between the point and this bounding box.
         /// </summary>
-        public float SqrDistance(Vector3 point)
+        public readonly float SqrDistance(in Vector3 point)
         {
             var dx = Mathf.Max(Min.X - point.X, 0, point.X - Max.X);
             var dy = Mathf.Max(Min.Y - point.Y, 0, point.Y - Max.Y);

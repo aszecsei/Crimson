@@ -126,7 +126,7 @@ namespace Crimson
             else
                 Origin.Y = _size.Y;
 
-            Origin = VectorExt.Floor(Origin);
+            Origin = Origin.Floor();
         }
 
         public override void Render()

@@ -4,83 +4,83 @@ namespace Crimson.Spatial
 {
     public static class VectorExt
     {
-        public static Vector2 Floor(this Vector2 vector)
+        public static Vector2 Floor(in this Vector2 vector)
         {
             return new Vector2(Mathf.Floor(vector.X), Mathf.Floor(vector.Y));
         }
 
-        public static Vector3 Floor(this Vector3 vector)
+        public static Vector3 Floor(in this Vector3 vector)
         {
             return new Vector3(Mathf.Floor(vector.X), Mathf.Floor(vector.Y), Mathf.Floor(vector.Z));
         }
 
-        public static Vector4 Floor(this Vector4 vector)
+        public static Vector4 Floor(in this Vector4 vector)
         {
             return new Vector4(Mathf.Floor(vector.X), Mathf.Floor(vector.Y),
                 Mathf.Floor(vector.Z), Mathf.Floor(vector.W));
         }
 
-        public static Vector2 Round(this Vector2 vector)
+        public static Vector2 Round(in this Vector2 vector)
         {
             return new Vector2(Mathf.Round(vector.X), Mathf.Round(vector.Y));
         }
 
-        public static Vector3 Round(this Vector3 vector)
+        public static Vector3 Round(in this Vector3 vector)
         {
             return new Vector3(Mathf.Round(vector.X), Mathf.Round(vector.Y), Mathf.Round(vector.Z));
         }
 
-        public static Vector4 Round(this Vector4 vector)
+        public static Vector4 Round(in this Vector4 vector)
         {
             return new Vector4(Mathf.Round(vector.X), Mathf.Round(vector.Y),
                 Mathf.Round(vector.Z), Mathf.Round(vector.W));
         }
 
-        public static Vector2 Ceil(this Vector2 vector)
+        public static Vector2 Ceil(in this Vector2 vector)
         {
             return new Vector2(Mathf.Ceil(vector.X), Mathf.Ceil(vector.Y));
         }
 
-        public static Vector3 Ceil(this Vector3 vector)
+        public static Vector3 Ceil(in this Vector3 vector)
         {
             return new Vector3(Mathf.Ceil(vector.X), Mathf.Ceil(vector.Y), Mathf.Ceil(vector.Z));
         }
 
-        public static Vector4 Ceil(this Vector4 vector)
+        public static Vector4 Ceil(in this Vector4 vector)
         {
             return new Vector4(Mathf.Ceil(vector.X), Mathf.Ceil(vector.Y),
                 Mathf.Ceil(vector.Z), Mathf.Ceil(vector.W));
         }
 
         /// <summary>
-        ///     Turns a vector to its right perpendicular
+        /// Turns a vector to its right perpendicular
         /// </summary>
-        public static Vector2 TurnRight(this Vector2 vector)
+        public static Vector2 TurnRight(in this Vector2 vector)
         {
             return new Vector2(-vector.Y, vector.X);
         }
 
         /// <summary>
-        ///     Turns a vector to its left perpendicular
+        /// Turns a vector to its left perpendicular
         /// </summary>
-        public static Vector2 TurnLeft(this Vector2 vector)
+        public static Vector2 TurnLeft(in this Vector2 vector)
         {
             return new Vector2(vector.Y, -vector.X);
         }
 
-        public static float Angle(this Vector2 vector)
+        public static float Angle(in this Vector2 vector)
         {
             return Mathf.Atan2(vector.Y, vector.X);
         }
         
-        public static Vector2 Clamp(this Vector2 value, Vector2 min, Vector2 max)
+        public static Vector2 Clamp(in this Vector2 value, Vector2 min, Vector2 max)
         {
             var newX = Mathf.Clamp(value.X, min.X, max.X);
             var newY = Mathf.Clamp(value.Y, min.Y, max.Y);
             return new Vector2(newX, newY);
         }
 
-        public static Vector3 Clamp(this Vector3 value, Vector3 min, Vector3 max)
+        public static Vector3 Clamp(in this Vector3 value, Vector3 min, Vector3 max)
         {
             var newX = Mathf.Clamp(value.X, min.X, max.X);
             var newY = Mathf.Clamp(value.Y, min.Y, max.Y);
@@ -88,74 +88,94 @@ namespace Crimson.Spatial
             return new Vector3(newX, newY, newZ);
         }
 
-        public static Vector2 Normalized(this Vector2 vector)
+        public static Vector2 SafeNormalize(in this Vector2 vector, float length = 1)
         {
-            if (vector.X == 0 && vector.Y == 0)
+            if (vector == Vector2.Zero)
                 return Vector2.Zero;
-            return Vector2.Normalize(vector);
+            return Vector2.Normalize(vector) * length;
         }
 
-        public static Vector3 Normalized(this Vector3 vector)
+        public static Vector3 SafeNormalize(in this Vector3 vector, float length = 1)
         {
-            if (vector.X == 0 && vector.Y == 0)
+            if (vector == Vector3.Zero)
                 return Vector3.Zero;
-            return Vector3.Normalize(vector);
+            return Vector3.Normalize(vector) * length;
         }
 
-        public static Vector4 Normalized(this Vector4 vector)
+        public static Vector4 SafeNormalize(in this Vector4 vector, float length = 1)
         {
-            if (vector.X == 0 && vector.Y == 0)
+            if (vector == Vector4.Zero)
                 return Vector4.Zero;
-            return Vector4.Normalize(vector);
+            return Vector4.Normalize(vector) * length;
+        }
+        
+        public static Vector2 Toward(Vector2 from, Vector2 to, float length)
+        {
+            if (from == to) return Vector2.Zero;
+
+            return (to - from).SafeNormalize(length);
+        }
+        
+        public static Vector2 LerpSnap(Vector2 value1, Vector2 value2, float amount, float snapThresholdSq = .1f)
+        {
+            var ret = Vector2.Lerp(value1, value2, amount);
+            if ((ret - value2).LengthSquared() < snapThresholdSq) return value2;
+
+            return ret;
+        }
+
+        public static Vector2 Sign(this Vector2 vec)
+        {
+            return new Vector2(Mathf.Sign(vec.X), Mathf.Sign(vec.Y));
         }
 
         /// <summary>
-        ///     Normalizes a Vector2 and snaps it to the closest of the 4 cardinal directions (a zero-length Vector2 returns 0)
+        /// Normalizes a Vector2 and snaps it to the closest of the 4 cardinal directions (a zero-length Vector2 returns 0)
         /// </summary>
-        public static Vector2 FourWayNormal(this Vector2 vector)
+        public static Vector2 FourWayNormal(in this Vector2 vector)
         {
             if (vector == Vector2.Zero)
                 return vector;
 
-            vector = Mathf.AngleToVector(Mathf.Snap(vector.Angle(), Mathf.HALF_PI));
+            Vector2 v = Mathf.AngleToVector(Mathf.Snap(vector.Angle(), Mathf.HALF_PI));
 
-            if (Mathf.Abs(vector.X) < .1f)
+            if (Mathf.Abs(v.X) < .1f)
             {
-                vector.X = 0;
-                vector.Y = Mathf.Sign(vector.Y);
+                v.X = 0;
+                v.Y = Mathf.Sign(v.Y);
             }
-            else if (Mathf.Abs(vector.Y) < .1f)
+            else if (Mathf.Abs(v.Y) < .1f)
             {
-                vector.X = Mathf.Sign(vector.X);
-                vector.Y = 0;
+                v.X = Mathf.Sign(v.X);
+                v.Y = 0;
             }
 
             return vector;
         }
 
         /// <summary>
-        ///     Normalizes a Vector2 and snaps it to the closest of the 8 cardinal or diagonal directions (a zero-length Vector2
-        ///     returns 0)
+        /// Normalizes a Vector2 and snaps it to the closest of the 8 cardinal or diagonal directions (a zero-length Vector2
+        /// returns 0)
         /// </summary>
-        public static Vector2 EightWayNormal(this Vector2 vector)
+        public static Vector2 EightWayNormal(in this Vector2 vector)
         {
             if (vector == Vector2.Zero)
                 return vector;
 
-            vector = Mathf.AngleToVector(Mathf.Snap(vector.Angle(), Mathf.PI / 4));
+            Vector2 v = Mathf.AngleToVector(Mathf.Snap(vector.Angle(), Mathf.PI / 4));
 
-            if (Mathf.Abs(vector.X) < .1f)
+            if (Mathf.Abs(v.X) < .1f)
             {
-                vector.X = 0;
-                vector.Y = Mathf.Sign(vector.Y);
+                v.X = 0;
+                v.Y = Mathf.Sign(v.Y);
             }
-            else if (Mathf.Abs(vector.Y) < .1f)
+            else if (Mathf.Abs(v.Y) < .1f)
             {
-                vector.X = Mathf.Sign(vector.X);
-                vector.Y = 0;
+                v.X = Mathf.Sign(v.X);
+                v.Y = 0;
             }
 
-            return vector;
+            return v;
         }
     }
 }

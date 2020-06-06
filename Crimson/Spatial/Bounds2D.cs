@@ -20,7 +20,7 @@ namespace Crimson.Spatial
         /// </summary>
         public Vector2 Extents
         {
-            get => new Vector2(Size.X / 2, Size.Y / 2);
+            readonly get => new Vector2(Size.X / 2, Size.Y / 2);
             set => Size = new Vector2(value.X * 2, value.Y * 2);
         }
 
@@ -31,7 +31,7 @@ namespace Crimson.Spatial
         /// </summary>
         public Vector2 Max
         {
-            get => Center + Extents;
+            readonly get => Center + Extents;
             set
             {
                 var (x, y) = Min;
@@ -47,7 +47,7 @@ namespace Crimson.Spatial
         /// </summary>
         public Vector2 Min
         {
-            get => Center - Extents;
+            readonly get => Center - Extents;
             set
             {
                 var (x, y) = Max;
@@ -74,7 +74,7 @@ namespace Crimson.Spatial
         /// </remarks>
         /// <param name="point">Arbitrary point.</param>
         /// <returns>The point on or inside the bounding box.</returns>
-        public Vector2 ClosestPoint(Vector2 point)
+        public readonly Vector2 ClosestPoint(in Vector2 point)
         {
             return point.Clamp(Min, Max);
         }
@@ -82,7 +82,7 @@ namespace Crimson.Spatial
         /// <summary>
         /// Is <c>point</c> contained in the bounding box?
         /// </summary>
-        public bool Contains(Vector2 point)
+        public readonly bool Contains(in Vector2 point)
         {
             return point.X >= Min.X && point.Y >= Min.Y
                 && point.X <= Max.X && point.Y <= Max.Y;
@@ -91,32 +91,32 @@ namespace Crimson.Spatial
         /// <summary>
         /// Grows the bounds to include the point.
         /// </summary>
-        public void Encapsulate(Vector2 point)
+        public void Encapsulate(in Vector2 point)
         {
             var newMin = new Vector2(Mathf.Min(Min.X, point.X),
                 Mathf.Min(Min.Y, point.Y));
             var newMax = new Vector2(Mathf.Max(Max.X, point.X),
                 Mathf.Max(Max.Y, point.Y));
-            SetMinMax(newMin, newMax);
+            SetMinMax(in newMin, in newMax);
         }
         
         /// <summary>
         /// Grows the bounds to include the bounds.
         /// </summary>
-        public void Encapsulate(Bounds2D bounds)
+        public void Encapsulate(in Bounds2D bounds)
         {
             var newMin = new Vector2(Mathf.Min(Min.X, bounds.Min.X),
                 Mathf.Min(Min.Y, bounds.Min.Y));
             var newMax = new Vector2(Mathf.Max(Max.X, bounds.Max.X),
                 Mathf.Max(Max.Y, bounds.Max.Y));
-            SetMinMax(newMin, newMax);
+            SetMinMax(in newMin, in newMax);
         }
 
         /// <summary>
         /// Expand the bounds by increasing its size by <c>amount</c> along each side.
         /// </summary>
         /// <param name="amount"></param>
-        public void Expand(Vector2 amount)
+        public void Expand(in Vector2 amount)
         {
             Size += amount;
         }
@@ -124,7 +124,7 @@ namespace Crimson.Spatial
         /// <summary>
         /// Does another bounding box intersect with this bounding box?
         /// </summary>
-        public bool Intersects(Bounds2D bounds)
+        public readonly bool Intersects(in Bounds2D bounds)
         {
             if (bounds.Min.X > Max.X || Min.X > bounds.Max.X)
                 return false;
@@ -140,7 +140,7 @@ namespace Crimson.Spatial
         /// <remarks>
         /// Using this function is faster than assigning <c>min</c> and <c>max</c> separately.
         /// </remarks>
-        public void SetMinMax(Vector2 min, Vector2 max)
+        public void SetMinMax(in Vector2 min, in Vector2 max)
         {
             Center = new Vector2((min.X + max.X) / 2, (min.Y + max.Y) / 2);
             Size = new Vector2(Mathf.Abs(max.X - min.X), Mathf.Abs(max.Y - min.Y));
@@ -149,7 +149,7 @@ namespace Crimson.Spatial
         /// <summary>
         /// The smallest squared distance between the point and this bounding box.
         /// </summary>
-        public float SqrDistance(Vector2 point)
+        public readonly float SqrDistance(in Vector2 point)
         {
             var dx = Mathf.Max(Min.X - point.X, 0, point.X - Max.X);
             var dy = Mathf.Max(Min.Y - point.Y, 0, point.Y - Max.Y);

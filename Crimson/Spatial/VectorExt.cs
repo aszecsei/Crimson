@@ -128,6 +128,36 @@ namespace Crimson.Spatial
         {
             return new Vector2(Mathf.Sign(vec.X), Mathf.Sign(vec.Y));
         }
+        
+        public static Vector2 ClosestPointOnLine(this Vector2 closestTo, Vector2 lineA, Vector2 lineB)
+        {
+            Vector2 v = lineB - lineA;
+            Vector2 w = closestTo - lineA;
+            float t = Vector2.Dot(w, v) / Vector2.Dot(v, v);
+            t = MathHelper.Clamp(t, 0, 1);
+
+            return lineA + v * t;
+        }
+        
+        public static Vector3 ClosestPointOnLine(this Vector3 closestTo, Vector3 lineA, Vector3 lineB)
+        {
+            Vector3 v = lineB - lineA;
+            Vector3 w = closestTo - lineA;
+            float t = Vector3.Dot(w, v) / Vector3.Dot(v, v);
+            t = MathHelper.Clamp(t, 0, 1);
+
+            return lineA + v * t;
+        }
+        
+        public static Vector4 ClosestPointOnLine(this Vector4 closestTo, Vector4 lineA, Vector4 lineB)
+        {
+            Vector4 v = lineB - lineA;
+            Vector4 w = closestTo - lineA;
+            float t = Vector4.Dot(w, v) / Vector4.Dot(v, v);
+            t = MathHelper.Clamp(t, 0, 1);
+
+            return lineA + v * t;
+        }
 
         /// <summary>
         /// Normalizes a Vector2 and snaps it to the closest of the 4 cardinal directions (a zero-length Vector2 returns 0)

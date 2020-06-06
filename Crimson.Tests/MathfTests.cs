@@ -64,29 +64,5 @@ namespace Crimson.Tests
                 result.Should().Be(0);
             }
         }
-
-        [TestFixture]
-        public class ClosestPointOnLine
-        {
-            [Test]
-            public void OffLine()
-            {
-                var pointA = Vector2.Zero;
-                var pointB = new Vector2(0, 2);
-                var pointC = new Vector2(1.1f, 1);
-                var result = Mathf.ClosestPointOnLine(pointA, pointB, pointC);
-                result.Should().Be(new Vector2(0, 1));
-            }
-
-            [Test]
-            public void OnLine()
-            {
-                var pointA = Vector2.Zero;
-                var pointB = new Vector2(2, 2);
-                var pointC = new Vector2(1, 1);
-                var result = Mathf.ClosestPointOnLine(pointA, pointB, pointC);
-                result.Should().Be(pointC);
-            }
-        }
     }
 }

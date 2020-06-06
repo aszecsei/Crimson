@@ -229,8 +229,8 @@ namespace Crimson
         public static float AngleDiff(float radiansA, float radiansB)
         {
             var diff = radiansB - radiansA;
-            while (diff > MathHelper.Pi) diff -= MathHelper.TwoPi;
-            while (diff <= -MathHelper.Pi) diff += MathHelper.TwoPi;
+            while (diff > Mathf.PI) diff -= Mathf.TAU;
+            while (diff <= -Mathf.PI) diff += Mathf.TAU;
             return diff;
         }
 
@@ -278,7 +278,7 @@ namespace Crimson
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Percent(float num, float zeroAt, float oneAt)
         {
-            return MathHelper.Clamp((num - zeroAt) / oneAt, 0, 1);
+            return Mathf.Clamp((num - zeroAt) / oneAt, 0, 1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -316,13 +316,13 @@ namespace Crimson
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Min(int a, int b)
         {
-            return MathHelper.Min(a, b);
+            return a < b ? a : b;
         }
 
         public static int Min(params int[] values)
         {
             var min = values[0];
-            for (var i = 1; i < values.Length; i++) min = MathHelper.Min(values[i], min);
+            for (var i = 1; i < values.Length; i++) min = Mathf.Min(values[i], min);
 
             return min;
         }
@@ -330,13 +330,19 @@ namespace Crimson
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Min(float a, float b)
         {
-            return MathHelper.Min(a, b);
+            return a < b ? a : b;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Min(float a, float b, float c)
+        {
+            return Mathf.Min(Mathf.Min(a, b), c);
         }
 
         public static float Min(params float[] values)
         {
             var min = values[0];
-            for (var i = 1; i < values.Length; i++) min = MathHelper.Min(values[i], min);
+            for (var i = 1; i < values.Length; i++) min = Mathf.Min(values[i], min);
 
             return min;
         }
@@ -344,27 +350,33 @@ namespace Crimson
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Max(int a, int b)
         {
-            return MathHelper.Max(a, b);
+            return a > b ? a : b;
         }
 
         public static int Max(params int[] values)
         {
-            var min = values[0];
-            for (var i = 1; i < values.Length; i++) min = MathHelper.Max(values[i], min);
+            var max = values[0];
+            for (var i = 1; i < values.Length; i++) max = Mathf.Max(values[i], max);
 
-            return min;
+            return max;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Max(float a, float b)
         {
-            return MathHelper.Max(a, b);
+            return a > b ? a : b;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Max(float a, float b, float c)
+        {
+            return Mathf.Max(Mathf.Max(a, b), c);
         }
 
         public static float Max(params float[] values)
         {
             var max = values[0];
-            for (var i = 1; i < values.Length; i++) max = MathHelper.Max(values[i], max);
+            for (var i = 1; i < values.Length; i++) max = Mathf.Max(values[i], max);
 
             return max;
         }
@@ -484,13 +496,50 @@ namespace Crimson
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Lerp(float a, float b, float t)
         {
-            return MathHelper.Lerp(a, b, t);
+            return (1 - t) * a + t * b;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int ClosestPowerOfTwo(int value)
+        {
+            var nextPowerOfTwo = Mathf.NextPowerOfTwo(value);
+            
+            // if value is between nextPowerOfTwo and pre-pre nextPowerOfTwo
+            if (nextPowerOfTwo - value > nextPowerOfTwo >> 2)
+            {
+                // prev power of two
+                return nextPowerOfTwo >> 1;
+            }
+
+            return nextPowerOfTwo;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int NextPowerOfTwo(int value)
+        {
+            if (value < 0)
+                return 0;
+
+            --value;
+            value |= value >> 1;
+            value |= value >> 2;
+            value |= value >> 4;
+            value |= value >> 8;
+            value |= value >> 16;
+            value += 1;
+            return value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPowerOfTwo(int value)
+        {
+            return value > 0 && (value & value - 1) == 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LerpSnap(float value1, float value2, float amount, float snapThreshold = .1f)
         {
-            var ret = MathHelper.Lerp(value1, value2, amount);
+            var ret = Mathf.Lerp(value1, value2, amount);
             if (Math.Abs(ret - value2) < snapThreshold) return value2;
 
             return ret;
@@ -499,7 +548,7 @@ namespace Crimson
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LerpClamp(float value1, float value2, float lerp)
         {
-            return MathHelper.Lerp(value1, value2, MathHelper.Clamp(lerp, 0, 1));
+            return Mathf.Lerp(value1, value2, Mathf.Clamp(lerp, 0, 1));
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -529,14 +578,14 @@ namespace Crimson
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float WrapAngleDeg(float angleDegrees)
         {
-            return ((angleDegrees * Math.Sign(angleDegrees) + 180) % 360 - 180) * Math.Sign(angleDegrees);
+            return ((angleDegrees * Mathf.Sign(angleDegrees) + 180) % 360 - 180) * Mathf.Sign(angleDegrees);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float WrapAngle(float angleRadians)
         {
-            return ((angleRadians * Math.Sign(angleRadians) + MathHelper.Pi) % (MathHelper.Pi * 2) - MathHelper.Pi) *
-                   Math.Sign(angleRadians);
+            return ((angleRadians * Math.Sign(angleRadians) + Mathf.PI) % (Mathf.PI * 2) - Mathf.PI) *
+                   Mathf.Sign(angleRadians);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -622,7 +671,7 @@ namespace Crimson
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Wiggle(float t, float freq)
         {
-            return (float) Math.Sin(t * freq) * MathHelper.Lerp(1, 0, t);
+            return (float) Math.Sin(t * freq) * Mathf.Lerp(1, 0, t);
         }
 
         /// <summary>

@@ -11,57 +11,59 @@ namespace Crimson.Tests
         [TestFixture]
         public class Digits
         {
-            [Test]
-            public void Zero()
+            [TestCase(0, 1)]
+            [TestCase(-101, 3)]
+            [TestCase(1234567890, 10)]
+            public void CheckAgainstTruth(int num, int digits)
             {
-                var result = 0.Digits();
-                result.Should().Be(1);
-            }
-
-            [Test]
-            public void Negative()
-            {
-                var result = (-101).Digits();
-                result.Should().Be(3);
-            }
-
-            [Test]
-            public void Large()
-            {
-                var result = 1234567890.Digits();
-                result.Should().Be(10);
+                num.Digits().Should().Be(digits);
             }
         }
 
         [TestFixture]
         public class Axis
         {
-            [Test]
-            public void Negative()
+            [TestCase(true, false, -1)]
+            [TestCase(false, true, 1)]
+            [TestCase(false, false, 0)]
+            [TestCase(true, true, 0)]
+            public void CheckAgainstTruth(bool neg, bool pos, int result)
             {
-                var result = Mathf.Axis(true, false);
-                result.Should().Be(-1);
+                Mathf.Axis(neg, pos).Should().Be(result);
             }
+        }
 
-            [Test]
-            public void Positive()
+        [TestFixture]
+        public class NextPowerOfTwo
+        {
+            [TestCase(7, 8)]
+            [TestCase(139, 256)]
+            [TestCase(256, 256)]
+            public void CheckAgainstTruth(int value, int nextPowerOfTwo)
             {
-                var result = Mathf.Axis(false, true);
-                result.Should().Be(1);
+                Mathf.NextPowerOfTwo(value).Should().Be(nextPowerOfTwo);
             }
+        }
 
-            [Test]
-            public void Both()
+        [TestFixture]
+        public class IsPowerOfTwo
+        {
+            [TestCase(7, false)]
+            [TestCase(32, true)]
+            public void CheckAgainstTruth(int value, bool isPowerOfTwo)
             {
-                var result = Mathf.Axis(true, true);
-                result.Should().Be(0);
+                Mathf.IsPowerOfTwo(value).Should().Be(isPowerOfTwo);
             }
+        }
 
-            [Test]
-            public void Neither()
+        [TestFixture]
+        public class ClosestPowerOfTwo
+        {
+            [TestCase(7, 8)]
+            [TestCase(19, 16)]
+            public void CheckAgainstTruth(int value, int closestPowerOfTwo)
             {
-                var result = Mathf.Axis(false, false);
-                result.Should().Be(0);
+                Mathf.ClosestPowerOfTwo(value).Should().Be(closestPowerOfTwo);
             }
         }
     }

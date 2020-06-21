@@ -1,6 +1,5 @@
 ﻿#region Using Statements
 
-using Crimson.Spatial;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

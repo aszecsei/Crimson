@@ -410,105 +410,11 @@ namespace Crimson
 
         #endregion
 
-        #region Vector2
+        #region Vectors
 
-        
-
-        public static Vector2 Perpendicular(this Vector2 vector)
+        public static Vector2[] ParseVector2List(string list, char separator = '|')
         {
-            return new Vector2(-vector.Y, vector.X);
-        }
-
-        public static float Angle(this Vector2 vector)
-        {
-            return Mathf.Atan2(vector.Y, vector.X);
-        }
-
-        public static Vector2 Abs(this Vector2 val)
-        {
-            return new Vector2(Mathf.Abs(val.X), Mathf.Abs(val.Y));
-        }
-
-        public static Vector2 Approach(Vector2 val, Vector2 target, float maxMove)
-        {
-            if (maxMove == 0 || val == target) return val;
-
-            var diff = target - val;
-            var length = diff.Length();
-
-            if (length < maxMove) return target;
-
-            diff.Normalize();
-            return val + diff * maxMove;
-        }
-
-        public static Vector2 FourWayNormal(this Vector2 vec)
-        {
-            if (vec == Vector2.Zero) return Vector2.Zero;
-
-            var angle = vec.Angle();
-            angle = Mathf.Floor((angle + MathHelper.PiOver2 / 2f) / MathHelper.PiOver2) * MathHelper.PiOver2;
-
-            vec = Mathf.AngleToVector(angle);
-            if (Mathf.Abs(vec.X) < .5f)
-                vec.X = 0;
-            else
-                vec.X = Mathf.Sign(vec.X);
-
-            if (Mathf.Abs(vec.Y) < .5f)
-                vec.Y = 0;
-            else
-                vec.Y = Mathf.Sign(vec.Y);
-
-            return vec;
-        }
-
-        public static Vector2 EightWayNormal(this Vector2 vec)
-        {
-            if (vec == Vector2.Zero) return Vector2.Zero;
-
-            var angle = vec.Angle();
-            angle = Mathf.Floor((angle + MathHelper.PiOver4 / 2f) / MathHelper.PiOver4) * MathHelper.PiOver4;
-
-            vec = Mathf.AngleToVector(angle);
-            if (Mathf.Abs(vec.X) < .5f)
-                vec.X = 0;
-            else if (Mathf.Abs(vec.Y) < .5f) vec.Y = 0;
-
-            return vec;
-        }
-
-        public static Vector2 SnappedNormal(this Vector2 vec, float slices)
-        {
-            var divider = MathHelper.TwoPi / slices;
-
-            var angle = vec.Angle();
-            angle = Mathf.Floor((angle + divider / 2f) / divider) * divider;
-            return Mathf.AngleToVector(angle);
-        }
-
-        public static Vector2 Snapped(this Vector2 vec, float slices)
-        {
-            var divider = MathHelper.TwoPi / slices;
-
-            var angle = vec.Angle();
-            angle = Mathf.Floor((angle + divider / 2f) / divider) * divider;
-            return Mathf.AngleToVector(angle, vec.Length());
-        }
-
-        public static Vector2 XComp(this Vector2 vec)
-        {
-            return Vector2.UnitX * vec.X;
-        }
-
-        public static Vector2 YComp(this Vector2 vec)
-        {
-            return Vector2.UnitY * vec.Y;
-        }
-
-        public static Vector2[] ParseVector2List(string list, char seperator = '|')
-        {
-            var entries = list.Split(seperator);
+            var entries = list.Split(separator);
             var data = new Vector2[entries.Length];
 
             for (var i = 0; i < entries.Length; i++)
@@ -519,56 +425,19 @@ namespace Crimson
 
             return data;
         }
-
-        #endregion
-
-        #region Vector3 / Quaternion
-
-        public static Vector2 Rotate(this Vector2 vec, float angleRadians)
+        
+        public static Vector3[] ParseVector3List(string list, char separator = '|')
         {
-            return Mathf.AngleToVector(vec.Angle() + angleRadians, vec.Length());
-        }
+            var entries = list.Split(separator);
+            var data = new Vector3[entries.Length];
 
-        public static Vector2 RotateTowards(this Vector2 vec, float targetAngleRadians, float maxMoveRadians)
-        {
-            var angle = Mathf.AngleApproach(vec.Angle(), targetAngleRadians, maxMoveRadians);
-            return Mathf.AngleToVector(angle, vec.Length());
-        }
+            for (var i = 0; i < entries.Length; i++)
+            {
+                var sides = entries[i].Split(',');
+                data[i] = new Vector3(Convert.ToInt32(sides[0]), Convert.ToInt32(sides[1]), Convert.ToInt32(sides[2]));
+            }
 
-        public static Vector3 RotateTowards(this Vector3 from, Vector3 target, float maxRotationRadians)
-        {
-            var c = Vector3.Cross(from, target);
-            var alen = from.Length();
-            var blen = target.Length();
-            var w = Mathf.Sqrt(alen * alen * (blen * blen)) + Vector3.Dot(from, target);
-            var q = new Quaternion(c.X, c.Y, c.Z, w);
-
-            if (q.Length() <= maxRotationRadians) return target;
-
-            q.Normalize();
-            q *= maxRotationRadians;
-
-            return Vector3.Transform(from, q);
-        }
-
-        public static Vector2 XZ(this Vector3 vector)
-        {
-            return new Vector2(vector.X, vector.Z);
-        }
-
-        public static Vector3 Approach(this Vector3 v, Vector3 target, float amount)
-        {
-            if (amount > (target - v).Length()) return target;
-
-            return v + (target - v).SafeNormalize() * amount;
-        }
-
-        public static Vector3 SafeNormalize(this Vector3 v)
-        {
-            var len = v.Length();
-            if (len > 0) return v / len;
-
-            return Vector3.Zero;
+            return data;
         }
 
         #endregion
@@ -1400,9 +1269,41 @@ namespace Crimson
 
         #endregion
         
+        public static bool IsSameOrSubclass(Type potentialBase, Type potentialDescendant)
+        {
+            return potentialDescendant.IsSubclassOf(potentialBase)
+                   || potentialDescendant == potentialBase;
+        }
+        
         public static string NormalizePath(string path)
         {
-            return path.Replace('\\', '/');
+            unsafe
+            {
+                Span<char> temp = stackalloc char[path.Length];
+                for (int i = 0; i < path.Length; i++)
+                    temp[i] = path[i];
+                return NormalizePath(temp).ToString();
+            }
+        }
+
+        public static Span<char> NormalizePath(Span<char> path)
+        {
+            for (int i = 0; i < path.Length; i++)
+                if (path[i] == '\\') path[i] = '/';
+
+            int length = path.Length;
+            for (int i = 1, t = 1, l = length; t < l; i++, t++)
+            {
+                if (path[t - 1] == '/' && path[t] == '/')
+                {
+                    i--;
+                    length--;
+                }
+                else
+                    path[i] = path[t];
+            }
+
+            return path.Slice(0, length);
         }
     }
 }

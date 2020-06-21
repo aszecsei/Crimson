@@ -1,5 +1,4 @@
-﻿using Crimson.Spatial;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 

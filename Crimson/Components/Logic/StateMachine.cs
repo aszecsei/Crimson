@@ -5,75 +5,74 @@ namespace Crimson
 {
     public class StateMachine : Component
     {
-        private readonly Action[] begins;
+        private readonly Action[] _begins;
 
         public bool ChangedStates;
-        private readonly Func<IEnumerator>[] coroutines;
-        private readonly Coroutine currentCoroutine;
-        private readonly Action[] ends;
+        private readonly Func<IEnumerator>[] _coroutines;
+        private readonly Coroutine? _currentCoroutine;
+        private readonly Action[] _ends;
         public bool Locked;
         public bool Log;
-        private int state;
-        private readonly Func<int>[] updates;
+        private int _state;
+        private readonly Func<int>[] _updates;
 
         public StateMachine(int maxStates = 10)
             : base(true, false)
         {
-            PreviousState = state = -1;
+            PreviousState = _state = -1;
 
-            begins = new Action[maxStates];
-            updates = new Func<int>[maxStates];
-            ends = new Action[maxStates];
-            coroutines = new Func<IEnumerator>[maxStates];
+            _begins = new Action[maxStates];
+            _updates = new Func<int>[maxStates];
+            _ends = new Action[maxStates];
+            _coroutines = new Func<IEnumerator>[maxStates];
 
-            currentCoroutine = new Coroutine();
-            currentCoroutine.RemoveOnComplete = false;
+            _currentCoroutine = null;
         }
 
         public int PreviousState { get; private set; }
 
         public int State
         {
-            get { return state; }
+            get { return _state; }
             set
             {
 #if DEBUG
-                if (value >= updates.Length || value < 0)
+                if (value >= _updates.Length || value < 0)
                     throw new Exception("StateMachine state out of range");
 #endif
 
-                if (!Locked && state != value)
+                if (!Locked && _state != value)
                 {
                     if (Log)
-                        Utils.Log("Enter State " + value + " (leaving " + state + ")");
+                        Utils.Log("Enter State " + value + " (leaving " + _state + ")");
 
                     ChangedStates = true;
-                    PreviousState = state;
-                    state = value;
+                    PreviousState = _state;
+                    _state = value;
 
-                    if (PreviousState != -1 && ends[PreviousState] != null)
+                    if (PreviousState != -1 && _ends[PreviousState] != null)
                     {
                         if (Log)
                             Utils.Log("Calling End " + PreviousState);
-                        ends[PreviousState]();
+                        _ends[PreviousState]();
                     }
 
-                    if (begins[state] != null)
+                    if (_begins[_state] != null)
                     {
                         if (Log)
-                            Utils.Log("Calling Begin " + state);
-                        begins[state]();
+                            Utils.Log("Calling Begin " + _state);
+                        _begins[_state]();
                     }
 
-                    if (coroutines[state] != null)
+                    if (_currentCoroutine != null)
+                    {
+                        StopCoroutine(_currentCoroutine);
+                    }
+                    if (_coroutines[_state] != null)
                     {
                         if (Log)
-                            Utils.Log("Starting Coroutine " + state);
-                        currentCoroutine.Replace(coroutines[state]());
-                    }
-                    else
-                    {
-                        currentCoroutine.Cancel();
+                            Utils.Log("Starting Coroutine " + _state);
+                        StartCoroutine(_coroutines[_state]());
                     }
                 }
             }
@@ -83,7 +82,7 @@ namespace Crimson
         {
             base.Added(entity);
 
-            if (Entity.Scene != null && state == -1)
+            if (Entity.Scene != null && _state == -1)
                 State = 0;
         }
 
@@ -91,48 +90,48 @@ namespace Crimson
         {
             base.EntityAdded(scene);
 
-            if (state == -1)
+            if (_state == -1)
                 State = 0;
         }
 
         public void ForceState(int toState)
         {
-            if (state != toState)
+            if (_state != toState)
             {
                 State = toState;
             }
             else
             {
                 if (Log)
-                    Utils.Log("Enter State " + toState + " (leaving " + state + ")");
+                    Utils.Log("Enter State " + toState + " (leaving " + _state + ")");
 
                 ChangedStates = true;
-                PreviousState = state;
-                state = toState;
+                PreviousState = _state;
+                _state = toState;
 
-                if (PreviousState != -1 && ends[PreviousState] != null)
+                if (PreviousState != -1 && _ends[PreviousState] != null)
                 {
                     if (Log)
-                        Utils.Log("Calling End " + state);
-                    ends[PreviousState]();
+                        Utils.Log("Calling End " + _state);
+                    _ends[PreviousState]();
                 }
 
-                if (begins[state] != null)
+                if (_begins[_state] != null)
                 {
                     if (Log)
-                        Utils.Log("Calling Begin " + state);
-                    begins[state]();
+                        Utils.Log("Calling Begin " + _state);
+                    _begins[_state]();
                 }
 
-                if (coroutines[state] != null)
+                if (_currentCoroutine != null)
+                {
+                    StopCoroutine(_currentCoroutine);
+                }
+                if (_coroutines[_state] != null)
                 {
                     if (Log)
-                        Utils.Log("Starting Coroutine " + state);
-                    currentCoroutine.Replace(coroutines[state]());
-                }
-                else
-                {
-                    currentCoroutine.Cancel();
+                        Utils.Log("Starting Coroutine " + _state);
+                    StartCoroutine(_coroutines[_state]());
                 }
             }
         }
@@ -140,52 +139,46 @@ namespace Crimson
         public void SetCallbacks(int state, Func<int> onUpdate, Func<IEnumerator> coroutine = null, Action begin = null,
             Action end = null)
         {
-            updates[state] = onUpdate;
-            begins[state] = begin;
-            ends[state] = end;
-            coroutines[state] = coroutine;
+            _updates[state] = onUpdate;
+            _begins[state] = begin;
+            _ends[state] = end;
+            _coroutines[state] = coroutine;
         }
 
         public void ReflectState(Entity from, int index, string name)
         {
-            updates[index] = (Func<int>) Utils.GetMethod<Func<int>>(from, name + "Update");
-            begins[index] = (Action) Utils.GetMethod<Action>(from, name + "Begin");
-            ends[index] = (Action) Utils.GetMethod<Action>(from, name + "End");
-            coroutines[index] = (Func<IEnumerator>) Utils.GetMethod<Func<IEnumerator>>(from, name + "Coroutine");
+            _updates[index] = (Func<int>) Utils.GetMethod<Func<int>>(from, name + "Update");
+            _begins[index] = (Action) Utils.GetMethod<Action>(from, name + "Begin");
+            _ends[index] = (Action) Utils.GetMethod<Action>(from, name + "End");
+            _coroutines[index] = (Func<IEnumerator>) Utils.GetMethod<Func<IEnumerator>>(from, name + "Coroutine");
         }
 
         public override void Update()
         {
             ChangedStates = false;
 
-            if (updates[state] != null)
-                State = updates[state]();
-            if (currentCoroutine.Active)
-            {
-                currentCoroutine.Update();
-                if (!ChangedStates && Log && currentCoroutine.Finished)
-                    Utils.Log("Finished Coroutine " + state);
-            }
+            if (_updates[_state] != null)
+                State = _updates[_state]();
         }
 
         public static implicit operator int(StateMachine s)
         {
-            return s.state;
+            return s._state;
         }
 
         public void LogAllStates()
         {
-            for (var i = 0; i < updates.Length; i++)
+            for (var i = 0; i < _updates.Length; i++)
                 LogState(i);
         }
 
         public void LogState(int index)
         {
             Utils.Log("State " + index + ": "
-                      + (updates[index] != null ? "U" : "")
-                      + (begins[index] != null ? "B" : "")
-                      + (ends[index] != null ? "E" : "")
-                      + (coroutines[index] != null ? "C" : ""));
+                      + (_updates[index] != null ? "U" : "")
+                      + (_begins[index] != null ? "B" : "")
+                      + (_ends[index] != null ? "E" : "")
+                      + (_coroutines[index] != null ? "C" : ""));
         }
     }
 }

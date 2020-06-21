@@ -33,6 +33,11 @@
         /// Called after the shutdown method when the subsystem should be fully disposed
         /// </summary>
         protected internal virtual void Disposed() { }
+        
+        /// <summary>
+        /// Called after a scene ends, before a new scene begins
+        /// </summary>
+        protected internal virtual void OnSceneTransition(Scene? from, Scene? to) { }
 
         /// <summary>
         /// Called every frame before the Update method

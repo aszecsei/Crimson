@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Crimson.Spatial
+namespace Crimson
 {
     public struct Bounds
     {

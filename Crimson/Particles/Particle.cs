@@ -1,5 +1,6 @@
 ﻿#region Using Statements
 
+using Crimson.Tweening;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -119,13 +120,13 @@ namespace Crimson
             //Speed
             Position += Speed * dt;
             Speed += Type.Acceleration * dt;
-            Speed = Utils.Approach(Speed, Vector2.Zero, Type.Friction * dt);
+            Speed = Speed.Approach(Vector2.Zero, Type.Friction * dt);
             if (Type.SpeedMultiplier != 1)
                 Speed *= Mathf.Pow(Type.SpeedMultiplier, dt);
 
             //Scale Out
             if (Type.ScaleOut)
-                Size = StartSize * Ease.CubeOut(ease);
+                Size = StartSize * Eases.CubeOut(ease);
         }
 
         public void Render()

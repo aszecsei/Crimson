@@ -484,7 +484,7 @@ namespace Crimson
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float SineMap(float counter, float newMin, float newMax)
         {
-            return Map((float) Math.Sin(counter), 01, 1, newMin, newMax);
+            return Map((float) Math.Sin(counter), -1, 1, newMin, newMax);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -513,8 +513,7 @@ namespace Crimson
 
             return nextPowerOfTwo;
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public static int NextPowerOfTwo(int value)
         {
             if (value < 0)

@@ -1,8 +1,7 @@
 ﻿﻿using System;
 using System.Collections.Generic;
 using Crimson.Physics;
-using Crimson.Spatial;
-using Microsoft.Xna.Framework;
+ using Microsoft.Xna.Framework;
 
 namespace Crimson
 {

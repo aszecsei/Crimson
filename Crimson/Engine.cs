@@ -5,6 +5,7 @@ using System.Runtime;
 using Crimson.Audio;
 using Crimson.Input;
 using Crimson.Physics;
+using Crimson.Tweening;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -98,6 +99,7 @@ namespace Crimson
             // Add base subsystems
             Subsystems.Register<AudioSubsystem>();
             Subsystems.Register<PhysicsSubsystem>();
+            Subsystems.Register<TweenSubsystem>();
         }
 
         public RenderTarget2D? RenderTarget
@@ -257,6 +259,7 @@ namespace Crimson
 
                 _scene = _nextScene;
                 OnSceneTransition(lastScene, _nextScene);
+                Subsystems.OnSceneTransition(lastScene, _nextScene);
                 _scene?.Begin();
             }
 
@@ -288,9 +291,7 @@ namespace Crimson
 
             Subsystems.BeforeRender();
             _scene?.BeforeRender();
-
-            // TODO
-            // UserInterface.Instance?.Draw();
+            
             GraphicsDevice.Viewport = Viewport;
             GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer | ClearOptions.Stencil, ClearColor, 1,
                 0);

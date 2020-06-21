@@ -208,6 +208,12 @@ namespace Crimson
             _subsystemsByType.Clear();
         }
 
+        internal void OnSceneTransition(Scene? from, Scene? to)
+        {
+            for (var i = 0; i < _subsystems.Count; i++)
+                _subsystems[i]?.OnSceneTransition(from, to);
+        }
+
         internal void BeforeUpdate()
         {
             for (var i = 0; i < _subsystems.Count; i++)

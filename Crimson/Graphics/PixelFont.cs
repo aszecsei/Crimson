@@ -2,7 +2,6 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
-using Crimson.Spatial;
 using Microsoft.Xna.Framework;
 
 namespace Crimson

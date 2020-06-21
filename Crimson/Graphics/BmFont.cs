@@ -5,7 +5,6 @@ using System.Text;
 using System.Xml;
 using System.Text.RegularExpressions;
 using System.IO;
-using Crimson.Spatial;
 
 namespace Crimson
 {

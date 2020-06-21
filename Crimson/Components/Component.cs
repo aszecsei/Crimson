@@ -1,14 +1,18 @@
-﻿namespace Crimson
+﻿using System.Collections;
+
+namespace Crimson
 {
     public class Component
     {
         public bool Active;
         public bool Visible;
+        private CoroutineList _coroutineList;
 
         public Component(bool active, bool visible)
         {
             Active = active;
             Visible = visible;
+            _coroutineList = new CoroutineList();
         }
 
         public Entity Entity { get; private set; }
@@ -48,6 +52,7 @@
 
         public virtual void Update()
         {
+            _coroutineList.HandleUpdate();
         }
 
         public virtual void LateUpdate()
@@ -56,6 +61,7 @@
 
         public virtual void Render()
         {
+            _coroutineList.HandleEndOfFrame();
         }
 
         public virtual void DebugRender(Camera camera)
@@ -83,6 +89,26 @@
         public T EntityAs<T>() where T : Entity
         {
             return Entity as T;
+        }
+        
+        public Coroutine StartCoroutine(IEnumerator routine)
+        {
+            return _coroutineList.StartCoroutine(routine);
+        }
+
+        public void StopAllCoroutines()
+        {
+            _coroutineList.StopAllCoroutines();
+        }
+
+        public void StopCoroutine(IEnumerator routine)
+        {
+            _coroutineList.StopCoroutine(routine);
+        }
+
+        public void StopCoroutine(Coroutine routine)
+        {
+            _coroutineList.StopCoroutine(routine);
         }
     }
 }

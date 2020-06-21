@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Crimson.Spatial
+namespace Crimson
 {
     public static class VectorExt
     {
@@ -158,6 +158,62 @@ namespace Crimson.Spatial
 
             return lineA + v * t;
         }
+        
+        public static Vector2 Perpendicular(this Vector2 vector)
+        {
+            return new Vector2(-vector.Y, vector.X);
+        }
+        
+        public static Vector2 Abs(this Vector2 val)
+        {
+            return new Vector2(Mathf.Abs(val.X), Mathf.Abs(val.Y));
+        }
+
+        public static Vector2 Approach(this Vector2 v, Vector2 target, float maxMove)
+        {
+            if (maxMove == 0 || v == target) return v;
+
+            if (maxMove > (target - v).Length()) return target;
+
+            return v + (target - v).SafeNormalize() * maxMove;
+        }
+        
+        public static Vector3 Approach(this Vector3 v, Vector3 target, float maxMove)
+        {
+            if (maxMove == 0 || v == target) return v;
+            
+            if (maxMove > (target - v).Length()) return target;
+
+            return v + (target - v).SafeNormalize() * maxMove;
+        }
+        
+        public static Vector2 SnappedNormal(this Vector2 vec, float slices)
+        {
+            var divider = MathHelper.TwoPi / slices;
+
+            var angle = vec.Angle();
+            angle = Mathf.Floor((angle + divider / 2f) / divider) * divider;
+            return Mathf.AngleToVector(angle);
+        }
+        
+        public static Vector2 Snapped(this Vector2 vec, float slices)
+        {
+            var divider = MathHelper.TwoPi / slices;
+
+            var angle = vec.Angle();
+            angle = Mathf.Floor((angle + divider / 2f) / divider) * divider;
+            return Mathf.AngleToVector(angle, vec.Length());
+        }
+
+        public static Vector2 XComp(this Vector2 vec)
+        {
+            return Vector2.UnitX * vec.X;
+        }
+
+        public static Vector2 YComp(this Vector2 vec)
+        {
+            return Vector2.UnitY * vec.Y;
+        }
 
         /// <summary>
         /// Normalizes a Vector2 and snaps it to the closest of the 4 cardinal directions (a zero-length Vector2 returns 0)
@@ -207,5 +263,39 @@ namespace Crimson.Spatial
 
             return v;
         }
+        
+        public static Vector2 Rotate(this Vector2 vec, float angleRadians)
+        {
+            return Mathf.AngleToVector(vec.Angle() + angleRadians, vec.Length());
+        }
+
+        public static Vector2 RotateTowards(this Vector2 vec, float targetAngleRadians, float maxMoveRadians)
+        {
+            var angle = Mathf.AngleApproach(vec.Angle(), targetAngleRadians, maxMoveRadians);
+            return Mathf.AngleToVector(angle, vec.Length());
+        }
+
+        public static Vector3 RotateTowards(this Vector3 from, Vector3 target, float maxRotationRadians)
+        {
+            var c = Vector3.Cross(from, target);
+            var alen = from.Length();
+            var blen = target.Length();
+            var w = Mathf.Sqrt(alen * alen * (blen * blen)) + Vector3.Dot(from, target);
+            var q = new Quaternion(c.X, c.Y, c.Z, w);
+
+            if (q.Length() <= maxRotationRadians) return target;
+
+            q.Normalize();
+            q *= maxRotationRadians;
+
+            return Vector3.Transform(from, q);
+        }
+
+        public static Vector2 XZ(this Vector3 vector)
+        {
+            return new Vector2(vector.X, vector.Z);
+        }
+
+        
     }
 }

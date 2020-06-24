@@ -498,7 +498,19 @@ namespace Crimson
         {
             return (1 - t) * a + t * b;
         }
-
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Lerp(double a, double b, float t)
+        {
+            return (1 - t) * a + t * b;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Lerp(decimal a, decimal b, decimal t)
+        {
+            return (1 - t) * a + t * b;
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ClosestPowerOfTwo(int value)
         {

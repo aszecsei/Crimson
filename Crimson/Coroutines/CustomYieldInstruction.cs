@@ -1,6 +1,6 @@
 ﻿namespace Crimson
 {
-    public class CustomYieldInstruction
+    public class CustomYieldInstruction : YieldInstruction
     {
         public virtual bool KeepWaiting => false;
     }

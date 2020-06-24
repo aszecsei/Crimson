@@ -380,32 +380,27 @@ namespace Crimson.Tweening
 
         public YieldInstruction WaitForCompletion()
         {
-            throw new NotImplementedException();
-        }
-
-        public YieldInstruction WaitForRewind()
-        {
-            throw new NotImplementedException();
+            return new WaitWhile(() => Active && !IsComplete);
         }
 
         public YieldInstruction WaitForKill()
         {
-            throw new NotImplementedException();
+            return new WaitWhile(() => Active);
         }
 
         public YieldInstruction WaitForElapsedLoops(int elapsedLoops)
         {
-            throw new NotImplementedException();
+            return new WaitWhile(() => Active && CompletedLoops < elapsedLoops);
         }
 
         public YieldInstruction WaitForPosition(float position)
         {
-            throw new NotImplementedException();
+            return new WaitWhile(() => Active && Position * (CompletedLoops + 1) < position);
         }
 
         public YieldInstruction WaitForStart()
         {
-            throw new NotImplementedException();
+            return new WaitWhile(() => Active && !PlayedOnce);
         }
 
         #endregion

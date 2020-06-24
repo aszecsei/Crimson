@@ -307,8 +307,7 @@ namespace Crimson.Tweening
 
             return false;
         }
-
-        // TODO: Better stable sorting algorithm?
+        
         private static void StableSortSequencedAnimations(List<Animation> list)
         {
             int len = list.Count;

@@ -2,8 +2,14 @@
 {
     public class Size
     {
+        private static readonly Size ZeroSize = new Size(0, 0);
+        private static readonly Size InfiniteSize = new Size(Mathf.INFINITY, Mathf.INFINITY);
+        
         public float Height;
         public float Width;
+        
+        public static Size Zero => ZeroSize;
+        public static Size Infinite => InfiniteSize;
 
         public Size(float width, float height)
         {

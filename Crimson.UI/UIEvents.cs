@@ -15,33 +15,33 @@
         /// The UI element was focused and a "select" mouse button, key,
         /// or gamepad button was pressed.
         /// </summary>
-        public EventCallback OnSelectPress;
+        public EventCallback? OnSelectPress;
         /// <summary>
         /// The UI element was focused and a "select" mouse button, key,
         /// or gamepad button was released.
         /// </summary>
-        public EventCallback OnSelectRelease;
+        public EventCallback? OnSelectRelease;
         /// <summary>
         /// The UI element was hovered over with the mouse or selected
         /// via arrow keys or gamepad directional controls.
         /// </summary>
-        public EventCallback OnGainFocus;
+        public EventCallback? OnGainFocus;
         /// <summary>
         /// The UI element stopped being hovered over with the mouse or deselected
         /// via arrow keys or gamepad directional controls.
         /// </summary>
-        public EventCallback OnLoseFocus;
+        public EventCallback? OnLoseFocus;
         /// <summary>
         /// The UI element's value was changed (used for widgets like text fields).
         /// </summary>
-        public EventCallback OnValueChange;
+        public EventCallback? OnValueChange;
         /// <summary>
         /// The UI element's visibility changed.
         /// </summary>
-        public EventCallback OnVisibilityChange;
+        public EventCallback? OnVisibilityChange;
         /// <summary>
         /// The UI element was either enabled or disabled.
         /// </summary>
-        public EventCallback OnEnabledChange;
+        public EventCallback? OnEnabledChange;
     }
 }

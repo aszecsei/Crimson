@@ -2,6 +2,29 @@
 
 namespace Crimson.UI
 {
+    [Flags]
+    public enum Align
+    {
+        None = 0,
+        
+        CenterX = 1 << 0,
+        CenterY = 1 << 1,
+        Top = 1 << 2,
+        Bottom = 1 << 3,
+        Left = 1 << 4,
+        Right = 1 << 5,
+        
+        TopLeft = Top | Left,
+        TopCenter = Top | CenterX,
+        TopRight = Top | Right,
+        CenterLeft = CenterY | Left,
+        Center = CenterY | CenterX,
+        CenterRight = CenterY | Right,
+        BottomLeft = Bottom | Left,
+        BottomCenter = Bottom | CenterX,
+        BottomRight = Bottom | Right,
+    }
+    
     /// <summary>
     /// Controls clipping of widgets.
     /// </summary>
@@ -17,7 +40,7 @@ namespace Crimson.UI
         /// </summary>
         ClipToBounds,
         /// <summary>
-        /// This widget clips to its bounds when it's Desired Size is larger than the allocated geometry the widget is given.
+        /// This widget clips to its bounds when its Desired Size is larger than the allocated geometry the widget is given.
         /// </summary>
         OnDemand,
     }
@@ -64,5 +87,12 @@ namespace Crimson.UI
         /// Visible but not hit-testable (cannot interact with cursor) and doesn't affect hit-testing on children (if any).
         /// </summary>
         SelfHitTestInvisible
+    }
+
+    public enum WidgetState
+    {
+        Normal,
+        MouseOver,
+        MouseDown
     }
 }

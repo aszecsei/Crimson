@@ -61,6 +61,10 @@ namespace Crimson
 
         public virtual void Render()
         {
+        }
+
+        public virtual void EndOfFrame()
+        {
             _coroutineList.HandleEndOfFrame();
         }
 

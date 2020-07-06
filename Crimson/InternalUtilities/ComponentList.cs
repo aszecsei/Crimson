@@ -210,6 +210,15 @@ namespace Crimson
             LockMode = LockModes.Open;
         }
 
+        internal void EndOfFrame()
+        {
+            LockMode = LockModes.Locked;
+            foreach (Component component in components)
+                if (component.Active)
+                    component.EndOfFrame();
+            LockMode = LockModes.Open;
+        }
+
         internal void DebugRender(Camera camera)
         {
             LockMode = LockModes.Error;

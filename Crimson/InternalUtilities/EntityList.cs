@@ -179,7 +179,15 @@ namespace Crimson
             return count;
         }
 
-        public T FindFirst<T>() where T : Entity
+        public Entity? FindEntityNamed(string name)
+        {
+            foreach (Entity e in entities)
+                if (e.Name == name)
+                    return e;
+            return null;
+        }
+
+        public T? FindFirst<T>() where T : Entity
         {
             foreach (Entity e in entities)
                 if (e is T)
@@ -261,6 +269,13 @@ namespace Crimson
             foreach (Entity entity in entities)
                 if (entity.Visible && !entity.TagCheck(matchTags))
                     entity.Render();
+        }
+
+        public void EndOfFrame()
+        {
+            foreach (Entity entity in entities)
+                if (entity.Active)
+                    entity.EndOfFrame();
         }
 
         public void DebugRender(Camera camera)

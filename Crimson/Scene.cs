@@ -89,6 +89,8 @@ namespace Crimson
         public virtual void AfterRender()
         {
             RendererList.AfterRender();
+            
+            Entities.EndOfFrame();
         }
 
         public virtual void HandleGraphicsReset()
@@ -204,6 +206,11 @@ namespace Crimson
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public Entity? FindEntityNamed(string name)
+        {
+            return Entities.FindEntityNamed(name);
         }
 
         public List<Entity> GetEntitiesByTagMask(int mask)

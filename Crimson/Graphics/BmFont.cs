@@ -412,7 +412,7 @@ namespace Crimson
         public Vector2 MeasureString(float baseSize, string text)
         {
             var scale = Vector2.One;
-            var fontSize = Get(baseSize * Math.Max(scale.X, scale.Y));
+            var fontSize = Get(baseSize * Mathf.Max(scale.X, scale.Y));
             scale *= (baseSize / fontSize.Size);
             return fontSize.Measure(text) * scale;
         }

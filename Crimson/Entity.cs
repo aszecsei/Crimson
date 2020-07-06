@@ -15,6 +15,7 @@ namespace Crimson
 
         private int _tag;
         public bool Visible = true;
+        public string? Name;
 
         public Entity(Vector2 position)
         {
@@ -54,6 +55,12 @@ namespace Crimson
         {
             get => Position.Y;
             set => Position.Y = value;
+        }
+
+        public void SetEnabled(bool enabled)
+        {
+            Active = enabled;
+            Visible = enabled;
         }
 
         /// <summary>
@@ -131,6 +138,11 @@ namespace Crimson
         public virtual void Render()
         {
             Components.Render();
+        }
+
+        public virtual void EndOfFrame()
+        {
+            Components.EndOfFrame();
         }
 
         /// <summary>

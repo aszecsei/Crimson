@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Crimson
@@ -53,6 +54,7 @@ namespace Crimson
             if (Waiting is WaitForSeconds)
             {
                 MoveNext();
+                return;
             }
 
             if (!Active)
@@ -78,6 +80,7 @@ namespace Crimson
             {
                 // We've got a new coroutine!
                 Waiting = Parent.StartCoroutine(ie);
+                return;
             }
             if (Waiting is Coroutine c)
             {
@@ -86,7 +89,17 @@ namespace Crimson
                 {
                     MoveNext();
                 }
+
+                return;
             }
+            if (Waiting == null)
+            {
+                MoveNext();
+                return;
+            }
+            
+            // We've got some weird return value here...
+            Engine.Commands.Log($"Unexpected coroutine result: {Waiting.GetType().ToString()}");
         }
 
         internal void HandleEndOfFrame()

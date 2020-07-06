@@ -1209,6 +1209,11 @@ namespace Crimson
             Debug.WriteLine("Log");
         }
 
+        public static void LogError(params object[] obj)
+        {
+            Log(obj);
+        }
+
         public static void TimeLog()
         {
             Debug.WriteLine(Engine.Scene?.RawTimeActive);
@@ -1265,6 +1270,26 @@ namespace Crimson
 #endif
                 s_stopwatch = null;
             }
+        }
+        
+        public static void Assert(bool condition)
+        {
+            Assert(condition);
+        }
+        
+        public static void Assert(bool condition, string message)
+        {
+            Assert(condition, message);
+        }
+
+        public static void Assert(bool condition, string message, string detailMessage)
+        {
+            Assert(condition, message, detailMessage);
+        }
+
+        public static void Assert(bool condition, string message, string detailMessageFormat, params object[] args)
+        {
+            Assert(condition, message, detailMessageFormat, args);
         }
 
         #endregion

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -147,6 +148,14 @@ namespace Crimson
             while (ret.Length < minDigits) ret = "0" + ret;
 
             return ret;
+        }
+        
+        [Pure]
+        public static string ReplaceAt(this string str, int index, char replace)
+        {
+            char[] chars = str.ToCharArray();
+            chars[index] = replace;
+            return new string(chars);
         }
 
         #endregion

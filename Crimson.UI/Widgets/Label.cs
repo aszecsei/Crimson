@@ -3,6 +3,30 @@ using Microsoft.Xna.Framework;
 
 namespace Crimson.UI
 {
+    [Flags]
+    public enum Style
+    {
+        None = 0,
+        Bold = 1 << 0,
+        Italic = 1 << 1,
+        Outline = 1 << 2,
+    }
+    public class Letter
+    {
+        public Vector2 TransformedPosition = Vector2.Zero;
+        public Vector2 TransformedScale = Vector2.One;
+        public float LetterKerning = 0f;
+
+        public char Char;
+
+        public Style Style;
+
+        public Letter(char ch = ' ')
+        {
+            Char = ch;
+        }
+    }
+    
     public class Label : LeafWidget
     {
         private BmFont _font;
@@ -155,7 +179,9 @@ namespace Crimson.UI
                         currentLineWidth += c.XAdvance;
 
                         if (i < _letters.Length - 1 && c.Kerning.TryGetValue(_text[i + 1], out var kerning))
-                            currentLineWidth += kerning + (_kerning / scale.X);
+                            currentLineWidth += kerning + ((_kerning + _letters[i].LetterKerning) / scale.X);
+                        else if (i < _letters.Length - 1)
+                            currentLineWidth += (_kerning + _letters[i].LetterKerning) / scale.X;
                     }
                 }
             }
@@ -184,14 +210,6 @@ namespace Crimson.UI
             base.Layout();
             
             // TODO: Update text position
-        }
-
-        public override void Update()
-        {
-            base.Update();
-
-            for (int i = 0; i < _letters.Length; ++i)
-                _letters[i].TimeExisted += Time.DeltaTime;
         }
 
         public override void Render(float parentAlpha)
@@ -230,7 +248,9 @@ namespace Crimson.UI
                     offset.X += c.XAdvance;
 
                     if (i < _text.Length - 1 && c.Kerning.TryGetValue(_text[i + 1], out var kerning))
-                        offset.X += kerning + (_kerning / scale.X);
+                        offset.X += kerning + ((_kerning + _letters[i].LetterKerning) / scale.X);
+                    else if (i < _letters.Length - 1)
+                        offset.X += (_kerning + _letters[i].LetterKerning) / scale.X;
                 }
             }
         }

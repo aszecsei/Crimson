@@ -14,7 +14,7 @@
     <ItemGroup>
       <PackageReference Include="FluentAssertions" Version="5.10.3" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
-      <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.0.13" />
+      <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.7.0.7" />
       <PackageReference Include="NUnit" Version="3.12.0" />
       <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
     </ItemGroup>

@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using CsvHelper;
 using Yarn;
-using Crimson.Assertions;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace Crimson.YarnSpinner

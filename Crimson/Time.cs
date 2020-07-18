@@ -57,6 +57,16 @@ namespace Crimson
         /// The TimeRate-independent smoothed interval, in seconds, from the last frame to the current one.
         /// </summary>
         public static float RawSmoothDeltaTime { get; private set; }
+
+        /// <summary>
+        /// The total elapsed time, in seconds.
+        /// </summary>
+        public static float TotalTime { get; private set; } = 0f;
+
+        /// <summary>
+        /// The TimeRate-independent total elapsed time, in seconds.
+        /// </summary>
+        public static float RawTotalTime { get; private set; } = 0f;
         
         private static TimeSpan counterElapsed = TimeSpan.Zero;
         private static int fpsCounter;
@@ -64,7 +74,9 @@ namespace Crimson
         public static void Update(GameTime gameTime)
         {
             RawDeltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
+            RawTotalTime += RawDeltaTime;
             DeltaTime = RawDeltaTime * TimeRate;
+            TotalTime += DeltaTime;
             RawSmoothDeltaTime = SMOOTH_DELTA_TIME_COEFFICIENT * RawDeltaTime +
                                  (1 - SMOOTH_DELTA_TIME_COEFFICIENT) * RawSmoothDeltaTime;
             SmoothDeltaTime = RawSmoothDeltaTime * TimeRate;

@@ -14,7 +14,7 @@ namespace Crimson.AI.UtilityAI
             return consideration?.Action;
         }
 
-        protected abstract IConsideration<T>? SelectBestConsideration(T context);
+        protected abstract IConsideration<T> SelectBestConsideration(T context);
 
         public Reasoner<T> AddConsideration(IConsideration<T> consideration)
         {

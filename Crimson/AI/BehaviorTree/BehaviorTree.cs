@@ -9,6 +9,7 @@
         private float _elapsedTime;
 
         internal Behavior<T> Root => _root;
+        public T Context => _context;
 
         public BehaviorTree(T context, Behavior<T> rootNode, float updatePeriod = 0.2f)
         {
@@ -33,6 +34,13 @@
             {
                 _root.Tick(_context);
             }
+        }
+    }
+
+    public class BehaviorTree : BehaviorTree<Blackboard>
+    {
+        public BehaviorTree(Blackboard context, Behavior<Blackboard> rootNode, float updatePeriod = 0.2f) : base(context, rootNode, updatePeriod)
+        {
         }
     }
 }

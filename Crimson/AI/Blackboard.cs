@@ -9,16 +9,18 @@ namespace Crimson.AI
     /// </summary>
     public class Blackboard : ICloneable
     {
-        private static Dictionary<string, Blackboard> s_sharedBlackboards = new Dictionary<string, Blackboard>();
+        private static readonly Dictionary<string, Blackboard> SharedBlackboards = new Dictionary<string, Blackboard>();
 
+        public Action? OnBlackboardUpdate;
+        
         public static Blackboard GetSharedBlackboard(string key)
         {
-            if (!s_sharedBlackboards.ContainsKey(key))
+            if (!SharedBlackboards.ContainsKey(key))
             {
-                s_sharedBlackboards[key] = new Blackboard();
+                SharedBlackboards[key] = new Blackboard();
             }
 
-            return s_sharedBlackboards[key];
+            return SharedBlackboards[key];
         }
         
         private struct BlackboardValue
@@ -31,11 +33,17 @@ namespace Crimson.AI
 
         public void Set<T>(string key, T value)
         {
+            // Check if there's no change necessary
+            if (_internal.ContainsKey(key))
+                if (_internal[key].Type == typeof(T) && _internal[key].Value == value)
+                    return;
+            
             _internal[key] = new BlackboardValue
             {
                 Type = typeof(T),
                 Value = value,
             };
+            OnBlackboardUpdate?.Invoke();
         }
 
         public T Get<T>(string key)

@@ -1,0 +1,3 @@
+﻿# Hierarchical Task Network (HTN)
+
+A combination of behavior trees and GOAP, this AI methodology uses trees of compound and primitive tasks to explore a possibility space. You provide the planner a list of tasks that must be completed; the planner then decomposes compound tasks into a linear plan of primitive tasks. While it can be used for goal-based planning, it is more commonly used to simply select appropriate tasks to complete based on the world state, much like a behavior tree.

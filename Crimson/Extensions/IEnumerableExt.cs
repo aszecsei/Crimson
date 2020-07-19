@@ -31,5 +31,17 @@ namespace Crimson
                 return count;
             }
         }
+
+        public static bool IsEmpty<TSource>(this IEnumerable<TSource> source)
+        {
+            Assert.IsNotNull(source, "source cannot be null");
+            return source.Count() > 0;
+        }
+        
+        public static bool IsNotEmpty<TSource>(this IEnumerable<TSource> source)
+        {
+            Assert.IsNotNull(source, "source cannot be null");
+            return source.Count() == 0;
+        }
     }
 }

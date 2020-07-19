@@ -9,9 +9,10 @@ namespace Crimson.AI.HTN
     {
         private List<Method<T>> _methods;
 
-        public CompoundTask(params Method<T>[] methods)
+        public CompoundTask(string name, params Method<T>[] methods)
         {
-            _methods = new List<Method<T>>(_methods);
+            Name = name;
+            _methods = new List<Method<T>>(methods);
         }
 
         public void Add(Method<T> method)
@@ -41,17 +42,6 @@ namespace Crimson.AI.HTN
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
-        }
-
-        public override int GetHeuristic(TaskPlanner<T> planner, T context)
-        {
-            int res = _methods[0].GetHeuristic(planner, context);
-            for (var i = 1; i < _methods.Count; ++i)
-            {
-                res = Mathf.Min(res, _methods[i].GetHeuristic(planner, context));
-            }
-
-            return res;
         }
     }
 }

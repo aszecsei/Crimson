@@ -24,7 +24,5 @@ namespace Crimson.AI.HTN
         {
             PreConditions.Add(condition);
         }
-
-        public abstract int GetHeuristic(TaskPlanner<T> planner, T context);
     }
 }

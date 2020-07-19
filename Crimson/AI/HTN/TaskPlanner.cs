@@ -22,7 +22,7 @@ namespace Crimson.AI.HTN
                     TasksToProcess = new List<Task<T>>(TasksToProcess),
                     WorkingWorldState = (T)WorkingWorldState.Clone(),
                     PartialPlan = new List<PrimitiveTask<T>>(PartialPlan),
-                    CostSoFar = 0,
+                    CostSoFar = CostSoFar,
                 };
             }
         }
@@ -39,6 +39,7 @@ namespace Crimson.AI.HTN
         public TaskPlanner(Task<T> rootTask)
         {
             _rootTask = rootTask.Name;
+            _tasks[rootTask.Name] = rootTask;
         }
 
         public List<PrimitiveTask<T>>? Plan(T context)
@@ -60,41 +61,40 @@ namespace Crimson.AI.HTN
                 if (current.TasksToProcess.IsEmpty())
                     return current.PartialPlan;
 
-                for (var i = 0; i < current.TasksToProcess.Count; ++i)
+                Task<T> taskToProcess = current.TasksToProcess[0];
+                switch (taskToProcess)
                 {
-                    switch (current.TasksToProcess[i])
+                    case PrimitiveTask<T> t:
                     {
-                        case PrimitiveTask<T> t:
+                        if (t.IsSatisfied(current.WorkingWorldState))
                         {
-                            if (t.IsSatisfied(context))
-                            {
-                                var newState = (PlannerState)current.Clone();
-                                newState.TasksToProcess.Remove(t);
-                                t.Execute(newState.WorkingWorldState);
-                                newState.PartialPlan.Add(t);
-                                newState.CostSoFar += t.GetCost(context);
+                            var newState = (PlannerState)current.Clone();
+                            newState.TasksToProcess.Remove(t);
+                            t.Execute(newState.WorkingWorldState);
+                            newState.PartialPlan.Add(t);
+                            newState.CostSoFar += t.GetCost(current.WorkingWorldState);
                             
-                                fringe.Enqueue(newState, newState.CostSoFar + GetCostPlusHeuristic(newState.TasksToProcess, context));
-                            }
-
-                            break;
+                            fringe.Enqueue(newState, newState.CostSoFar + GetHeuristic(newState.TasksToProcess, context));
                         }
-                        case CompoundTask<T> ct:
+
+                        break;
+                    }
+                    case CompoundTask<T> ct:
+                    {
+                        var applicableMethods = ct.FindSatisfiedMethods(current.WorkingWorldState);
+                        for (var j = 0; j < applicableMethods.Count; ++j)
                         {
-                            var applicableMethods = ct.FindSatisfiedMethods(context);
-                            for (var j = 0; j < applicableMethods.Count; ++j)
-                            {
-                                List<Task<T>> methodTasks = new List<Task<T>>(applicableMethods[j].Count());
-                                foreach (var taskName in applicableMethods[j])
-                                    methodTasks.Add(_tasks[taskName]);
-                                var newState = (PlannerState)current.Clone();
-                                newState.TasksToProcess.RemoveAt(i);
-                                newState.TasksToProcess.InsertRange(i, methodTasks);
-                                fringe.Enqueue(newState, newState.CostSoFar + GetCostPlusHeuristic(newState.TasksToProcess, context));
-                            }
-
-                            break;
+                            List<Task<T>> methodTasks = new List<Task<T>>(applicableMethods[j].Count());
+                            foreach (var taskName in applicableMethods[j])
+                                methodTasks.Add(_tasks[taskName]);
+                            var newState = (PlannerState)current.Clone();
+                            newState.TasksToProcess.RemoveAt(0);
+                            newState.TasksToProcess.InsertRange(0, methodTasks);
+                            int estimatedCost = newState.CostSoFar + GetHeuristic(newState.TasksToProcess, context);
+                            fringe.Enqueue(newState, estimatedCost);
                         }
+
+                        break;
                     }
                 }
             }
@@ -103,12 +103,75 @@ namespace Crimson.AI.HTN
             return null;
         }
 
-        private int GetCostPlusHeuristic(IReadOnlyList<Task<T>> tasksToProcess, T context)
+        // This is complicated and I hate it. It's also the only way to avoid infinite recursion loops. :(
+        private int GetHeuristic(IReadOnlyList<Task<T>> tasksToProcess, T context)
         {
-            var res = 0;
-            for (var i = 0; i < tasksToProcess.Count; ++i)
-                res += tasksToProcess[i].GetHeuristic(this, context);
-            return res;
+            Dictionary<string, int> heuristics = new Dictionary<string, int>();
+            HashSet<string> hasChecked = new HashSet<string>();
+            Stack<string> toCheck = new Stack<string>();
+            
+            foreach (var t in tasksToProcess)
+                toCheck.Push(t.Name);
+
+            while (toCheck.Count > 0)
+            {
+                var t = _tasks[toCheck.Peek()];
+                if (heuristics.ContainsKey(t.Name))
+                    continue;
+                
+                if (t is PrimitiveTask<T> pt)
+                {
+                    hasChecked.Add(pt.Name);
+                    heuristics[pt.Name] = pt.GetHeuristic(context);
+                    toCheck.Pop();
+                }
+                else if (t is CompoundTask<T> ct)
+                {
+                    hasChecked.Add(ct.Name);
+
+                    int minMethod = int.MaxValue;
+                    
+                    bool shouldWait = false;
+                    foreach (Method<T> method in ct)
+                    {
+                        int methodHeuristic = 0;
+                        foreach (string taskName in method)
+                        {
+                            if (hasChecked.Contains(taskName))
+                            {
+                                if (heuristics.ContainsKey(taskName))
+                                {
+                                    methodHeuristic += heuristics[taskName];
+                                }
+                                else
+                                {
+                                    methodHeuristic = int.MaxValue;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                shouldWait = true;
+                                toCheck.Push(taskName);
+                            }
+                        }
+
+                        minMethod = Mathf.Min(minMethod, methodHeuristic);
+                    }
+
+                    if (shouldWait)
+                        continue;
+
+                    heuristics[ct.Name] = minMethod;
+                    toCheck.Pop();
+                }
+            }
+
+            int result = 0;
+            foreach (var t in tasksToProcess)
+                result += heuristics[t.Name];
+
+            return result;
         }
 
         public IEnumerator<Task<T>> GetEnumerator()
@@ -124,6 +187,13 @@ namespace Crimson.AI.HTN
         public void Add(Task<T> task)
         {
             _tasks[task.Name] = task;
+        }
+    }
+
+    public class TaskPlanner : TaskPlanner<Blackboard>
+    {
+        public TaskPlanner(Task<Blackboard> rootTask) : base(rootTask)
+        {
         }
     }
 }

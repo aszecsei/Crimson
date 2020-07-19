@@ -6,10 +6,18 @@ namespace Crimson.AI.HTN
     public class PrimitiveTask<T> : Task<T>
         where T : class, ICloneable
     {
+        private int _cost;
+        
+        public PrimitiveTask(string name, int cost = 1)
+        {
+            Name = name;
+            _cost = cost;
+        }
+        
         public virtual void Execute(T context) {}
 
-        public virtual int GetCost(T context) => 0;
+        public virtual int GetCost(T context) => _cost;
 
-        public override int GetHeuristic(TaskPlanner<T> planner, T context) => GetCost(context);
+        public virtual int GetHeuristic(T context) => GetCost(context);
     }
 }

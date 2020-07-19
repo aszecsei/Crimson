@@ -50,13 +50,5 @@ namespace Crimson.AI.HTN
         {
             return GetEnumerator();
         }
-
-        public int GetHeuristic(TaskPlanner<T> planner, T context)
-        {
-            int res = 0;
-            for (var i = 0; i < _subTasks.Count; ++i)
-                res += planner[_subTasks[i]].GetHeuristic(planner, context);
-            return res;
-        }
     }
 }

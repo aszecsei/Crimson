@@ -6,10 +6,10 @@ namespace Crimson
     // TODO: Make this generic as an "AI controller" that just runs some sort of algorithm
     public class BehaviorTree : Component
     {
-        private Crimson.AI.BehaviorTree.BehaviorTree _behavior;
+        private Crimson.AI.BehaviorTree.BehaviorTree<Blackboard> _behavior;
         private List<ISensor> _sensors = new List<ISensor>();
         
-        public BehaviorTree(Crimson.AI.BehaviorTree.BehaviorTree bt) : base(true, false)
+        public BehaviorTree(Crimson.AI.BehaviorTree.BehaviorTree<Blackboard> bt) : base(true, false)
         {
             _behavior = bt;
         }

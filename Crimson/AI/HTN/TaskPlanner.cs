@@ -117,7 +117,10 @@ namespace Crimson.AI.HTN
             {
                 var t = _tasks[toCheck.Peek()];
                 if (heuristics.ContainsKey(t.Name))
+                {
+                    toCheck.Pop();
                     continue;
+                }
                 
                 if (t is PrimitiveTask<T> pt)
                 {

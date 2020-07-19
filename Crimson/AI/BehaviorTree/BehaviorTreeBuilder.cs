@@ -63,6 +63,12 @@ namespace Crimson.AI.BehaviorTree
             return Action(t => func(t) ? TaskStatus.Success : TaskStatus.Failure);
         }
 
+        public BehaviorTreeBuilder<T> Action(Behavior<T> action)
+        {
+            Assert.IsFalse(_parentNodeStack.Count == 0, "can't create an unnested action node. it must be a leaf node");
+            return SetChildOnParent(action);
+        }
+
         public BehaviorTreeBuilder<T> Conditional(Func<T, TaskStatus> func)
         {
             Assert.IsFalse(_parentNodeStack.Count == 0, "can't create an unnested conditional node. it must be a leaf node");
@@ -104,6 +110,11 @@ namespace Crimson.AI.BehaviorTree
         public BehaviorTreeBuilder<T> ConditionalDecorator(Func<T, bool> func, bool shouldReevaluate = true)
         {
             return ConditionalDecorator(t => func(t) ? TaskStatus.Success : TaskStatus.Failure, shouldReevaluate);
+        }
+
+        public BehaviorTreeBuilder<T> ConditionalDecorator(IConditional<T> cond, bool shouldReevaluate = true)
+        {
+            return PushParentNode(new ConditionalDecorator<T>(cond, shouldReevaluate));
         }
 
         public BehaviorTreeBuilder<T> AlwaysFail()

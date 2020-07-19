@@ -46,55 +46,117 @@ namespace Crimson.Tests.AI.HTN
             plan.Should().Contain(x => x.Name == "DoTrunkSlam");
         }
 
-        [Test]
-        public void Recursion()
+        [TestFixture]
+        public class Recursion
         {
-            var rootTask = new CompoundTask<Blackboard>("BeTrunkThumper")
+            [Test]
+            public void CannotSeeEnemy()
             {
-                new Method<Blackboard>(new FunctionConditional<Blackboard>(x => x.Get<bool>("canSeeEnemy"))) { "AttackEnemy" },
-                new Method<Blackboard>() { "ChooseBridgeToCheck", "NavigateToBridge", "CheckBridge" }
-            };
-            var planner = new TaskPlanner(rootTask)
-            {
-                new CompoundTask<Blackboard>("AttackEnemy")
+                var rootTask = new CompoundTask<Blackboard>("BeTrunkThumper")
                 {
-                    new Method<Blackboard>(new FunctionConditional<Blackboard>(x => x.Get<int>("trunkHealth") > 0)) { "NavigateToEnemy", "DoTrunkSlam" },
-                    new Method<Blackboard>() { "FindTrunk", "NavigateToTrunk", "UprootTrunk", "AttackEnemy" }
-                },
-                new ExecuteTask<Blackboard>("DoTrunkSlam", x => x.Set("trunkHealth", x.Get<int>("trunkHealth") - 1)),
-                new ExecuteTask<Blackboard>("UprootTrunk", x => x.Set("trunkHealth", 3)),
-                new PrimitiveTask<Blackboard>("NavigateToTrunk"),
-                new PrimitiveTask<Blackboard>("ChooseBridgeToCheck"),
-                new PrimitiveTask<Blackboard>("NavigateToBridge", 5),
-                new PrimitiveTask<Blackboard>("NavigateToEnemy"),
-                new PrimitiveTask<Blackboard>("CheckBridge"),
-                new PrimitiveTask<Blackboard>("FindTrunk"),
-            };
+                    new Method<Blackboard>(new FunctionConditional<Blackboard>(x => x.Get<bool>("canSeeEnemy"))) { "AttackEnemy" },
+                    new Method<Blackboard>() { "ChooseBridgeToCheck", "NavigateToBridge", "CheckBridge" }
+                };
+                var planner = new TaskPlanner(rootTask)
+                {
+                    new CompoundTask<Blackboard>("AttackEnemy")
+                    {
+                        new Method<Blackboard>(new FunctionConditional<Blackboard>(x => x.Get<int>("trunkHealth") > 0)) { "NavigateToEnemy", "DoTrunkSlam" },
+                        new Method<Blackboard>() { "FindTrunk", "NavigateToTrunk", "UprootTrunk", "AttackEnemy" }
+                    },
+                    new ExecuteTask<Blackboard>("DoTrunkSlam", x => x.Set("trunkHealth", x.Get<int>("trunkHealth") - 1)),
+                    new ExecuteTask<Blackboard>("UprootTrunk", x => x.Set("trunkHealth", 3)),
+                    new PrimitiveTask<Blackboard>("NavigateToTrunk"),
+                    new PrimitiveTask<Blackboard>("ChooseBridgeToCheck"),
+                    new PrimitiveTask<Blackboard>("NavigateToBridge", 5),
+                    new PrimitiveTask<Blackboard>("NavigateToEnemy"),
+                    new PrimitiveTask<Blackboard>("CheckBridge"),
+                    new PrimitiveTask<Blackboard>("FindTrunk"),
+                };
             
-            var b = new Blackboard();
-            b.Set("canSeeEnemy", false);
-            b.Set("trunkHealth", 1);
+                var b = new Blackboard();
+                b.Set("canSeeEnemy", false);
+                b.Set("trunkHealth", 1);
             
-            /*var plan = planner.Plan(b);
-            plan.Should().HaveCount(3);
-            plan.Should().Contain(x => x.Name == "ChooseBridgeToCheck");
-            plan.Should().Contain(x => x.Name == "NavigateToBridge");
-            plan.Should().Contain(x => x.Name == "CheckBridge");*/
+                var plan = planner.Plan(b);
+                plan.Should().HaveCount(3);
+                plan.Should().Contain(x => x.Name == "ChooseBridgeToCheck");
+                plan.Should().Contain(x => x.Name == "NavigateToBridge");
+                plan.Should().Contain(x => x.Name == "CheckBridge");
+            }
 
-            b.Set("canSeeEnemy", true);
-            /*plan = planner.Plan(b);
-            plan.Should().HaveCount(2);
-            plan.Should().Contain(x => x.Name == "NavigateToEnemy");
-            plan.Should().Contain(x => x.Name == "DoTrunkSlam");*/
+            [Test]
+            public void CanSeeEnemyTrunkHealthy()
+            {
+                var rootTask = new CompoundTask<Blackboard>("BeTrunkThumper")
+                {
+                    new Method<Blackboard>(new FunctionConditional<Blackboard>(x => x.Get<bool>("canSeeEnemy"))) { "AttackEnemy" },
+                    new Method<Blackboard>() { "ChooseBridgeToCheck", "NavigateToBridge", "CheckBridge" }
+                };
+                var planner = new TaskPlanner(rootTask)
+                {
+                    new CompoundTask<Blackboard>("AttackEnemy")
+                    {
+                        new Method<Blackboard>(new FunctionConditional<Blackboard>(x => x.Get<int>("trunkHealth") > 0)) { "NavigateToEnemy", "DoTrunkSlam" },
+                        new Method<Blackboard>() { "FindTrunk", "NavigateToTrunk", "UprootTrunk", "AttackEnemy" }
+                    },
+                    new ExecuteTask<Blackboard>("DoTrunkSlam", x => x.Set("trunkHealth", x.Get<int>("trunkHealth") - 1)),
+                    new ExecuteTask<Blackboard>("UprootTrunk", x => x.Set("trunkHealth", 3)),
+                    new PrimitiveTask<Blackboard>("NavigateToTrunk"),
+                    new PrimitiveTask<Blackboard>("ChooseBridgeToCheck"),
+                    new PrimitiveTask<Blackboard>("NavigateToBridge", 5),
+                    new PrimitiveTask<Blackboard>("NavigateToEnemy"),
+                    new PrimitiveTask<Blackboard>("CheckBridge"),
+                    new PrimitiveTask<Blackboard>("FindTrunk"),
+                };
             
-            b.Set("trunkHealth", 0);
-            var plan = planner.Plan(b);
-            plan.Should().HaveCount(5);
-            plan.Should().Contain(x => x.Name == "FindTrunk");
-            plan.Should().Contain(x => x.Name == "NavigateToTrunk");
-            plan.Should().Contain(x => x.Name == "UprootTrunk");
-            plan.Should().Contain(x => x.Name == "NavigateToEnemy");
-            plan.Should().Contain(x => x.Name == "DoTrunkSlam");
+                var b = new Blackboard();
+                b.Set("canSeeEnemy", true);
+                b.Set("trunkHealth", 1);
+                
+                var plan = planner.Plan(b);
+                plan.Should().HaveCount(2);
+                plan.Should().Contain(x => x.Name == "NavigateToEnemy");
+                plan.Should().Contain(x => x.Name == "DoTrunkSlam");
+            }
+
+            [Test]
+            public void CanSeeEnemyTrunkGone()
+            {
+                var rootTask = new CompoundTask<Blackboard>("BeTrunkThumper")
+                {
+                    new Method<Blackboard>(new FunctionConditional<Blackboard>(x => x.Get<bool>("canSeeEnemy"))) { "AttackEnemy" },
+                    new Method<Blackboard>() { "ChooseBridgeToCheck", "NavigateToBridge", "CheckBridge" }
+                };
+                var planner = new TaskPlanner(rootTask)
+                {
+                    new CompoundTask<Blackboard>("AttackEnemy")
+                    {
+                        new Method<Blackboard>(new FunctionConditional<Blackboard>(x => x.Get<int>("trunkHealth") > 0)) { "NavigateToEnemy", "DoTrunkSlam" },
+                        new Method<Blackboard>() { "FindTrunk", "NavigateToTrunk", "UprootTrunk", "AttackEnemy" }
+                    },
+                    new ExecuteTask<Blackboard>("DoTrunkSlam", x => x.Set("trunkHealth", x.Get<int>("trunkHealth") - 1)),
+                    new ExecuteTask<Blackboard>("UprootTrunk", x => x.Set("trunkHealth", 3)),
+                    new PrimitiveTask<Blackboard>("NavigateToTrunk"),
+                    new PrimitiveTask<Blackboard>("ChooseBridgeToCheck"),
+                    new PrimitiveTask<Blackboard>("NavigateToBridge", 5),
+                    new PrimitiveTask<Blackboard>("NavigateToEnemy"),
+                    new PrimitiveTask<Blackboard>("CheckBridge"),
+                    new PrimitiveTask<Blackboard>("FindTrunk"),
+                };
+            
+                var b = new Blackboard();
+                b.Set("canSeeEnemy", true);
+                b.Set("trunkHealth", 0);
+                
+                var plan = planner.Plan(b);
+                plan.Should().HaveCount(5);
+                plan.Should().Contain(x => x.Name == "FindTrunk");
+                plan.Should().Contain(x => x.Name == "NavigateToTrunk");
+                plan.Should().Contain(x => x.Name == "UprootTrunk");
+                plan.Should().Contain(x => x.Name == "NavigateToEnemy");
+                plan.Should().Contain(x => x.Name == "DoTrunkSlam");
+            }
         }
     }
 }

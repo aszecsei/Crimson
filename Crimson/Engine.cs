@@ -193,8 +193,6 @@ namespace Crimson
             Tracker.Initialize();
             Pooler = new Pooler();
             Commands = new Commands();
-
-            Subsystems.Startup();
         }
 
         protected override void LoadContent()
@@ -203,6 +201,7 @@ namespace Crimson
 
             Crimson.Draw.Initialize(GraphicsDevice);
             // SDFTextRenderer.Initialize();
+            Subsystems.Startup();
         }
 
         protected override void Update(GameTime gameTime)

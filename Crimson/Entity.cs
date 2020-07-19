@@ -309,10 +309,10 @@ namespace Crimson
             return closest;
         }
 
-        public Entity Closest(BitTag tag)
+        public Entity? Closest(BitTag tag)
         {
             List<Entity> list = Scene[tag];
-            Entity closest = null;
+            Entity? closest = null;
             float dist;
 
             if (list.Count >= 1)

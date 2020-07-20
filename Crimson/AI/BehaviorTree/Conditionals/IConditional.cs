@@ -1,7 +1,7 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
-    public interface IConditional<T>
+    public interface IConditional
     {
-        TaskStatus Update(T context);
+        TaskStatus Update(Blackboard context);
     }
 }

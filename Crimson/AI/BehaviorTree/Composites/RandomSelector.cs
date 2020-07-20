@@ -4,7 +4,7 @@
     /// Same as Selector except it shuffles the children when started
     /// </summary>
     [AITag("RandomSelector")]
-    public class RandomSelector<T> : Selector<T>
+    public class RandomSelector : Selector
     {
         public override void OnStart()
         {

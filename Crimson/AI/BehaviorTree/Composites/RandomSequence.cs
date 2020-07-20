@@ -1,7 +1,7 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
     [AITag("RandomSequence")]
-    public class RandomSequence<T> : Sequence<T>
+    public class RandomSequence : Sequence
     {
         public override void OnStart()
         {

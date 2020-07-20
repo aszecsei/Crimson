@@ -13,12 +13,9 @@ namespace Crimson.AI
         /// </summary>
         public string Tag { get; set; }
 
-        public string[] Parameters { get; set; }
-
-        public AITag(string tag, params string[] parameters)
+        public AITag(string tag)
         {
             Tag = tag;
-            Parameters = parameters ?? new string[0];
         }
     }
 }

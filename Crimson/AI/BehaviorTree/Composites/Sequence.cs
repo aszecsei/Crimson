@@ -1,14 +1,14 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
     [AITag("Sequence")]
-    public class Sequence<T> : Composite<T>
+    public class Sequence : Composite
     {
         public Sequence(AbortType abortType = AbortType.None)
         {
             AbortType = abortType;
         }
 
-        public override TaskStatus Update(T context)
+        public override TaskStatus Update(Blackboard context)
         {
             if (CurrentChildIndex != 0)
                 HandleConditionalAborts(context);
@@ -30,7 +30,7 @@
             return TaskStatus.Running;
         }
 
-        private void HandleConditionalAborts(T context)
+        private void HandleConditionalAborts(Blackboard context)
         {
             if (HasLowerPriorityConditionalAbort)
                 UpdateLowerPriorityAbortConditional(context, TaskStatus.Success);

@@ -1,17 +1,17 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
-    public class BehaviorTreeReference<T> : Behavior<T>
+    public class BehaviorTreeReference : Behavior
     {
-        private BehaviorTree<T> _childTree;
+        private BehaviorTree _childTree;
 
-        public BehaviorTreeReference(BehaviorTree<T> tree)
+        public BehaviorTreeReference(BehaviorTree tree)
         {
             _childTree = tree;
         }
 
         public override float Utility => _childTree.Root.Utility;
 
-        public override TaskStatus Update(T context)
+        public override TaskStatus Update(Blackboard context)
         {
             _childTree.Tick();
             return TaskStatus.Success;

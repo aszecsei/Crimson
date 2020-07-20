@@ -2,9 +2,9 @@
 
 namespace Crimson.AI.BehaviorTree
 {
-    public class ExecuteActionConditional<T> : ExecuteAction<T>, IConditional<T>
+    public class ExecuteActionConditional : ExecuteAction, IConditional
     {
-        public ExecuteActionConditional(Func<T, TaskStatus> action) : base(action)
+        public ExecuteActionConditional(Func<Blackboard, TaskStatus> action) : base(action)
         {
         }
     }

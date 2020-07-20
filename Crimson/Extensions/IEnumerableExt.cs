@@ -43,5 +43,13 @@ namespace Crimson
             Assert.IsNotNull(source, "source cannot be null");
             return source.Count() > 0;
         }
+
+        public static bool Contains<TSource>(this IEnumerable<TSource> source, TSource instance)
+        {
+            foreach (var s in source)
+                if (s.Equals(instance))
+                    return true;
+            return false;
+        }
     }
 }

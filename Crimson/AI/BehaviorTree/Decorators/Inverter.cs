@@ -1,9 +1,9 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
     [AITag("Invert")]
-    public class Inverter<T> : Decorator<T>
+    public class Inverter : Decorator
     {
-        public override TaskStatus Update(T context)
+        public override TaskStatus Update(Blackboard context)
         {
             Assert.IsNotNull(Child, "child must not be null");
 

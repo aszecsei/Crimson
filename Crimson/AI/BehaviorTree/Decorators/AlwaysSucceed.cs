@@ -1,9 +1,9 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
     [AITag("Succeed")]
-    public class AlwaysSucceed<T> : Decorator<T>
+    public class AlwaysSucceed : Decorator
     {
-        public override TaskStatus Update(T context)
+        public override TaskStatus Update(Blackboard context)
         {
             Assert.IsNotNull(Child, "child must not be null");
 

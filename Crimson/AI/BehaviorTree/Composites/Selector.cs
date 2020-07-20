@@ -5,14 +5,14 @@
     /// child task returns failure then it will sequentially run the next task. If no child task returns success then it will return failure.
     /// </summary>
     [AITag("Selector")]
-    public class Selector<T> : Composite<T>
+    public class Selector : Composite
     {
         public Selector(AbortType abortType = AbortType.None)
         {
             AbortType = abortType;
         }
 
-        public override TaskStatus Update(T context)
+        public override TaskStatus Update(Blackboard context)
         {
             if (CurrentChildIndex != 0)
                 HandleConditionalAborts(context);
@@ -34,7 +34,7 @@
             return TaskStatus.Running;
         }
         
-        void HandleConditionalAborts(T context)
+        void HandleConditionalAborts(Blackboard context)
         {
             // check any lower priority tasks to see if they changed to a success
             if (HasLowerPriorityConditionalAbort)

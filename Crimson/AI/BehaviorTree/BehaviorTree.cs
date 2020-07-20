@@ -1,17 +1,17 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
-    public class BehaviorTree<T>
+    public class BehaviorTree
     {
         public float UpdatePeriod;
 
-        private T _context;
-        private Behavior<T> _root;
+        private Blackboard _context;
+        private Behavior _root;
         private float _elapsedTime;
 
-        internal Behavior<T> Root => _root;
-        public T Context => _context;
+        internal Behavior Root => _root;
+        public Blackboard Context => _context;
 
-        public BehaviorTree(T context, Behavior<T> rootNode, float updatePeriod = 0.2f)
+        public BehaviorTree(Blackboard context, Behavior rootNode, float updatePeriod = 0.2f)
         {
             _context = context;
             _root = rootNode;
@@ -34,13 +34,6 @@
             {
                 _root.Tick(_context);
             }
-        }
-    }
-
-    public class BehaviorTree : BehaviorTree<Blackboard>
-    {
-        public BehaviorTree(Blackboard context, Behavior<Blackboard> rootNode, float updatePeriod = 0.2f) : base(context, rootNode, updatePeriod)
-        {
         }
     }
 }

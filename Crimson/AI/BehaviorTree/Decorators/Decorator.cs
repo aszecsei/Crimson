@@ -1,8 +1,8 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
-    public abstract class Decorator<T> : Behavior<T>
+    public abstract class Decorator : Behavior
     {
-        public Behavior<T> Child;
+        public Behavior Child;
 
         public override void Invalidate()
         {

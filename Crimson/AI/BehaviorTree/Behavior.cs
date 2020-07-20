@@ -1,10 +1,10 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
-    public abstract class Behavior<T>
+    public abstract class Behavior
     {
         public TaskStatus Status = TaskStatus.Invalid;
 
-        public abstract TaskStatus Update(T context);
+        public abstract TaskStatus Update(Blackboard context);
 
         public virtual void Invalidate()
         {
@@ -21,7 +21,7 @@
 
         public virtual float Utility => 0f;
 
-        internal TaskStatus Tick(T context)
+        internal TaskStatus Tick(Blackboard context)
         {
             if (Status == TaskStatus.Invalid)
                 OnStart();

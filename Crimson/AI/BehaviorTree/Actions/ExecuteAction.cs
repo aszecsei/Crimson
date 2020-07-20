@@ -2,12 +2,12 @@
 
 namespace Crimson.AI.BehaviorTree
 {
-    public class ExecuteAction<T> : Behavior<T>
+    public class ExecuteAction : Behavior
     {
-        private Func<T, TaskStatus> _action;
+        private Func<Blackboard, TaskStatus> _action;
         private float _utility;
 
-        public ExecuteAction(Func<T, TaskStatus> action, float utility = 1f)
+        public ExecuteAction(Func<Blackboard, TaskStatus> action, float utility = 1f)
         {
             _action = action;
             _utility = utility;
@@ -15,7 +15,7 @@ namespace Crimson.AI.BehaviorTree
 
         public override float Utility => _utility;
 
-        public override TaskStatus Update(T context)
+        public override TaskStatus Update(Blackboard context)
         {
             Assert.IsNotNull(_action, "action must not be null");
             return _action(context);

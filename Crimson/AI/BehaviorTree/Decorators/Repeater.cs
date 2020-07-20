@@ -1,7 +1,7 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
-    [AITag("Repeat", "count", "endOnFailure")]
-    public class Repeater<T> : Decorator<T>
+    [AITag("Repeat")]
+    public class Repeater : Decorator
     {
         public int Count;
         public bool RepeatForever;
@@ -28,7 +28,7 @@
             _iterationCount = 0;
         }
 
-        public override TaskStatus Update(T context)
+        public override TaskStatus Update(Blackboard context)
         {
             Assert.IsNotNull(Child, "child must not be null");
 

@@ -1,7 +1,7 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
-    [AITag("Log", "text", "isError")]
-    public class LogAction<T> : Behavior<T>
+    [AITag("Log")]
+    public class LogAction : Behavior
     {
         public string Text;
         public bool IsError;
@@ -12,7 +12,7 @@
             IsError = isError;
         }
 
-        public override TaskStatus Update(T context)
+        public override TaskStatus Update(Blackboard context)
         {
             if (IsError)
                 Utils.LogError(Text);

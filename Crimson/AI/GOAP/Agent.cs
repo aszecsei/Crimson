@@ -8,6 +8,9 @@ namespace Crimson.AI.GOAP
         public Stack<Action>? Actions;
         protected ActionPlanner Planner;
 
+        public Blackboard WorldState;
+        public Blackboard GoalState;
+
         protected Agent()
         {
             Planner = new ActionPlanner();
@@ -19,13 +22,12 @@ namespace Crimson.AI.GOAP
             if (debugPlan)
                 nodes = new List<AStarNode>();
 
-            Actions = Planner.Plan(GetWorldState(), GetGoalState(), nodes);
+            Actions = Planner.Plan(WorldState, GoalState, nodes);
 
             if (nodes != null && nodes.Count > 0)
             {
                 Utils.Log("---- ActionPlanner plan ----");
                 Utils.Log($"plan cost = {nodes[nodes.Count - 1].CostSoFar}");
-                Utils.Log($"{"start".PadRight(15)}\t{GetWorldState()}");
                 for (var i = 0; i < nodes.Count; ++i)
                 {
                     Utils.Log($"{i}: {nodes[i].Action!.GetType().Name.PadRight(15)}\t{nodes[i].WorldState}");
@@ -40,8 +42,5 @@ namespace Crimson.AI.GOAP
         {
             return Actions != null && Actions.Count > 0;
         }
-        
-        public abstract WorldState GetWorldState();
-        public abstract WorldState GetGoalState();
     }
 }

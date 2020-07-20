@@ -7,10 +7,9 @@ namespace Crimson.AI.GOAP
     {
         public string Name;
         public int Cost = 1;
-        
-        internal Dictionary<string, bool> PreConditions = new Dictionary<string, bool>();
-        internal Dictionary<string, bool> PostConditions = new Dictionary<string, bool>();
-        
+
+        public List<IConditional> PreConditions;
+
         public Action() {}
 
         public Action(string name)
@@ -23,17 +22,20 @@ namespace Crimson.AI.GOAP
             Cost = cost;
         }
 
-        public void SetPrecondition(string conditionName, bool value)
+        public void AddPrecondition(IConditional condition)
         {
-            PreConditions.Add(conditionName, value);
+            PreConditions.Add(condition);
         }
+        
+        public virtual void Execute(Blackboard context) {}
 
-        public void SetPostcondition(string conditionName, bool value)
+        public virtual bool Validate(Blackboard context)
         {
-            PostConditions.Add(conditionName, value);
+            foreach (IConditional conditional in PreConditions)
+                if (conditional.Update(context) != TaskStatus.Success)
+                    return false;
+            return true;
         }
-
-        public virtual bool Validate() => true;
 
         public override string ToString()
         {

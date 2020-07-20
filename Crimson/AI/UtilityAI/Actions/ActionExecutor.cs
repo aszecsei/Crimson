@@ -3,19 +3,19 @@
 namespace Crimson.AI.UtilityAI
 {
     /// <summary>
-    /// Wraps an <see cref="Action"/> for use as an <see cref="IAction{T}"/> without
+    /// Wraps an <see cref="Action"/> for use as an <see cref="IAction"/> without
     /// having to create a new subclass
     /// </summary>
-    public class ActionExecutor<T> : IAction<T>
+    public class ActionExecutor : IAction
     {
-        private Action<T> _action;
+        private Action<Blackboard> _action;
 
-        public ActionExecutor(Action<T> action)
+        public ActionExecutor(Action<Blackboard> action)
         {
             _action = action;
         }
 
-        public void Execute(T context)
+        public void Execute(Blackboard context)
         {
             _action(context);
         }

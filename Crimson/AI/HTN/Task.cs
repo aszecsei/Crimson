@@ -3,24 +3,24 @@ using System.Collections.Generic;
 
 namespace Crimson.AI.HTN
 {
-    public abstract class Task<T> where T : class, ICloneable
+    public abstract class Task
     {
         public string Name;
 
-        internal readonly List<IConditional<T>> PreConditions = new List<IConditional<T>>();
+        internal readonly List<IConditional> PreConditions = new List<IConditional>();
 
-        public bool IsSatisfied(T context)
+        public bool IsSatisfied(Blackboard context)
         {
             for (int i = 0; i < PreConditions.Count; ++i)
             {
-                if (!PreConditions[i].Update(context))
+                if (PreConditions[i].Update(context) != TaskStatus.Success)
                     return false;
             }
 
             return true;
         }
 
-        public void AddPreCondition(IConditional<T> condition)
+        public void AddPreCondition(IConditional condition)
         {
             PreConditions.Add(condition);
         }

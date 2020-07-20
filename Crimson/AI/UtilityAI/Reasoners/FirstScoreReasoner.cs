@@ -1,8 +1,8 @@
 ﻿namespace Crimson.AI.UtilityAI
 {
-    public class FirstScoreReasoner<T> : Reasoner<T>
+    public class FirstScoreReasoner : Reasoner
     {
-        protected override IConsideration<T> SelectBestConsideration(T context)
+        protected override IConsideration SelectBestConsideration(Blackboard context)
         {
             var defaultScore = DefaultConsideration.GetScore(context);
             for (var i = 0; i < _considerations.Count; ++i)

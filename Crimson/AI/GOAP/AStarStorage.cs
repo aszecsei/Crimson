@@ -38,8 +38,7 @@ namespace Crimson.AI.GOAP
         {
             for (var i = 0; i < _numOpened; i++)
             {
-                long care = node.WorldState.DontCare ^ -1L;
-                if ((node.WorldState.Values & care) == (_opened[i]!.WorldState.Values & care))
+                if (_opened[i]!.Action!.Validate(node.WorldState))
                 {
                     _lastFoundClosed = i;
                     return _closed[i];
@@ -53,8 +52,7 @@ namespace Crimson.AI.GOAP
         {
             for (var i = 0; i < _numClosed; i++)
             {
-                long care = node.WorldState.DontCare ^ -1L;
-                if ((node.WorldState.Values & care) == (_closed[i]!.WorldState.Values & care))
+                if ((_closed[i]!.Action!.Validate(node.WorldState)))
                 {
                     _lastFoundClosed = i;
                     return _closed[i];

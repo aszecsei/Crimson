@@ -4,25 +4,24 @@ using System.Collections.Generic;
 
 namespace Crimson.AI.HTN
 {
-    public class CompoundTask<T> : Task<T>, IEnumerable<Method<T>>
-        where T : class, ICloneable
+    public class CompoundTask : Task, IEnumerable<Method>
     {
-        private List<Method<T>> _methods;
+        private List<Method> _methods;
 
-        public CompoundTask(string name, params Method<T>[] methods)
+        public CompoundTask(string name, params Method[] methods)
         {
             Name = name;
-            _methods = new List<Method<T>>(methods);
+            _methods = new List<Method>(methods);
         }
 
-        public void Add(Method<T> method)
+        public void Add(Method method)
         {
             _methods.Add(method);
         }
         
-        public List<Method<T>> FindSatisfiedMethods(T context)
+        public List<Method> FindSatisfiedMethods(Blackboard context)
         {
-            List<Method<T>> res = new List<Method<T>>();
+            List<Method> res = new List<Method>();
             for (var i = 0; i < _methods.Count; ++i)
             {
                 if (_methods[i].IsSatisfied(context))
@@ -34,7 +33,7 @@ namespace Crimson.AI.HTN
             return res;
         }
 
-        public IEnumerator<Method<T>> GetEnumerator()
+        public IEnumerator<Method> GetEnumerator()
         {
             return _methods.GetEnumerator();
         }

@@ -5,18 +5,18 @@ namespace Crimson.AI.UtilityAI
     /// <summary>
     /// Scores by summing the score of all child Appraisals
     /// </summary>
-    public class SumOfChildrenConsideration<T> : IConsideration<T>
+    public class SumOfChildrenConsideration : IConsideration
     {
-        public IAction<T> Action { get; set; }
-        private List<IAppraisal<T>> _appraisals = new List<IAppraisal<T>>();
+        public IAction Action { get; set; }
+        private List<IAppraisal> _appraisals = new List<IAppraisal>();
 
-        public SumOfChildrenConsideration<T> AddAppraisal(IAppraisal<T> appraisal)
+        public SumOfChildrenConsideration AddAppraisal(IAppraisal appraisal)
         {
             _appraisals.Add(appraisal);
             return this;
         }
         
-        public float GetScore(T context)
+        public float GetScore(Blackboard context)
         {
             var score = 0f;
             for (var i = 0; i < _appraisals.Count; ++i)

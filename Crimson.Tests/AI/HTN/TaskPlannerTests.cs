@@ -11,7 +11,7 @@ namespace Crimson.Tests.AI.HTN
         [Test]
         public void BasicPlan()
         {
-            var planner = new TaskPlanner(new ExecuteTask<Blackboard>("SingleTask"));
+            var planner = new TaskPlanner(new ExecuteTask("SingleTask"));
             var plan = planner.Plan(new Blackboard());
             plan.Should().OnlyContain((x) => x == planner["SingleTask"]);
         }
@@ -19,17 +19,17 @@ namespace Crimson.Tests.AI.HTN
         [Test]
         public void CompoundPlan()
         {
-            var rootTask = new CompoundTask<Blackboard>("Attack Enemy")
+            var rootTask = new CompoundTask("Attack Enemy")
             {
-                new Method<Blackboard>(new FunctionConditional<Blackboard>(x => x.Get<bool>("hasTreeTrunk"))) { "NavigateToEnemy", "DoTrunkSlam" },
-                new Method<Blackboard>(new FunctionConditional<Blackboard>(x => !x.Get<bool>("hasTreeTrunk"))) { "LiftBoulderFromGround", "ThrowBoulderAtEnemy" }
+                new Method(new FunctionConditional(x => x.Get<bool>("hasTreeTrunk"))) { "NavigateToEnemy", "DoTrunkSlam" },
+                new Method(new FunctionConditional(x => !x.Get<bool>("hasTreeTrunk"))) { "LiftBoulderFromGround", "ThrowBoulderAtEnemy" }
             };
             var planner = new TaskPlanner(rootTask)
             {
-                new ExecuteTask<Blackboard>("NavigateToEnemy"),
-                new ExecuteTask<Blackboard>("DoTrunkSlam"),
-                new ExecuteTask<Blackboard>("LiftBoulderFromGround"),
-                new ExecuteTask<Blackboard>("ThrowBoulderAtEnemy")
+                new ExecuteTask("NavigateToEnemy"),
+                new ExecuteTask("DoTrunkSlam"),
+                new ExecuteTask("LiftBoulderFromGround"),
+                new ExecuteTask("ThrowBoulderAtEnemy")
             };
             
             Blackboard b = new Blackboard();
@@ -52,26 +52,26 @@ namespace Crimson.Tests.AI.HTN
             [Test]
             public void CannotSeeEnemy()
             {
-                var rootTask = new CompoundTask<Blackboard>("BeTrunkThumper")
+                var rootTask = new CompoundTask("BeTrunkThumper")
                 {
-                    new Method<Blackboard>(new FunctionConditional<Blackboard>(x => x.Get<bool>("canSeeEnemy"))) { "AttackEnemy" },
-                    new Method<Blackboard>() { "ChooseBridgeToCheck", "NavigateToBridge", "CheckBridge" }
+                    new Method(new FunctionConditional(x => x.Get<bool>("canSeeEnemy"))) { "AttackEnemy" },
+                    new Method() { "ChooseBridgeToCheck", "NavigateToBridge", "CheckBridge" }
                 };
                 var planner = new TaskPlanner(rootTask)
                 {
-                    new CompoundTask<Blackboard>("AttackEnemy")
+                    new CompoundTask("AttackEnemy")
                     {
-                        new Method<Blackboard>(new FunctionConditional<Blackboard>(x => x.Get<int>("trunkHealth") > 0)) { "NavigateToEnemy", "DoTrunkSlam" },
-                        new Method<Blackboard>() { "FindTrunk", "NavigateToTrunk", "UprootTrunk", "AttackEnemy" }
+                        new Method(new FunctionConditional(x => x.Get<int>("trunkHealth") > 0)) { "NavigateToEnemy", "DoTrunkSlam" },
+                        new Method() { "FindTrunk", "NavigateToTrunk", "UprootTrunk", "AttackEnemy" }
                     },
-                    new ExecuteTask<Blackboard>("DoTrunkSlam", x => x.Set("trunkHealth", x.Get<int>("trunkHealth") - 1)),
-                    new ExecuteTask<Blackboard>("UprootTrunk", x => x.Set("trunkHealth", 3)),
-                    new ExecuteTask<Blackboard>("NavigateToTrunk"),
-                    new ExecuteTask<Blackboard>("ChooseBridgeToCheck"),
-                    new ExecuteTask<Blackboard>("NavigateToBridge", cost: 5),
-                    new ExecuteTask<Blackboard>("NavigateToEnemy"),
-                    new ExecuteTask<Blackboard>("CheckBridge"),
-                    new ExecuteTask<Blackboard>("FindTrunk"),
+                    new ExecuteTask("DoTrunkSlam", x => x.Set("trunkHealth", x.Get<int>("trunkHealth") - 1)),
+                    new ExecuteTask("UprootTrunk", x => x.Set("trunkHealth", 3)),
+                    new ExecuteTask("NavigateToTrunk"),
+                    new ExecuteTask("ChooseBridgeToCheck"),
+                    new ExecuteTask("NavigateToBridge", cost: 5),
+                    new ExecuteTask("NavigateToEnemy"),
+                    new ExecuteTask("CheckBridge"),
+                    new ExecuteTask("FindTrunk"),
                 };
             
                 var b = new Blackboard();
@@ -88,26 +88,26 @@ namespace Crimson.Tests.AI.HTN
             [Test]
             public void CanSeeEnemyTrunkHealthy()
             {
-                var rootTask = new CompoundTask<Blackboard>("BeTrunkThumper")
+                var rootTask = new CompoundTask("BeTrunkThumper")
                 {
-                    new Method<Blackboard>(new FunctionConditional<Blackboard>(x => x.Get<bool>("canSeeEnemy"))) { "AttackEnemy" },
-                    new Method<Blackboard>() { "ChooseBridgeToCheck", "NavigateToBridge", "CheckBridge" }
+                    new Method(new FunctionConditional(x => x.Get<bool>("canSeeEnemy"))) { "AttackEnemy" },
+                    new Method() { "ChooseBridgeToCheck", "NavigateToBridge", "CheckBridge" }
                 };
                 var planner = new TaskPlanner(rootTask)
                 {
-                    new CompoundTask<Blackboard>("AttackEnemy")
+                    new CompoundTask("AttackEnemy")
                     {
-                        new Method<Blackboard>(new FunctionConditional<Blackboard>(x => x.Get<int>("trunkHealth") > 0)) { "NavigateToEnemy", "DoTrunkSlam" },
-                        new Method<Blackboard>() { "FindTrunk", "NavigateToTrunk", "UprootTrunk", "AttackEnemy" }
+                        new Method(new FunctionConditional(x => x.Get<int>("trunkHealth") > 0)) { "NavigateToEnemy", "DoTrunkSlam" },
+                        new Method() { "FindTrunk", "NavigateToTrunk", "UprootTrunk", "AttackEnemy" }
                     },
-                    new ExecuteTask<Blackboard>("DoTrunkSlam", x => x.Set("trunkHealth", x.Get<int>("trunkHealth") - 1)),
-                    new ExecuteTask<Blackboard>("UprootTrunk", x => x.Set("trunkHealth", 3)),
-                    new ExecuteTask<Blackboard>("NavigateToTrunk"),
-                    new ExecuteTask<Blackboard>("ChooseBridgeToCheck"),
-                    new ExecuteTask<Blackboard>("NavigateToBridge", cost: 5),
-                    new ExecuteTask<Blackboard>("NavigateToEnemy"),
-                    new ExecuteTask<Blackboard>("CheckBridge"),
-                    new ExecuteTask<Blackboard>("FindTrunk"),
+                    new ExecuteTask("DoTrunkSlam", x => x.Set("trunkHealth", x.Get<int>("trunkHealth") - 1)),
+                    new ExecuteTask("UprootTrunk", x => x.Set("trunkHealth", 3)),
+                    new ExecuteTask("NavigateToTrunk"),
+                    new ExecuteTask("ChooseBridgeToCheck"),
+                    new ExecuteTask("NavigateToBridge", cost: 5),
+                    new ExecuteTask("NavigateToEnemy"),
+                    new ExecuteTask("CheckBridge"),
+                    new ExecuteTask("FindTrunk"),
                 };
             
                 var b = new Blackboard();
@@ -123,26 +123,26 @@ namespace Crimson.Tests.AI.HTN
             [Test]
             public void CanSeeEnemyTrunkGone()
             {
-                var rootTask = new CompoundTask<Blackboard>("BeTrunkThumper")
+                var rootTask = new CompoundTask("BeTrunkThumper")
                 {
-                    new Method<Blackboard>(new FunctionConditional<Blackboard>(x => x.Get<bool>("canSeeEnemy"))) { "AttackEnemy" },
-                    new Method<Blackboard>() { "ChooseBridgeToCheck", "NavigateToBridge", "CheckBridge" }
+                    new Method(new FunctionConditional(x => x.Get<bool>("canSeeEnemy"))) { "AttackEnemy" },
+                    new Method() { "ChooseBridgeToCheck", "NavigateToBridge", "CheckBridge" }
                 };
                 var planner = new TaskPlanner(rootTask)
                 {
-                    new CompoundTask<Blackboard>("AttackEnemy")
+                    new CompoundTask("AttackEnemy")
                     {
-                        new Method<Blackboard>(new FunctionConditional<Blackboard>(x => x.Get<int>("trunkHealth") > 0)) { "NavigateToEnemy", "DoTrunkSlam" },
-                        new Method<Blackboard>() { "FindTrunk", "NavigateToTrunk", "UprootTrunk", "AttackEnemy" }
+                        new Method(new FunctionConditional(x => x.Get<int>("trunkHealth") > 0)) { "NavigateToEnemy", "DoTrunkSlam" },
+                        new Method() { "FindTrunk", "NavigateToTrunk", "UprootTrunk", "AttackEnemy" }
                     },
-                    new ExecuteTask<Blackboard>("DoTrunkSlam", x => x.Set("trunkHealth", x.Get<int>("trunkHealth") - 1)),
-                    new ExecuteTask<Blackboard>("UprootTrunk", x => x.Set("trunkHealth", 3)),
-                    new ExecuteTask<Blackboard>("NavigateToTrunk"),
-                    new ExecuteTask<Blackboard>("ChooseBridgeToCheck"),
-                    new ExecuteTask<Blackboard>("NavigateToBridge", cost: 5),
-                    new ExecuteTask<Blackboard>("NavigateToEnemy"),
-                    new ExecuteTask<Blackboard>("CheckBridge"),
-                    new ExecuteTask<Blackboard>("FindTrunk"),
+                    new ExecuteTask("DoTrunkSlam", x => x.Set("trunkHealth", x.Get<int>("trunkHealth") - 1)),
+                    new ExecuteTask("UprootTrunk", x => x.Set("trunkHealth", 3)),
+                    new ExecuteTask("NavigateToTrunk"),
+                    new ExecuteTask("ChooseBridgeToCheck"),
+                    new ExecuteTask("NavigateToBridge", cost: 5),
+                    new ExecuteTask("NavigateToEnemy"),
+                    new ExecuteTask("CheckBridge"),
+                    new ExecuteTask("FindTrunk"),
                 };
             
                 var b = new Blackboard();

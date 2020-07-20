@@ -1,14 +1,14 @@
 ﻿namespace Crimson.AI.UtilityAI
 {
-    public class UtilityAI<T>
+    public class UtilityAI
     {
         public float UpdatePeriod;
 
-        private T _context;
-        private Reasoner<T> _rootReasoner;
+        private Blackboard _context;
+        private Reasoner _rootReasoner;
         private float _elapsedTime;
 
-        public UtilityAI(T context, Reasoner<T> rootReasoner, float updatePeriod = 0.2f)
+        public UtilityAI(Blackboard context, Reasoner rootReasoner, float updatePeriod = 0.2f)
         {
             _rootReasoner = rootReasoner;
             _context = context;
@@ -24,21 +24,6 @@
                 var action = _rootReasoner.Select(_context);
                 action?.Execute(_context);
             }
-        }
-    }
-
-    /// <summary>
-    /// Convenience class used for Blackboard-based contexts.
-    /// </summary>
-    public class UtilityAI : UtilityAI<Blackboard>
-    {
-        public UtilityAI(Blackboard context, Reasoner<Blackboard> rootReasoner, float updatePeriod = 0.2f) : base(context, rootReasoner, updatePeriod)
-        {
-        }
-
-        public UtilityAI(Reasoner<Blackboard> rootReasoner, float updatePeriod = 0.2f) : base(new Blackboard(),
-            rootReasoner, updatePeriod)
-        {
         }
     }
 }

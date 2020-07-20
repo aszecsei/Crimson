@@ -6,22 +6,21 @@ namespace Crimson.AI.GOAP
 {
     public class AStarNode : IComparable<AStarNode>, IEquatable<AStarNode>, IPoolable, ICloneable
     {
-        public WorldState WorldState;
+        public Blackboard WorldState;
         public int CostSoFar;
         public int HeuristicCost;
         public int CostSoFarAndHeuristicCost;
         public Action? Action;
 
         public AStarNode? Parent;
-        public WorldState? ParentWorldState;
+        public Blackboard? ParentWorldState;
         public int Depth;
 
         #region IEquatable and IComparable
 
         public bool Equals(AStarNode other)
         {
-            long care = WorldState.DontCare ^ -1L;
-            return (WorldState.Values & care) == (other.WorldState.Values & care);
+	        return WorldState == other.WorldState;
         }
 
         public int CompareTo(AStarNode other)
@@ -74,7 +73,7 @@ namespace Crimson.AI.GOAP
 		/// <summary>
 		/// Make a plan of actions that will reach desired world state
 		/// </summary>
-		public static Stack<Action>? Plan(ActionPlanner ap, WorldState start, WorldState goal,
+		public static Stack<Action>? Plan(ActionPlanner ap, Blackboard start, Blackboard goal,
 		                                 List<AStarNode>? selectedNodes = null)
 		{
 			s_storage.Clear();
@@ -181,16 +180,9 @@ namespace Crimson.AI.GOAP
 		/// <summary>
 		/// This is our heuristic: estimate for remaining distance is the nr of mismatched atoms that matter.
 		/// </summary>
-		static int CalculateHeuristic(WorldState fr, WorldState to)
+		static int CalculateHeuristic(Blackboard fr, Blackboard to)
 		{
-			long care = (to.DontCare ^ -1L);
-			long diff = (fr.Values & care) ^ (to.Values & care);
-			int dist = 0;
-
-			for (var i = 0; i < ActionPlanner.MAX_CONDITIONS; ++i)
-				if ((diff & (1L << i)) != 0)
-					dist++;
-			return dist;
+			return fr.GetDistance(to);
 		}
     }
 }

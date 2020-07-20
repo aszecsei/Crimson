@@ -2,16 +2,21 @@
 
 namespace Crimson.AI.HTN
 {
-    public class FunctionConditional<T> : IConditional<T>
+    public class FunctionConditional : IConditional
     {
-        private readonly Func<T, bool> _func;
+        private readonly Func<Blackboard, TaskStatus> _func;
 
-        public FunctionConditional(Func<T, bool> func)
+        public FunctionConditional(Func<Blackboard, TaskStatus> func)
         {
             _func = func;
         }
+
+        public FunctionConditional(Func<Blackboard, bool> func)
+        {
+            _func = x => func(x) ? TaskStatus.Success : TaskStatus.Failure;
+        }
         
-        public bool Update(T context)
+        public TaskStatus Update(Blackboard context)
         {
             return _func(context);
         }

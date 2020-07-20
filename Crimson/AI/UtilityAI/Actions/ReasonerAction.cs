@@ -3,16 +3,16 @@
     /// <summary>
     /// An <see cref="IAction{T}"/> that calls through to another <see cref="Reasoner{T}"/>
     /// </summary>
-    public class ReasonerAction<T> : IAction<T>
+    public class ReasonerAction : IAction
     {
-        private Reasoner<T> _reasoner;
+        private Reasoner _reasoner;
 
-        public ReasonerAction(Reasoner<T> reasoner)
+        public ReasonerAction(Reasoner reasoner)
         {
             _reasoner = reasoner;
         }
 
-        public void Execute(T context)
+        public void Execute(Blackboard context)
         {
             _reasoner.Select(context)?.Execute(context);
         }

@@ -1,7 +1,7 @@
 ﻿namespace Crimson.AI.UtilityAI
 {
-    public interface IAction<T>
+    public interface IAction
     {
-        void Execute(T context);
+        void Execute(Blackboard context);
     }
 }

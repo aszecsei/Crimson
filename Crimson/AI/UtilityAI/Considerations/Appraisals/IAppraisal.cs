@@ -3,8 +3,8 @@
     /// <summary>
     /// Scorer for use with an <see cref="IConsideration{T}"/>
     /// </summary>
-    public interface IAppraisal<T>
+    public interface IAppraisal
     {
-        float GetScore(T context);
+        float GetScore(Blackboard context);
     }
 }

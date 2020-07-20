@@ -2,24 +2,23 @@
 
 namespace Crimson.AI.HTN
 {
-    public class ExecuteTask<T> : PrimitiveTask<T>
-    where T : class, ICloneable
+    public class ExecuteTask : PrimitiveTask
     {
-        private readonly Action<T>? _worldStateEffect;
-        private readonly Func<T, TaskStatus>? _action;
+        private readonly Action<Blackboard>? _worldStateEffect;
+        private readonly Func<Blackboard, TaskStatus>? _action;
         
-        public ExecuteTask(string name, Action<T>? worldStateEffect = null, Func<T, TaskStatus>? action = null, int cost = 1) : base(name, cost)
+        public ExecuteTask(string name, Action<Blackboard>? worldStateEffect = null, Func<Blackboard, TaskStatus>? action = null, int cost = 1) : base(name, cost)
         {
             _worldStateEffect = worldStateEffect;
             _action = action;
         }
 
-        public override void Execute(T context)
+        public override void Execute(Blackboard context)
         {
             _worldStateEffect?.Invoke(context);
         }
 
-        public override TaskStatus Update(T context)
+        public override TaskStatus Update(Blackboard context)
         {
             if (_action != null) return _action(context);
             return TaskStatus.Success;

@@ -2,13 +2,13 @@
 
 namespace Crimson.AI.UtilityAI
 {
-    public abstract class ActionWithOptions<T, U> : IAction<T>
+    public abstract class ActionWithOptions<T> : IAction
     {
-        protected List<IActionOptionAppraisal<T, U>> _appraisals = new List<IActionOptionAppraisal<T, U>>();
+        protected List<IActionOptionAppraisal<T>> _appraisals = new List<IActionOptionAppraisal<T>>();
 
-        public U GetBestOption(T context, List<U> options)
+        public T GetBestOption(Blackboard context, List<T> options)
         {
-            var result = default(U);
+            var result = default(T);
             var bestScore = Mathf.NEG_INFINITY;
 
             for (var i = 0; i < options.Count; ++i)
@@ -28,9 +28,9 @@ namespace Crimson.AI.UtilityAI
             return result;
         }
 
-        public abstract void Execute(T context);
+        public abstract void Execute(Blackboard context);
 
-        public ActionWithOptions<T, U> AddScorer(IActionOptionAppraisal<T, U> scorer)
+        public ActionWithOptions<T> AddScorer(IActionOptionAppraisal<T> scorer)
         {
             _appraisals.Add(scorer);
             return this;

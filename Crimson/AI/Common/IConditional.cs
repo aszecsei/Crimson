@@ -1,4 +1,4 @@
-﻿namespace Crimson.AI.BehaviorTree
+﻿namespace Crimson.AI
 {
     public interface IConditional
     {

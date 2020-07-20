@@ -1,13 +1,12 @@
 ﻿namespace Crimson.AI.UtilityAI
 {
     /// <summary>
-    /// Encapsulates an action and generates a score that a <see cref="Reasoner{T}"/>
-    /// can use to decide which <see cref="IConsideration{T}"/> to use
+    /// Encapsulates an action and generates a score that a <see cref="Reasoner"/>
+    /// can use to decide which <see cref="IConsideration"/> to use
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public interface IConsideration<T>
+    public interface IConsideration
     {
-        IAction<T>? Action { get; set; }
-        float GetScore(T context);
+        IAction? Action { get; set; }
+        float GetScore(Blackboard context);
     }
 }

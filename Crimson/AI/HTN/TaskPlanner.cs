@@ -5,51 +5,50 @@ using Crimson.Collections;
 
 namespace Crimson.AI.HTN
 {
-    public class TaskPlanner<T> : IEnumerable<Task<T>>
-    where T: class, ICloneable
+    public class TaskPlanner : IEnumerable<Task>
     {
         private struct PlannerState : ICloneable
         {
-            public List<Task<T>> TasksToProcess;
-            public T WorkingWorldState;
-            public List<PrimitiveTask<T>> PartialPlan;
+            public List<Task> TasksToProcess;
+            public Blackboard WorkingWorldState;
+            public List<PrimitiveTask> PartialPlan;
             public int CostSoFar;
 
             public object Clone()
             {
                 return new PlannerState
                 {
-                    TasksToProcess = new List<Task<T>>(TasksToProcess),
-                    WorkingWorldState = (T)WorkingWorldState.Clone(),
-                    PartialPlan = new List<PrimitiveTask<T>>(PartialPlan),
+                    TasksToProcess = new List<Task>(TasksToProcess),
+                    WorkingWorldState = (Blackboard)WorkingWorldState.Clone(),
+                    PartialPlan = new List<PrimitiveTask>(PartialPlan),
                     CostSoFar = CostSoFar,
                 };
             }
         }
 
-        private readonly Dictionary<string, Task<T>> _tasks = new Dictionary<string, Task<T>>();
+        private readonly Dictionary<string, Task> _tasks = new Dictionary<string, Task>();
         private readonly string _rootTask;
 
-        public Task<T> this[string name]
+        public Task this[string name]
         {
             get => _tasks[name];
             set => _tasks[name] = value;
         }
 
-        public TaskPlanner(Task<T> rootTask)
+        public TaskPlanner(Task rootTask)
         {
             _rootTask = rootTask.Name;
             _tasks[rootTask.Name] = rootTask;
         }
 
-        public List<PrimitiveTask<T>>? Plan(T context)
+        public List<PrimitiveTask>? Plan(Blackboard context)
         {
             SimplePriorityQueue<PlannerState> fringe = new SimplePriorityQueue<PlannerState>();
             fringe.Enqueue(new PlannerState
             {
-                TasksToProcess = new List<Task<T>> { _tasks[_rootTask] },
-                WorkingWorldState = (T)context.Clone(),
-                PartialPlan = new List<PrimitiveTask<T>>(),
+                TasksToProcess = new List<Task> { _tasks[_rootTask] },
+                WorkingWorldState = (Blackboard)context.Clone(),
+                PartialPlan = new List<PrimitiveTask>(),
                 CostSoFar = 0,
             }, 0);
 
@@ -61,10 +60,10 @@ namespace Crimson.AI.HTN
                 if (current.TasksToProcess.IsEmpty())
                     return current.PartialPlan;
 
-                Task<T> taskToProcess = current.TasksToProcess[0];
+                Task taskToProcess = current.TasksToProcess[0];
                 switch (taskToProcess)
                 {
-                    case PrimitiveTask<T> t:
+                    case PrimitiveTask t:
                     {
                         if (t.IsSatisfied(current.WorkingWorldState))
                         {
@@ -79,12 +78,12 @@ namespace Crimson.AI.HTN
 
                         break;
                     }
-                    case CompoundTask<T> ct:
+                    case CompoundTask ct:
                     {
                         var applicableMethods = ct.FindSatisfiedMethods(current.WorkingWorldState);
                         for (var j = 0; j < applicableMethods.Count; ++j)
                         {
-                            List<Task<T>> methodTasks = new List<Task<T>>(applicableMethods[j].Count());
+                            List<Task> methodTasks = new List<Task>(applicableMethods[j].Count());
                             foreach (var taskName in applicableMethods[j])
                                 methodTasks.Add(_tasks[taskName]);
                             var newState = (PlannerState)current.Clone();
@@ -104,7 +103,7 @@ namespace Crimson.AI.HTN
         }
 
         // This is complicated and I hate it. It's also the only way to avoid infinite recursion loops. :(
-        private int GetHeuristic(IReadOnlyList<Task<T>> tasksToProcess, T context)
+        private int GetHeuristic(IReadOnlyList<Task> tasksToProcess, Blackboard context)
         {
             Dictionary<string, int> heuristics = new Dictionary<string, int>();
             HashSet<string> hasChecked = new HashSet<string>();
@@ -122,20 +121,20 @@ namespace Crimson.AI.HTN
                     continue;
                 }
                 
-                if (t is PrimitiveTask<T> pt)
+                if (t is PrimitiveTask pt)
                 {
                     hasChecked.Add(pt.Name);
                     heuristics[pt.Name] = pt.GetHeuristic(context);
                     toCheck.Pop();
                 }
-                else if (t is CompoundTask<T> ct)
+                else if (t is CompoundTask ct)
                 {
                     hasChecked.Add(ct.Name);
 
                     int minMethod = int.MaxValue;
                     
                     bool shouldWait = false;
-                    foreach (Method<T> method in ct)
+                    foreach (Method method in ct)
                     {
                         int methodHeuristic = 0;
                         foreach (string taskName in method)
@@ -172,7 +171,7 @@ namespace Crimson.AI.HTN
             return result;
         }
 
-        public IEnumerator<Task<T>> GetEnumerator()
+        public IEnumerator<Task> GetEnumerator()
         {
             return _tasks.Values.GetEnumerator();
         }
@@ -182,16 +181,9 @@ namespace Crimson.AI.HTN
             return GetEnumerator();
         }
 
-        public void Add(Task<T> task)
+        public void Add(Task task)
         {
             _tasks[task.Name] = task;
-        }
-    }
-
-    public class TaskPlanner : TaskPlanner<Blackboard>
-    {
-        public TaskPlanner(Task<Blackboard> rootTask) : base(rootTask)
-        {
         }
     }
 }

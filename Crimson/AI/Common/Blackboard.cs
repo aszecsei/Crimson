@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Crimson.AI
@@ -22,15 +23,20 @@ namespace Crimson.AI
 
             return SharedBlackboards[key];
         }
-        
-        private struct BlackboardValue
+
+        private Dictionary<string, BlackboardValue> _internal = new Dictionary<string, BlackboardValue>();
+
+        private struct BlackboardValue : IComparable<BlackboardValue>
         {
             public Type Type;
             public dynamic Value;
+            
+            public int CompareTo(BlackboardValue other)
+            {
+                return (Type == other.Type) && (Value == other.Value);
+            }
         }
         
-        private Dictionary<string, BlackboardValue> _internal = new Dictionary<string, BlackboardValue>();
-
         public void Set<T>(string key, T value)
         {
             // Check if there's no change necessary
@@ -71,12 +77,42 @@ namespace Crimson.AI
             return res;
         }
 
+        public bool Contains(string key)
+        {
+            return _internal.ContainsKey(key);
+        }
+
         public object Clone()
         {
             var b = (Blackboard)MemberwiseClone();
             b._internal = new Dictionary<string, BlackboardValue>(_internal);
 
             return b;
+        }
+
+        /// <summary>
+        /// Returns the distance between this blackboard and another, defined as the number of different key/value pairs
+        /// the two have.
+        /// </summary>
+        public int GetDistance(Blackboard other)
+        {
+            int dist = 0;
+            
+            foreach (var kvp in _internal)
+            {
+                if (!other.Contains(kvp.Key))
+                    dist++;
+                else if (!other._internal[kvp.Key].Equals(kvp.Value))
+                    dist++;
+            }
+
+            foreach (var kvp in other._internal)
+            {
+                if (!Contains(kvp.Key))
+                    dist++;
+            }
+
+            return dist;
         }
     }
 }

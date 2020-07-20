@@ -2,27 +2,27 @@
 
 namespace Crimson.AI.UtilityAI
 {
-    public abstract class Reasoner<T>
+    public abstract class Reasoner
     {
-        public IConsideration<T> DefaultConsideration = new FixedScoreConsideration<T>();
+        public IConsideration DefaultConsideration = new FixedScoreConsideration();
         
-        protected List<IConsideration<T>> _considerations = new List<IConsideration<T>>();
+        protected List<IConsideration> _considerations = new List<IConsideration>();
 
-        public IAction<T>? Select(T context)
+        public IAction? Select(Blackboard context)
         {
             var consideration = SelectBestConsideration(context);
             return consideration?.Action;
         }
 
-        protected abstract IConsideration<T> SelectBestConsideration(T context);
+        protected abstract IConsideration SelectBestConsideration(Blackboard context);
 
-        public Reasoner<T> AddConsideration(IConsideration<T> consideration)
+        public Reasoner AddConsideration(IConsideration consideration)
         {
             _considerations.Add(consideration);
             return this;
         }
 
-        public Reasoner<T> SetDefaultConsideration(IConsideration<T> defaultConsideration)
+        public Reasoner SetDefaultConsideration(IConsideration defaultConsideration)
         {
             DefaultConsideration = defaultConsideration;
             return this;

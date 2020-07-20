@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Crimson.AI.HTN
 {
-    public class PrimitiveTask<T> : Task<T>
+    public abstract class PrimitiveTask<T> : Task<T>
         where T : class, ICloneable
     {
         private int _cost;
@@ -19,5 +19,7 @@ namespace Crimson.AI.HTN
         public virtual int GetCost(T context) => _cost;
 
         public virtual int GetHeuristic(T context) => GetCost(context);
+
+        public abstract TaskStatus Update(T context);
     }
 }

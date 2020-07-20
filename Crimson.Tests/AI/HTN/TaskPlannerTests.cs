@@ -11,7 +11,7 @@ namespace Crimson.Tests.AI.HTN
         [Test]
         public void BasicPlan()
         {
-            var planner = new TaskPlanner(new PrimitiveTask<Blackboard>("SingleTask"));
+            var planner = new TaskPlanner(new ExecuteTask<Blackboard>("SingleTask"));
             var plan = planner.Plan(new Blackboard());
             plan.Should().OnlyContain((x) => x == planner["SingleTask"]);
         }
@@ -26,10 +26,10 @@ namespace Crimson.Tests.AI.HTN
             };
             var planner = new TaskPlanner(rootTask)
             {
-                new PrimitiveTask<Blackboard>("NavigateToEnemy"),
-                new PrimitiveTask<Blackboard>("DoTrunkSlam"),
-                new PrimitiveTask<Blackboard>("LiftBoulderFromGround"),
-                new PrimitiveTask<Blackboard>("ThrowBoulderAtEnemy")
+                new ExecuteTask<Blackboard>("NavigateToEnemy"),
+                new ExecuteTask<Blackboard>("DoTrunkSlam"),
+                new ExecuteTask<Blackboard>("LiftBoulderFromGround"),
+                new ExecuteTask<Blackboard>("ThrowBoulderAtEnemy")
             };
             
             Blackboard b = new Blackboard();
@@ -66,12 +66,12 @@ namespace Crimson.Tests.AI.HTN
                     },
                     new ExecuteTask<Blackboard>("DoTrunkSlam", x => x.Set("trunkHealth", x.Get<int>("trunkHealth") - 1)),
                     new ExecuteTask<Blackboard>("UprootTrunk", x => x.Set("trunkHealth", 3)),
-                    new PrimitiveTask<Blackboard>("NavigateToTrunk"),
-                    new PrimitiveTask<Blackboard>("ChooseBridgeToCheck"),
-                    new PrimitiveTask<Blackboard>("NavigateToBridge", 5),
-                    new PrimitiveTask<Blackboard>("NavigateToEnemy"),
-                    new PrimitiveTask<Blackboard>("CheckBridge"),
-                    new PrimitiveTask<Blackboard>("FindTrunk"),
+                    new ExecuteTask<Blackboard>("NavigateToTrunk"),
+                    new ExecuteTask<Blackboard>("ChooseBridgeToCheck"),
+                    new ExecuteTask<Blackboard>("NavigateToBridge", cost: 5),
+                    new ExecuteTask<Blackboard>("NavigateToEnemy"),
+                    new ExecuteTask<Blackboard>("CheckBridge"),
+                    new ExecuteTask<Blackboard>("FindTrunk"),
                 };
             
                 var b = new Blackboard();
@@ -102,12 +102,12 @@ namespace Crimson.Tests.AI.HTN
                     },
                     new ExecuteTask<Blackboard>("DoTrunkSlam", x => x.Set("trunkHealth", x.Get<int>("trunkHealth") - 1)),
                     new ExecuteTask<Blackboard>("UprootTrunk", x => x.Set("trunkHealth", 3)),
-                    new PrimitiveTask<Blackboard>("NavigateToTrunk"),
-                    new PrimitiveTask<Blackboard>("ChooseBridgeToCheck"),
-                    new PrimitiveTask<Blackboard>("NavigateToBridge", 5),
-                    new PrimitiveTask<Blackboard>("NavigateToEnemy"),
-                    new PrimitiveTask<Blackboard>("CheckBridge"),
-                    new PrimitiveTask<Blackboard>("FindTrunk"),
+                    new ExecuteTask<Blackboard>("NavigateToTrunk"),
+                    new ExecuteTask<Blackboard>("ChooseBridgeToCheck"),
+                    new ExecuteTask<Blackboard>("NavigateToBridge", cost: 5),
+                    new ExecuteTask<Blackboard>("NavigateToEnemy"),
+                    new ExecuteTask<Blackboard>("CheckBridge"),
+                    new ExecuteTask<Blackboard>("FindTrunk"),
                 };
             
                 var b = new Blackboard();
@@ -137,12 +137,12 @@ namespace Crimson.Tests.AI.HTN
                     },
                     new ExecuteTask<Blackboard>("DoTrunkSlam", x => x.Set("trunkHealth", x.Get<int>("trunkHealth") - 1)),
                     new ExecuteTask<Blackboard>("UprootTrunk", x => x.Set("trunkHealth", 3)),
-                    new PrimitiveTask<Blackboard>("NavigateToTrunk"),
-                    new PrimitiveTask<Blackboard>("ChooseBridgeToCheck"),
-                    new PrimitiveTask<Blackboard>("NavigateToBridge", 5),
-                    new PrimitiveTask<Blackboard>("NavigateToEnemy"),
-                    new PrimitiveTask<Blackboard>("CheckBridge"),
-                    new PrimitiveTask<Blackboard>("FindTrunk"),
+                    new ExecuteTask<Blackboard>("NavigateToTrunk"),
+                    new ExecuteTask<Blackboard>("ChooseBridgeToCheck"),
+                    new ExecuteTask<Blackboard>("NavigateToBridge", cost: 5),
+                    new ExecuteTask<Blackboard>("NavigateToEnemy"),
+                    new ExecuteTask<Blackboard>("CheckBridge"),
+                    new ExecuteTask<Blackboard>("FindTrunk"),
                 };
             
                 var b = new Blackboard();

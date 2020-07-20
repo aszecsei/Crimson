@@ -146,11 +146,6 @@ namespace Crimson.AI.HTN
                                 {
                                     methodHeuristic += heuristics[taskName];
                                 }
-                                else
-                                {
-                                    methodHeuristic = int.MaxValue;
-                                    break;
-                                }
                             }
                             else
                             {

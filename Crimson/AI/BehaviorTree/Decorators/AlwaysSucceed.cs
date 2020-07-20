@@ -1,5 +1,6 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
+    [AITag("Succeed")]
     public class AlwaysSucceed<T> : Decorator<T>
     {
         public override TaskStatus Update(T context)

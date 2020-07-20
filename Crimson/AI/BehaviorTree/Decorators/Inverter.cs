@@ -1,5 +1,6 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
+    [AITag("Invert")]
     public class Inverter<T> : Decorator<T>
     {
         public override TaskStatus Update(T context)

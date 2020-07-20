@@ -156,6 +156,11 @@ namespace Crimson.AI.BehaviorTree
 
         #region Composites
 
+        public BehaviorTreeBuilder<T> Composite(Composite<T> composite)
+        {
+            return PushParentNode(composite);
+        }
+
         public BehaviorTreeBuilder<T> Parallel()
         {
             return PushParentNode(new Parallel<T>());

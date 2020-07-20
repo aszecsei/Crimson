@@ -1,5 +1,6 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
+    [AITag("Repeat", "count", "endOnFailure")]
     public class Repeater<T> : Decorator<T>
     {
         public int Count;

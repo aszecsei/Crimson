@@ -1,5 +1,6 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
+    [AITag("Wait", "duration")]
     public class WaitAction<T> : Behavior<T>
     {
         public float WaitTime;

@@ -1,5 +1,6 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
+    [AITag("Sequence")]
     public class Sequence<T> : Composite<T>
     {
         public Sequence(AbortType abortType = AbortType.None)

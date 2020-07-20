@@ -3,6 +3,7 @@
     /// <summary>
     /// Same as Selector, except it selects the highest-utility children first
     /// </summary>
+    [AITag("UtilitySelector")]
     public class UtilitySelector<T> : Selector<T>
     {
         public override void OnStart()

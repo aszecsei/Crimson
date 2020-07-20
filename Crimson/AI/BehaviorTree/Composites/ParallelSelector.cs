@@ -1,5 +1,6 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
+    [AITag("ParallelSelector")]
     public class ParallelSelector<T> : Composite<T>
     {
         public override TaskStatus Update(T context)

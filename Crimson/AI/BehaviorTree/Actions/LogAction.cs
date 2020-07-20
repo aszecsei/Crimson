@@ -1,5 +1,6 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
+    [AITag("Log", "text", "isError")]
     public class LogAction<T> : Behavior<T>
     {
         public string Text;

@@ -83,12 +83,13 @@ namespace Crimson.AI.HTN
                         var applicableMethods = ct.FindSatisfiedMethods(current.WorkingWorldState);
                         for (var j = 0; j < applicableMethods.Count; ++j)
                         {
-                            List<Task> methodTasks = new List<Task>(applicableMethods[j].Count());
+                            List<Task> methodTasks = ListPool<Task>.Obtain();
                             foreach (var taskName in applicableMethods[j])
                                 methodTasks.Add(_tasks[taskName]);
                             var newState = (PlannerState)current.Clone();
                             newState.TasksToProcess.RemoveAt(0);
                             newState.TasksToProcess.InsertRange(0, methodTasks);
+                            ListPool<Task>.Free(methodTasks);
                             int estimatedCost = newState.CostSoFar + GetHeuristic(newState.TasksToProcess, context);
                             fringe.Enqueue(newState, estimatedCost);
                         }

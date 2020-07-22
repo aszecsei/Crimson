@@ -104,11 +104,6 @@ namespace Crimson
             return Entities[typeof(T)];
         }
 
-        public List<Entity> GetEntitiesCopy<T>() where T : Entity
-        {
-            return new List<Entity>(GetEntities<T>());
-        }
-
         public IEnumerator<T> EnumerateEntities<T>() where T : Entity
         {
 #if DEBUG
@@ -117,7 +112,7 @@ namespace Crimson
 #endif
 
             foreach (Entity e in Entities[typeof(T)])
-                yield return e as T;
+                yield return (T)e;
         }
 
         public int CountEntities<T>() where T : Entity
@@ -151,8 +146,9 @@ namespace Crimson
             T? nearest = null;
             float nearestDistSq = 0;
 
-            foreach (T component in list)
+            foreach (var component1 in list)
             {
+                var component = (T) component1;
                 var distSq = Vector2.DistanceSquared(nearestTo, component.Entity.Position);
 
                 if (nearest == null || distSq < nearestDistSq)
@@ -190,7 +186,7 @@ namespace Crimson
 #endif
 
             foreach (Component c in Components[typeof(T)])
-                yield return c as T;
+                yield return (T)c;
         }
 
         public int CountComponents<T>() where T : Component
@@ -207,9 +203,8 @@ namespace Crimson
         internal void EntityAdded(Entity entity)
         {
             Type type = entity.GetType();
-            List<Type> trackAs;
 
-            if (TrackedEntityTypes.TryGetValue(type, out trackAs))
+            if (TrackedEntityTypes.TryGetValue(type, out var trackAs))
                 foreach (Type track in trackAs)
                     Entities[track].Add(entity);
         }
@@ -227,14 +222,13 @@ namespace Crimson
         internal void ComponentAdded(Component component)
         {
             Type type = component.GetType();
-            List<Type> trackAs;
 
-            if (TrackedComponentTypes.TryGetValue(type, out trackAs))
+            if (TrackedComponentTypes.TryGetValue(type, out var trackAs))
                 foreach (Type track in trackAs)
                     Components[track].Add(component);
             if (TrackedCollidableComponentTypes.TryGetValue(type, out trackAs))
                 foreach (Type track in trackAs)
-                    CollidableComponents[track].Add(component as Collider2D);
+                    CollidableComponents[track].Add((Collider2D)component);
         }
 
         internal void ComponentRemoved(Component component)
@@ -247,7 +241,7 @@ namespace Crimson
                     Components[track].Remove(component);
             if (TrackedCollidableComponentTypes.TryGetValue(type, out trackAs))
                 foreach (Type track in trackAs)
-                    CollidableComponents[track].Remove(component as Collider2D);
+                    CollidableComponents[track].Remove((Collider2D)component);
         }
 
         public void LogEntities()
@@ -288,28 +282,21 @@ namespace Crimson
 
         #region Static
 
-        public static Dictionary<Type, List<Type>> TrackedEntityTypes { get; private set; }
-        public static Dictionary<Type, List<Type>> TrackedComponentTypes { get; private set; }
-        public static Dictionary<Type, List<Type>> TrackedCollidableComponentTypes { get; private set; }
-        public static HashSet<Type> StoredEntityTypes { get; private set; }
-        public static HashSet<Type> StoredComponentTypes { get; private set; }
-        public static HashSet<Type> StoredCollidableComponentTypes { get; private set; }
+        public static Dictionary<Type, List<Type>> TrackedEntityTypes { get; } = new Dictionary<Type, List<Type>>();
+        public static Dictionary<Type, List<Type>> TrackedComponentTypes { get; } = new Dictionary<Type, List<Type>>();
+        public static Dictionary<Type, List<Type>> TrackedCollidableComponentTypes { get; } = new Dictionary<Type, List<Type>>();
+        public static HashSet<Type> StoredEntityTypes { get; } = new HashSet<Type>();
+        public static HashSet<Type> StoredComponentTypes { get; } = new HashSet<Type>();
+        public static HashSet<Type> StoredCollidableComponentTypes { get; } = new HashSet<Type>();
 
         public static void Initialize()
         {
-            TrackedEntityTypes = new Dictionary<Type, List<Type>>();
-            TrackedComponentTypes = new Dictionary<Type, List<Type>>();
-            TrackedCollidableComponentTypes = new Dictionary<Type, List<Type>>();
-            StoredEntityTypes = new HashSet<Type>();
-            StoredComponentTypes = new HashSet<Type>();
-            StoredCollidableComponentTypes = new HashSet<Type>();
-
             foreach (Type type in Assembly.GetEntryAssembly().GetTypes())
             {
-                object[] attrs = type.GetCustomAttributes(typeof(Tracked), false);
-                if (attrs.Length > 0)
+                Tracked? attr = type.GetCustomAttribute<Tracked>();
+                if (attr != null)
                 {
-                    var inherited = (attrs[0] as Tracked).Inherited;
+                    var inherited = attr.Inherited;
 
                     if (typeof(Entity).IsAssignableFrom(type))
                     {
@@ -397,7 +384,7 @@ namespace Crimson
 
     public class Tracked : Attribute
     {
-        public bool Inherited;
+        public readonly bool Inherited;
 
         public Tracked(bool inherited = false)
         {

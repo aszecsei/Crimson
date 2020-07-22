@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Crimson.Collections
 {
@@ -26,11 +27,13 @@ namespace Crimson.Collections
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ClearCache()
         {
             s_objectQueue.Clear();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static List<T> Obtain()
         {
             if (s_objectQueue.Count > 0)
@@ -38,10 +41,22 @@ namespace Crimson.Collections
             return new List<T>();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Free(List<T> obj)
         {
             s_objectQueue.Enqueue(obj);
             obj.Clear();
+        }
+
+        /// <summary>
+        /// Frees the list and returns an array with the list's contents.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] FreeToArray(List<T> obj)
+        {
+            T[] arr = obj.ToArray();
+            Free(obj);
+            return arr;
         }
     }
 }

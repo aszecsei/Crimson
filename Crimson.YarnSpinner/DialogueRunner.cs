@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using Crimson.Collections;
 using CsvHelper;
 using Yarn;
 using Color = Microsoft.Xna.Framework.Color;
@@ -264,14 +265,14 @@ namespace Crimson.YarnSpinner
 
             if (YarnScripts != null && YarnScripts.Length > 0)
             {
-                var compiledPrograms = new List<Program>();
+                var compiledPrograms = ListPool<Program>.Obtain();
 
                 foreach (var program in YarnScripts)
                 {
                     compiledPrograms.Add(program.GetProgram());
                 }
 
-                var combinedProgram = Program.Combine(compiledPrograms.ToArray());
+                var combinedProgram = Program.Combine(ListPool<Program>.FreeToArray(compiledPrograms));
                 
                 Dialogue.SetProgram(combinedProgram);
             }

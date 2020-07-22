@@ -82,7 +82,7 @@ namespace Crimson
 
         public void RemoveSelf()
         {
-            if (Entity != null) Entity.Remove(this);
+            if (Entity != null) Entity.RemoveComponent(this);
         }
 
         public T SceneAs<T>() where T : Scene

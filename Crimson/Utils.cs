@@ -267,127 +267,6 @@ namespace Crimson
 
         #endregion
 
-        #region Lists
-
-        public static bool IsInRange<T>(this T[] array, int index)
-        {
-            return index >= 0 && index < array.Length;
-        }
-
-        public static bool IsInRange<T>(this List<T> list, int index)
-        {
-            return index >= 0 && index < list.Count;
-        }
-
-        public static T[] Array<T>(params T[] items)
-        {
-            return items;
-        }
-
-        public static T[] VerifyLength<T>(this T[] array, int length)
-        {
-            if (array == null) return new T[length];
-
-            if (array.Length != length)
-            {
-                var newArray = new T[length];
-                for (var i = 0; i < Math.Min(length, array.Length); i++) newArray[i] = array[i];
-
-                return newArray;
-            }
-
-            return array;
-        }
-
-        public static T[][] VerifyLength<T>(this T[][] array, int length0, int length1)
-        {
-            array = VerifyLength(array, length0);
-            for (var i = 0; i < array.Length; i++) array[i] = VerifyLength(array[i], length1);
-
-            return array;
-        }
-
-        public static void Shuffle<T>(this List<T> list, Random random)
-        {
-            var i = list.Count;
-            int j;
-            T t;
-
-            while (--i > 0)
-            {
-                t = list[i];
-                list[i] = list[j = random.Next(i + 1)];
-                list[j] = t;
-            }
-        }
-
-        public static void Shuffle<T>(this List<T> list)
-        {
-            list.Shuffle(Random);
-        }
-
-        public static void ShuffleSetFirst<T>(this List<T> list, Random random, T first)
-        {
-            var amount = 0;
-            while (list.Contains(first))
-            {
-                list.Remove(first);
-                amount++;
-            }
-
-            list.Shuffle(random);
-
-            for (var i = 0; i < amount; i++) list.Insert(0, first);
-        }
-
-        public static void ShuffleSetFirst<T>(this List<T> list, T first)
-        {
-            list.ShuffleSetFirst(Random, first);
-        }
-
-        public static void ShuffleNotFirst<T>(this List<T> list, Random random, T notFirst)
-        {
-            var amount = 0;
-            while (list.Contains(notFirst))
-            {
-                list.Remove(notFirst);
-                amount++;
-            }
-
-            list.Shuffle(random);
-
-            for (var i = 0; i < amount; i++) list.Insert(random.Next(list.Count - 1) + 1, notFirst);
-        }
-
-        public static void ShuffleNotFirst<T>(this List<T> list, T notFirst)
-        {
-            list.ShuffleNotFirst(Random, notFirst);
-        }
-
-        #endregion
-
-        #region Colors
-
-        public static Color Invert(this Color color)
-        {
-            return new Color(255 - color.R, 255 - color.G, 255 - color.B, color.A);
-        }
-
-        public static Color HexToColor(string hex)
-        {
-            if (hex.Length >= 6)
-            {
-                var r = (Mathf.HexToByte(hex[0]) * 16 + Mathf.HexToByte(hex[1])) / 255.0f;
-                var g = (Mathf.HexToByte(hex[2]) * 16 + Mathf.HexToByte(hex[3])) / 255.0f;
-                var b = (Mathf.HexToByte(hex[4]) * 16 + Mathf.HexToByte(hex[5])) / 255.0f;
-                return new Color(r, g, b);
-            }
-
-            return Color.White;
-        }
-
-        #endregion
-
         #region Time
 
         public static string ShortGameplayFormat(this TimeSpan time)
@@ -876,7 +755,7 @@ namespace Crimson
             if (!xml.HasAttr(attributeName))
                 throw new Exception("Element does not contain the attribute \"" + attributeName + "\"");
 #endif
-            return HexToColor(xml.Attr(attributeName));
+            return ColorExt.HexToColor(xml.Attr(attributeName));
         }
 
         public static Color AttrHexColor(this XmlElement xml, string attributeName, Color defaultValue)
@@ -888,7 +767,7 @@ namespace Crimson
 
         public static Color AttrHexColor(this XmlElement xml, string attributeName, string defaultValue)
         {
-            if (!xml.HasAttr(attributeName)) return HexToColor(defaultValue);
+            if (!xml.HasAttr(attributeName)) return ColorExt.HexToColor(defaultValue);
 
             return AttrHexColor(xml, attributeName);
         }
@@ -981,7 +860,7 @@ namespace Crimson
 
         public static Color InnerHexColor(this XmlElement xml)
         {
-            return HexToColor(xml.InnerText);
+            return ColorExt.HexToColor(xml.InnerText);
         }
 
         #endregion
@@ -1088,21 +967,21 @@ namespace Crimson
             if (!xml.HasChild(childName))
                 throw new Exception("Cannot find child xml tag with name '" + childName + "'.");
 #endif
-            return HexToColor(xml[childName].InnerText);
+            return ColorExt.HexToColor(xml[childName].InnerText);
         }
 
         public static Color ChildHexColor(this XmlElement xml, string childName, Color defaultValue)
         {
-            if (xml.HasChild(childName)) return HexToColor(xml[childName].InnerText);
+            if (xml.HasChild(childName)) return ColorExt.HexToColor(xml[childName].InnerText);
 
             return defaultValue;
         }
 
         public static Color ChildHexColor(this XmlElement xml, string childName, string defaultValue)
         {
-            if (xml.HasChild(childName)) return HexToColor(xml[childName].InnerText);
+            if (xml.HasChild(childName)) return ColorExt.HexToColor(xml[childName].InnerText);
 
-            return HexToColor(defaultValue);
+            return ColorExt.HexToColor(defaultValue);
         }
 
         public static Vector2 ChildPosition(this XmlElement xml, string childName)

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Crimson
 {
@@ -32,24 +33,18 @@ namespace Crimson
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsEmpty<TSource>(this IEnumerable<TSource> source)
         {
             Assert.IsNotNull(source, "source cannot be null");
             return source.Count() == 0;
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNotEmpty<TSource>(this IEnumerable<TSource> source)
         {
             Assert.IsNotNull(source, "source cannot be null");
             return source.Count() > 0;
-        }
-
-        public static bool Contains<TSource>(this IEnumerable<TSource> source, TSource instance)
-        {
-            foreach (var s in source)
-                if (s.Equals(instance))
-                    return true;
-            return false;
         }
     }
 }

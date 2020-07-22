@@ -1,60 +1,32 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Runtime.CompilerServices;
+using Microsoft.Xna.Framework;
 
 namespace Crimson
 {
-    public static class VectorExt
+    public static class Vector2Ext
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Floor(in this Vector2 vector)
         {
             return new Vector2(Mathf.Floor(vector.X), Mathf.Floor(vector.Y));
         }
 
-        public static Vector3 Floor(in this Vector3 vector)
-        {
-            return new Vector3(Mathf.Floor(vector.X), Mathf.Floor(vector.Y), Mathf.Floor(vector.Z));
-        }
-
-        public static Vector4 Floor(in this Vector4 vector)
-        {
-            return new Vector4(Mathf.Floor(vector.X), Mathf.Floor(vector.Y),
-                Mathf.Floor(vector.Z), Mathf.Floor(vector.W));
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Round(in this Vector2 vector)
         {
             return new Vector2(Mathf.Round(vector.X), Mathf.Round(vector.Y));
         }
 
-        public static Vector3 Round(in this Vector3 vector)
-        {
-            return new Vector3(Mathf.Round(vector.X), Mathf.Round(vector.Y), Mathf.Round(vector.Z));
-        }
-
-        public static Vector4 Round(in this Vector4 vector)
-        {
-            return new Vector4(Mathf.Round(vector.X), Mathf.Round(vector.Y),
-                Mathf.Round(vector.Z), Mathf.Round(vector.W));
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Ceil(in this Vector2 vector)
         {
             return new Vector2(Mathf.Ceil(vector.X), Mathf.Ceil(vector.Y));
         }
 
-        public static Vector3 Ceil(in this Vector3 vector)
-        {
-            return new Vector3(Mathf.Ceil(vector.X), Mathf.Ceil(vector.Y), Mathf.Ceil(vector.Z));
-        }
-
-        public static Vector4 Ceil(in this Vector4 vector)
-        {
-            return new Vector4(Mathf.Ceil(vector.X), Mathf.Ceil(vector.Y),
-                Mathf.Ceil(vector.Z), Mathf.Ceil(vector.W));
-        }
-
         /// <summary>
         /// Turns a vector to its right perpendicular
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 TurnRight(in this Vector2 vector)
         {
             return new Vector2(-vector.Y, vector.X);
@@ -63,16 +35,19 @@ namespace Crimson
         /// <summary>
         /// Turns a vector to its left perpendicular
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 TurnLeft(in this Vector2 vector)
         {
             return new Vector2(vector.Y, -vector.X);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Angle(in this Vector2 vector)
         {
             return Mathf.Atan2(vector.Y, vector.X);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Clamp(in this Vector2 value, Vector2 min, Vector2 max)
         {
             var newX = Mathf.Clamp(value.X, min.X, max.X);
@@ -80,14 +55,7 @@ namespace Crimson
             return new Vector2(newX, newY);
         }
 
-        public static Vector3 Clamp(in this Vector3 value, Vector3 min, Vector3 max)
-        {
-            var newX = Mathf.Clamp(value.X, min.X, max.X);
-            var newY = Mathf.Clamp(value.Y, min.Y, max.Y);
-            var newZ = Mathf.Clamp(value.Z, min.Z, max.Z);
-            return new Vector3(newX, newY, newZ);
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 SafeNormalize(in this Vector2 vector, float length = 1)
         {
             if (vector == Vector2.Zero)
@@ -95,20 +63,7 @@ namespace Crimson
             return Vector2.Normalize(vector) * length;
         }
 
-        public static Vector3 SafeNormalize(in this Vector3 vector, float length = 1)
-        {
-            if (vector == Vector3.Zero)
-                return Vector3.Zero;
-            return Vector3.Normalize(vector) * length;
-        }
-
-        public static Vector4 SafeNormalize(in this Vector4 vector, float length = 1)
-        {
-            if (vector == Vector4.Zero)
-                return Vector4.Zero;
-            return Vector4.Normalize(vector) * length;
-        }
-        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Toward(Vector2 from, Vector2 to, float length)
         {
             if (from == to) return Vector2.Zero;
@@ -116,6 +71,7 @@ namespace Crimson
             return (to - from).SafeNormalize(length);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 LerpSnap(Vector2 value1, Vector2 value2, float amount, float snapThresholdSq = .1f)
         {
             var ret = Vector2.Lerp(value1, value2, amount);
@@ -124,6 +80,7 @@ namespace Crimson
             return ret;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Sign(this Vector2 vec)
         {
             return new Vector2(Mathf.Sign(vec.X), Mathf.Sign(vec.Y));
@@ -138,32 +95,14 @@ namespace Crimson
 
             return lineA + v * t;
         }
-        
-        public static Vector3 ClosestPointOnLine(this Vector3 closestTo, Vector3 lineA, Vector3 lineB)
-        {
-            Vector3 v = lineB - lineA;
-            Vector3 w = closestTo - lineA;
-            float t = Vector3.Dot(w, v) / Vector3.Dot(v, v);
-            t = MathHelper.Clamp(t, 0, 1);
 
-            return lineA + v * t;
-        }
-        
-        public static Vector4 ClosestPointOnLine(this Vector4 closestTo, Vector4 lineA, Vector4 lineB)
-        {
-            Vector4 v = lineB - lineA;
-            Vector4 w = closestTo - lineA;
-            float t = Vector4.Dot(w, v) / Vector4.Dot(v, v);
-            t = MathHelper.Clamp(t, 0, 1);
-
-            return lineA + v * t;
-        }
-        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Perpendicular(this Vector2 vector)
         {
             return new Vector2(-vector.Y, vector.X);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Abs(this Vector2 val)
         {
             return new Vector2(Mathf.Abs(val.X), Mathf.Abs(val.Y));
@@ -177,16 +116,7 @@ namespace Crimson
 
             return v + (target - v).SafeNormalize() * maxMove;
         }
-        
-        public static Vector3 Approach(this Vector3 v, Vector3 target, float maxMove)
-        {
-            if (maxMove == 0 || v == target) return v;
-            
-            if (maxMove > (target - v).Length()) return target;
 
-            return v + (target - v).SafeNormalize() * maxMove;
-        }
-        
         public static Vector2 SnappedNormal(this Vector2 vec, float slices)
         {
             var divider = MathHelper.TwoPi / slices;
@@ -205,11 +135,13 @@ namespace Crimson
             return Mathf.AngleToVector(angle, vec.Length());
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 XComp(this Vector2 vec)
         {
             return Vector2.UnitX * vec.X;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 YComp(this Vector2 vec)
         {
             return Vector2.UnitY * vec.Y;
@@ -264,38 +196,17 @@ namespace Crimson
             return v;
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Rotate(this Vector2 vec, float angleRadians)
         {
             return Mathf.AngleToVector(vec.Angle() + angleRadians, vec.Length());
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 RotateTowards(this Vector2 vec, float targetAngleRadians, float maxMoveRadians)
         {
             var angle = Mathf.AngleApproach(vec.Angle(), targetAngleRadians, maxMoveRadians);
             return Mathf.AngleToVector(angle, vec.Length());
         }
-
-        public static Vector3 RotateTowards(this Vector3 from, Vector3 target, float maxRotationRadians)
-        {
-            var c = Vector3.Cross(from, target);
-            var alen = from.Length();
-            var blen = target.Length();
-            var w = Mathf.Sqrt(alen * alen * (blen * blen)) + Vector3.Dot(from, target);
-            var q = new Quaternion(c.X, c.Y, c.Z, w);
-
-            if (q.Length() <= maxRotationRadians) return target;
-
-            q.Normalize();
-            q *= maxRotationRadians;
-
-            return Vector3.Transform(from, q);
-        }
-
-        public static Vector2 XZ(this Vector3 vector)
-        {
-            return new Vector2(vector.X, vector.Z);
-        }
-
-        
     }
 }

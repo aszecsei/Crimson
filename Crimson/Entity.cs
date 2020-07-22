@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 
 namespace Crimson
 {
-    public class Entity : IEnumerable<Component>, IEnumerable
+    public class Entity : IEnumerable<Component>
     {
         public bool Active = true;
         internal double ActualDepth = 0;
-        public bool Collidable = true;
         private int _depth;
         public Vector2 Position;
 
@@ -39,8 +38,7 @@ namespace Crimson
                 if (_depth != value)
                 {
                     _depth = value;
-                    if (Scene != null)
-                        Scene.SetActualDepth(this);
+                    Scene?.SetActualDepth(this);
                 }
             }
         }
@@ -167,10 +165,10 @@ namespace Crimson
             Components.HandleGraphicsCreate();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Destroy()
         {
-            if (Scene != null)
-                Scene.Entities.Remove(this);
+            Scene?.Entities.Remove(this);
         }
 
         #region Tag
@@ -232,25 +230,35 @@ namespace Crimson
         ///     Shortcut function for adding a Component to the Entity's Components list
         /// </summary>
         /// <param name="component">The Component to add</param>
-        public void Add(Component component)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AddComponent(Component component)
         {
             Components.Add(component);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool RemoveComponent<T>() where T : Component
+        {
+            var c = Components.Get<T>();
+            return c != null && Components.Remove(c);
         }
 
         /// <summary>
         ///     Shortcut function for removing an Component from the Entity's Components list
         /// </summary>
         /// <param name="component">The Component to remove</param>
-        public void Remove(Component component)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool RemoveComponent(Component component)
         {
-            Components.Remove(component);
+            return Components.Remove(component);
         }
 
         /// <summary>
         ///     Shortcut function for adding a set of Components from the Entity's Components list
         /// </summary>
         /// <param name="components">The Components to add</param>
-        public void Add(params Component[] components)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AddComponents(params Component[] components)
         {
             Components.Add(components);
         }
@@ -259,20 +267,35 @@ namespace Crimson
         ///     Shortcut function for removing a set of Components from the Entity's Components list
         /// </summary>
         /// <param name="components">The Components to remove</param>
-        public void Remove(params Component[] components)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void RemoveComponent(params Component[] components)
         {
             Components.Remove(components);
         }
 
-        public T Get<T>() where T : Component
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T? GetComponent<T>() where T : Component
         {
             return Components.Get<T>();
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void GetComponents<T>(List<T> list) where T : Component
+        {
+            Components.GetAll(list);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public List<T> GetComponents<T>() where T : Component
+        {
+            return Components.GetAll<T>();
         }
 
         /// <summary>
         ///     Allows you to iterate through all Components in the Entity
         /// </summary>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerator<Component> GetEnumerator()
         {
             return Components.GetEnumerator();
@@ -311,14 +334,15 @@ namespace Crimson
 
         public Entity? Closest(BitTag tag)
         {
+            if (Scene == null) return null;
+            
             List<Entity> list = Scene[tag];
             Entity? closest = null;
-            float dist;
 
             if (list.Count >= 1)
             {
                 closest = list[0];
-                dist = Vector2.DistanceSquared(Position, closest.Position);
+                var dist = Vector2.DistanceSquared(Position, closest.Position);
 
                 for (var i = 1; i < list.Count; i++)
                 {
@@ -334,7 +358,8 @@ namespace Crimson
             return closest;
         }
 
-        public T SceneAs<T>() where T : Scene
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T? SceneAs<T>() where T : Scene
         {
             return Scene as T;
         }

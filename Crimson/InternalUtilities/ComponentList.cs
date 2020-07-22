@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Crimson.Collections;
 
 namespace Crimson
 {
@@ -124,7 +125,7 @@ namespace Crimson
             }
         }
 
-        public void Remove(Component component)
+        public bool Remove(Component component)
         {
             switch (lockMode)
             {
@@ -134,20 +135,24 @@ namespace Crimson
                         current.Remove(component);
                         components.Remove(component);
                         component.Removed(Entity);
+                        return true;
                     }
 
-                    break;
+                    return false;
                 case LockModes.Locked:
                     if (current.Contains(component) && !removing.Contains(component))
                     {
                         removing.Add(component);
                         toRemove.Add(component);
+                        return true;
                     }
 
-                    break;
+                    return false;
                 case LockModes.Error:
                     throw new Exception("Cannot add or remove entities at this time!");
             }
+
+            return false;
         }
 
         public void Add(IEnumerable<Component> components)
@@ -243,7 +248,7 @@ namespace Crimson
             LockMode = LockModes.Open;
         }
 
-        public T Get<T>() where T : Component
+        public T? Get<T>() where T : Component
         {
             foreach (Component component in components)
                 if (component is T)
@@ -252,11 +257,21 @@ namespace Crimson
             return null;
         }
 
-        public IEnumerable<T> GetAll<T>() where T : Component
+        public List<T> GetAll<T>() where T : Component
         {
+            List<T> results = ListPool<T>.Obtain();
             foreach (Component component in components)
-                if (component is T)
-                    yield return component as T;
+                if (component is T componentT)
+                    results.Add(componentT);
+            return results;
+        }
+
+        public void GetAll<T>(List<T> list) where T : Component
+        {
+            list.Clear();
+            foreach (Component component in components)
+                if (component is T componentT)
+                    list.Add(componentT);
         }
     }
 }

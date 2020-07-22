@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Content;
@@ -7,6 +8,7 @@ namespace Crimson
 {
     public static class ContentManagerExt
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task<T> LoadAsync<T>(this ContentManager ctx, string assetName)
         {
             return Task.Run(() => ctx.Load<T>(assetName));

@@ -543,6 +543,11 @@ namespace Crimson
 
         #region Save and Load Data
 
+        public static string[] GetFiles(string directory)
+        {
+            return Directory.GetFiles(directory);
+        }
+
         public static bool FileExists(string filename)
         {
             return File.Exists(filename);

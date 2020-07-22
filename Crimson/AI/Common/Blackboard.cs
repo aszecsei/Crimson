@@ -60,7 +60,7 @@ namespace Crimson.AI
             var v = _internal[key];
             if (typeof(T) != v.Type)
             {
-                throw new ArgumentException("value does not match type", nameof(T));
+                throw new ArgumentException($"value of type {v.Type} ({v.Value}) does not match type {typeof(T).FullName}", nameof(T));
             }
 
             return v.Value;

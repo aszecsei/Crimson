@@ -352,6 +352,12 @@ namespace Crimson
         {
             return a > b ? a : b;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Max(int a, int b, int c)
+        {
+            return Mathf.Max(Mathf.Max(a, b), c);
+        }
 
         public static int Max(params int[] values)
         {

@@ -208,5 +208,17 @@ namespace Crimson
             var angle = Mathf.AngleApproach(vec.Angle(), targetAngleRadians, maxMoveRadians);
             return Mathf.AngleToVector(angle, vec.Length());
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ManhattanDistance(this Vector2 vec, Vector2 other)
+        {
+            return Mathf.Abs(vec.X - other.X) + Mathf.Abs(vec.Y - other.Y);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ChebyshevDistance(this Vector2 vec, Vector2 other)
+        {
+            return Mathf.Max(Mathf.Abs(vec.X - other.X), Mathf.Abs(vec.Y - other.Y));
+        }
     }
 }

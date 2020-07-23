@@ -598,6 +598,17 @@ namespace Crimson
             return ((angleDegrees * Mathf.Sign(angleDegrees) + 180) % 360 - 180) * Mathf.Sign(angleDegrees);
         }
 
+        /// <summary>
+        /// Wraps a value between min (inclusive) and max (exclusive)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Wrap(int value, int minValue, int maxValue)
+        {
+            if (value >= maxValue) return minValue;
+            if (value < minValue) return maxValue;
+            return value;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float WrapAngle(float angleRadians)
         {

@@ -117,6 +117,11 @@ namespace Crimson.AI.BehaviorTree
             return PushParentNode(new ConditionalDecorator(cond, shouldReevaluate));
         }
 
+        public BehaviorTreeBuilder Decorator(Decorator deco)
+        {
+            return PushParentNode(deco);
+        }
+
         public BehaviorTreeBuilder AlwaysFail()
         {
             return PushParentNode(new AlwaysFail());

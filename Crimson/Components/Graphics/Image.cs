@@ -24,8 +24,7 @@ namespace Crimson
 
         public override void Render()
         {
-            if (Texture != null)
-                Texture.Draw(RenderPosition, Origin, Color, Scale, Rotation, Effects);
+            Texture?.Draw(RenderPosition, Origin, Color, Scale, Rotation, Effects);
         }
 
         public Image SetOrigin(float x, float y)

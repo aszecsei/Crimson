@@ -117,14 +117,14 @@ namespace Crimson
 
         internal void SetActualDepth(Entity entity)
         {
-            const double theta = 0.000001f;
+            /*const double theta = 0.000001f;
 
             if (_actualDepthLookup.TryGetValue(entity.Depth, out var add))
                 _actualDepthLookup[entity.Depth] += theta;
             else
-                _actualDepthLookup.Add(entity.Depth, theta);
+                _actualDepthLookup.Add(entity.Depth, theta);*/
 
-            entity.ActualDepth = entity.Depth - add;
+            entity.ActualDepth = entity.Depth;
 
             // Mark lists unsorted
             Entities.MarkUnsorted();

@@ -1085,12 +1085,12 @@ namespace Crimson
 
         public static int SortByDepth(Entity a, Entity b)
         {
-            return a.Depth - b.Depth;
+            return (int)((a.Depth - b.Depth) * 100);
         }
 
         public static int SortByDepthReversed(Entity a, Entity b)
         {
-            return b.Depth - a.Depth;
+            return (int)((b.Depth - a.Depth) * 100);
         }
 
         #endregion

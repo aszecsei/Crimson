@@ -9,7 +9,7 @@ namespace Crimson
     {
         public bool Active = true;
         internal double ActualDepth = 0;
-        private int _depth;
+        private float _depth;
         public Vector2 Position;
 
         private int _tag;
@@ -30,12 +30,12 @@ namespace Crimson
         public Scene? Scene { get; private set; }
         public ComponentList Components { get; }
 
-        public int Depth
+        public float Depth
         {
             get => _depth;
             set
             {
-                if (_depth != value)
+                if (!Mathf.Approximately(_depth, value))
                 {
                     _depth = value;
                     Scene?.SetActualDepth(this);

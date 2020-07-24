@@ -19,7 +19,7 @@ namespace Crimson.AI.GOAP
             _viableActions.Clear();
             for (var i = 0; i < _actions.Count; ++i)
             {
-                if (_actions[i].Validate(startState))
+                if (_actions[i].IsSatisfied(startState))
                     _viableActions.Add(_actions[i]);
             }
 
@@ -42,7 +42,7 @@ namespace Crimson.AI.GOAP
             for (var i = 0; i < _viableActions.Count; ++i)
             {
                 // see if precondition is met
-                if (_viableActions[i].Validate(context))
+                if (_viableActions[i].IsSatisfied(context))
                 {
                     var node = new AStarNode();
                     node.Action = _viableActions[i];

@@ -1,37 +1,7 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
-    public abstract class Behavior
+    public abstract class Behavior : Operator
     {
-        public TaskStatus Status = TaskStatus.Invalid;
-
-        public abstract TaskStatus Update(Blackboard context);
-
-        public virtual void Invalidate()
-        {
-            Status = TaskStatus.Invalid;
-        }
-
-        public virtual void OnStart()
-        {
-        }
-
-        public virtual void OnEnd()
-        {
-        }
-
-        public virtual float Utility => 0f;
-
-        internal TaskStatus Tick(Blackboard context)
-        {
-            if (Status == TaskStatus.Invalid)
-                OnStart();
-
-            Status = Update(context);
-            
-            if (Status != TaskStatus.Running)
-                OnEnd();
-
-            return Status;
-        }
+        public override string OperatorType => "Behavior";
     }
 }

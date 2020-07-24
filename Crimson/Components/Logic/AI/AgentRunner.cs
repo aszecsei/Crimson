@@ -4,17 +4,17 @@ using Crimson.AI;
 namespace Crimson
 {
     // TODO: Make this generic as an "AI controller" that just runs some sort of algorithm
-    public class BehaviorTree : Component
+    public class AgentRunner : Component
     {
-        private Crimson.AI.BehaviorTree.BehaviorTree _behavior;
+        private Agent _behavior;
         private List<ISensor> _sensors = new List<ISensor>();
         
-        public BehaviorTree(Crimson.AI.BehaviorTree.BehaviorTree bt) : base(true, false)
+        public AgentRunner(Agent agent) : base(true, false)
         {
-            _behavior = bt;
+            _behavior = agent;
         }
 
-        public BehaviorTree AddSensor(ISensor sensor)
+        public AgentRunner AddSensor(ISensor sensor)
         {
             _sensors.Add(sensor);
             return this;

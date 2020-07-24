@@ -5,9 +5,9 @@
     {
         public override TaskStatus Update(Blackboard context)
         {
-            Assert.IsNotNull(Child, "child must not be null");
+            Assert.IsNotNull(ChildInstance, "child must not be null");
 
-            var status = Child.Tick(context);
+            var status = ChildInstance!.Tick(context);
             
             if (status != TaskStatus.Success)
                 return TaskStatus.Running;

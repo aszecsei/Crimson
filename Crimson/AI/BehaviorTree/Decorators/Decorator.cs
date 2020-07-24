@@ -2,14 +2,22 @@
 {
     public abstract class Decorator : Behavior
     {
-        public Behavior Child;
+        public Behavior? Child;
+        protected TaskInstance? ChildInstance;
 
-        public override void Invalidate()
+        public override void OnStart()
         {
-            base.Invalidate();
-            Child.Invalidate();
+            ChildInstance = Child?.Instance();
         }
 
-        public override float Utility => Child.Utility;
+        public override void OnEnd()
+        {
+            base.OnEnd();
+            ChildInstance?.OnEnd();
+            ChildInstance?.Invalidate();
+        }
+
+        public override int Cost => ChildInstance!.Cost;
+        public override int Utility => ChildInstance!.Utility;
     }
 }

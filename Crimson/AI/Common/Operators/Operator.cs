@@ -8,7 +8,14 @@ namespace Crimson.AI
     /// </summary>
     public abstract class Operator : ICloneable
     {
-        public TaskStatus Status = TaskStatus.Invalid;
+        public string? Name;
+
+        public virtual string OperatorType => "Operator";
+
+        protected Operator()
+        {
+            Name = GetType().GetCustomAttribute<AITag>()?.Tag;
+        }
         
         /// <summary>
         /// Returns true if the operator can currently be performed, false otherwise.
@@ -29,14 +36,6 @@ namespace Crimson.AI
         public abstract TaskStatus Update(Blackboard context);
 
         /// <summary>
-        /// Invalidate the Operator.
-        /// </summary>
-        public virtual void Invalidate()
-        {
-            Status = TaskStatus.Invalid;
-        }
-        
-        /// <summary>
         /// Called whenever the Operator begins running.
         /// </summary>
         public virtual void OnStart() {}
@@ -45,26 +44,22 @@ namespace Crimson.AI
         /// Called whenever the Operator stops running.
         /// </summary>
         public virtual void OnEnd() {}
-        
-        internal TaskStatus Tick(Blackboard context)
-        {
-            if (Status == TaskStatus.Invalid)
-                OnStart();
-
-            Status = Update(context);
-            
-            if (Status != TaskStatus.Running)
-                OnEnd();
-
-            return Status;
-        }
 
         /// <inheritdoc cref="ICloneable.Clone()"/>
         public virtual object Clone()
         {
             return MemberwiseClone();
         }
+
+        public virtual int Cost => 0;
         
-        public virtual float Utility => 0f;
+        public virtual int Utility => 0;
+        
+        public TaskInstance Instance() => new TaskInstance(this);
+
+        public override string ToString()
+        {
+            return $"[{OperatorType}] {Name}, Cost {Cost}, Utility {Utility}";
+        }
     }
 }

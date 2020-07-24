@@ -6,9 +6,9 @@
         public override TaskStatus Update(Blackboard context)
         {
             var didAllFail = true;
-            for (var i = 0; i < Children.Count; ++i)
+            for (var i = 0; i < ChildrenInstances.Length; ++i)
             {
-                var child = Children[i];
+                var child = ChildrenInstances[i];
                 child.Tick(context);
 
                 if (child.Status == TaskStatus.Success)

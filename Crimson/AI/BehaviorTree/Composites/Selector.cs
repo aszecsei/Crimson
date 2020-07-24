@@ -17,7 +17,7 @@
             if (CurrentChildIndex != 0)
                 HandleConditionalAborts(context);
 
-            var current = Children[CurrentChildIndex];
+            var current = ChildrenInstances[CurrentChildIndex];
             var status = current.Tick(context);
 
             if (status != TaskStatus.Failure)
@@ -25,7 +25,7 @@
 
             CurrentChildIndex++;
 
-            if (CurrentChildIndex == Children.Count)
+            if (CurrentChildIndex == ChildrenInstances.Length)
             {
                 CurrentChildIndex = 0;
                 return TaskStatus.Failure;

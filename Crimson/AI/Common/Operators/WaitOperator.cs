@@ -19,7 +19,7 @@
 
         public override TaskStatus Update(Blackboard context)
         {
-            if (_startTime == 0)
+            if (Mathf.Approximately(_startTime, 0))
                 _startTime = Time.TotalTime;
             if (Time.TotalTime - _startTime >= WaitTime)
                 return TaskStatus.Success;

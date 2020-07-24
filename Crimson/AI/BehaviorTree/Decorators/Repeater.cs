@@ -3,9 +3,9 @@
     [AITag("Repeat")]
     public class Repeater : Decorator
     {
-        public int Count;
-        public bool RepeatForever;
-        public bool EndOnFailure;
+        public readonly int Count;
+        public readonly bool RepeatForever;
+        public readonly bool EndOnFailure;
 
         private int _iterationCount;
 
@@ -30,12 +30,12 @@
 
         public override TaskStatus Update(Blackboard context)
         {
-            Assert.IsNotNull(Child, "child must not be null");
+            Assert.IsNotNull(ChildInstance, "child must not be null");
 
             if (!RepeatForever && _iterationCount == Count)
                 return TaskStatus.Success;
 
-            var status = Child.Tick(context);
+            var status = ChildInstance!.Tick(context);
             _iterationCount++;
 
             if (EndOnFailure && status == TaskStatus.Failure)

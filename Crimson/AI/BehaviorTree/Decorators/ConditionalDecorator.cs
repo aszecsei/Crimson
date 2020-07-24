@@ -13,25 +13,26 @@
             _shouldReevaluate = shouldReevaluate;
         }
 
-        public override void Invalidate()
+        public override void OnEnd()
         {
-            base.Invalidate();
+            base.OnEnd();
             _conditionalStatus = TaskStatus.Invalid;
         }
 
         public override void OnStart()
         {
+            base.OnStart();
             _conditionalStatus = TaskStatus.Invalid;
         }
 
         public override TaskStatus Update(Blackboard context)
         {
-            Assert.IsNotNull(Child, "child must not be null");
+            Assert.IsNotNull(ChildInstance, "child must not be null");
 
             _conditionalStatus = ExecuteConditional(context);
 
             if (_conditionalStatus == TaskStatus.Success)
-                return Child.Tick(context);
+                return ChildInstance!.Tick(context);
 
             return TaskStatus.Failure;
         }

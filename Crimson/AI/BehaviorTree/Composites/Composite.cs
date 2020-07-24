@@ -7,39 +7,48 @@ namespace Crimson.AI.BehaviorTree
         public AbortType AbortType = AbortType.None;
         
         protected readonly List<Behavior> Children = new List<Behavior>();
+        protected TaskInstance[] ChildrenInstances = new TaskInstance[0];
         protected bool HasLowerPriorityConditionalAbort;
         protected int CurrentChildIndex = 0;
 
-        public override float Utility
+        public override int Cost
+        {
+            get
+            {
+                // average children cost
+                int totCost = 0;
+                for (int i = 0; i < Children.Count; ++i)
+                    totCost += Children[i].Utility;
+                return totCost / Children.Count;
+            }
+        }
+        
+        public override int Utility
         {
             get
             {
                 // average children utility
-                float maxUtility = 0;
+                int totUtility = 0;
                 for (int i = 0; i < Children.Count; ++i)
-                    maxUtility += Children[i].Utility;
-                return maxUtility / Children.Count;
+                    totUtility += Children[i].Utility;
+                return totUtility / Children.Count;
             }
-        }
-
-        public override void Invalidate()
-        {
-            base.Invalidate();
-            
-            for (var i = 0; i < Children.Count; ++i)
-                Children[i].Invalidate();
         }
 
         public override void OnStart()
         {
             HasLowerPriorityConditionalAbort = HasLowerPriorityConditionalAbortInChildren();
             CurrentChildIndex = 0;
+            
+            ChildrenInstances = new TaskInstance[Children.Count];
+            for (var i = 0; i < Children.Count; ++i)
+                ChildrenInstances[i] = Children[i].Instance();
         }
 
         public override void OnEnd()
         {
-            for (var i = 0; i < Children.Count; ++i)
-                Children[i].Invalidate();
+            for (var i = 0; i < ChildrenInstances.Length; ++i)
+                ChildrenInstances[i].Invalidate();
         }
 
         public void AddChild(Behavior child)
@@ -83,8 +92,8 @@ namespace Crimson.AI.BehaviorTree
                         CurrentChildIndex = i;
 
                         // we have an abort so we invalidate the children so they get reevaluated
-                        for (var j = i; j < Children.Count; j++)
-                            Children[j].Invalidate();
+                        for (var j = i; j < ChildrenInstances.Length; j++)
+                            ChildrenInstances[j].Invalidate();
                         break;
                     }
                 }
@@ -106,8 +115,8 @@ namespace Crimson.AI.BehaviorTree
                     CurrentChildIndex = i;
 
                     // we have an abort so we invalidate the children so they get reevaluated
-                    for (var j = i; j < Children.Count; j++)
-                        Children[j].Invalidate();
+                    for (var j = i; j < ChildrenInstances.Length; j++)
+                        ChildrenInstances[j].Invalidate();
                     break;
                 }
             }

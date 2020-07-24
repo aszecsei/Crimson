@@ -5,7 +5,7 @@ namespace Crimson.AI.BehaviorTree
     [AITag("Random")]
     public class RandomProbability : Behavior, IConditional
     {
-        private float _successProbability;
+        private readonly float _successProbability;
 
         public RandomProbability(float probability)
         {

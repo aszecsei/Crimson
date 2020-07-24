@@ -4,16 +4,18 @@ namespace Crimson.AI.BehaviorTree
 {
     public class ExecuteAction : Behavior
     {
-        private Func<Blackboard, TaskStatus> _action;
-        private float _utility;
+        private readonly Func<Blackboard, TaskStatus> _action;
 
-        public ExecuteAction(Func<Blackboard, TaskStatus> action, float utility = 1f)
+        public ExecuteAction(Func<Blackboard, TaskStatus> action, int utility = 1, int cost = 1)
         {
             _action = action;
-            _utility = utility;
+            Utility = utility;
+            Cost = cost;
         }
 
-        public override float Utility => _utility;
+        public override int Utility { get; }
+
+        public override int Cost { get; }
 
         public override TaskStatus Update(Blackboard context)
         {

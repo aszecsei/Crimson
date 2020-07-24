@@ -92,10 +92,10 @@ namespace Crimson.AI.BehaviorTree
             return SetChildOnParent(new WaitAction(waitTime));
         }
 
-        public BehaviorTreeBuilder SubTree(BehaviorTree subTree)
+        public BehaviorTreeBuilder SubTaskRunner(Agent subTree)
         {
             Assert.IsFalse(_parentNodeStack.Count == 0, "can't splice an unnested sub tree, there must be a parent tree");
-            return SetChildOnParent(new BehaviorTreeReference(subTree));
+            return SetChildOnParent(new TaskRunnerReference(subTree));
         }
 
         #endregion
@@ -212,10 +212,10 @@ namespace Crimson.AI.BehaviorTree
 
         #endregion
 
-        public BehaviorTree Build(float updatePeriod = 0.2f)
+        public Agent Build(float updatePeriod = 0.2f)
         {
             Assert.IsNotNull(_currentNode, "can't create a behavior tree without any nodes");
-            return new BehaviorTree(_context, _currentNode!, updatePeriod);
+            return new Agent(_context, _currentNode!, updatePeriod);
         }
     }
 }

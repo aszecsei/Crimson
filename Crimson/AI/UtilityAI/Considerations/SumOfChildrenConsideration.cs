@@ -7,7 +7,7 @@ namespace Crimson.AI.UtilityAI
     /// </summary>
     public class SumOfChildrenConsideration : IConsideration
     {
-        public IAction Action { get; set; }
+        public Action? Action { get; set; }
         private List<IAppraisal> _appraisals = new List<IAppraisal>();
 
         public SumOfChildrenConsideration AddAppraisal(IAppraisal appraisal)

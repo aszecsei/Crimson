@@ -8,7 +8,7 @@ namespace Crimson.AI.UtilityAI
     public class AllOrNothingConsideration : IConsideration
     {
         public float Threshold;
-        public IAction Action { get; set; }
+        public Action? Action { get; set; }
         private List<IAppraisal> _appraisals = new List<IAppraisal>();
 
         public AllOrNothingConsideration(float threshold = 0)

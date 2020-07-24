@@ -8,7 +8,7 @@
     {
         public float Score;
         
-        public IAction? Action { get; set; }
+        public Action? Action { get; set; }
 
         public FixedScoreConsideration(float score = 1)
         {

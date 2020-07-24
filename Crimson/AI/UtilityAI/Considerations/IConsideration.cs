@@ -6,7 +6,7 @@
     /// </summary>
     public interface IConsideration
     {
-        IAction? Action { get; set; }
+        Action? Action { get; set; }
         float GetScore(Blackboard context);
     }
 }

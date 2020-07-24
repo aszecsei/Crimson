@@ -1,9 +1,9 @@
 ﻿namespace Crimson.AI.UtilityAI
 {
     /// <summary>
-    /// An <see cref="IAction{T}"/> that calls through to another <see cref="Reasoner{T}"/>
+    /// An <see cref="Action"/> that calls through to another <see cref="Reasoner"/>
     /// </summary>
-    public class ReasonerAction : IAction
+    public class ReasonerAction : Action
     {
         private Reasoner _reasoner;
 
@@ -12,9 +12,9 @@
             _reasoner = reasoner;
         }
 
-        public void Execute(Blackboard context)
+        public override TaskStatus Update(Blackboard context)
         {
-            _reasoner.Select(context)?.Execute(context);
+            return _reasoner.Select(context)?.Update(context) ?? TaskStatus.Failure;
         }
     }
 }

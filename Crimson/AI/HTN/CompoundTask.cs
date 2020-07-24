@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Crimson.AI.HTN
 {
-    public class CompoundTask : Task, IEnumerable<Method>
+    public class CompoundTask : ITask, IEnumerable<Method>
     {
-        private List<Method> _methods;
+        public string Name { get; private set; }
+        private readonly List<Method> _methods;
+        private readonly List<IConditional> _preConditions = new List<IConditional>();
 
         public CompoundTask(string name, params Method[] methods)
         {
@@ -41,6 +44,22 @@ namespace Crimson.AI.HTN
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public bool IsSatisfied(Blackboard context)
+        {
+            for (int i = 0; i < _preConditions.Count; ++i)
+            {
+                if (_preConditions[i].Update(context) != TaskStatus.Success)
+                    return false;
+            }
+
+            return true;
+        }
+
+        public void AddPreCondition(IConditional condition)
+        {
+            _preConditions.Add(condition);
         }
     }
 }

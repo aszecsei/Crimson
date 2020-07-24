@@ -2,17 +2,18 @@
 
 namespace Crimson.AI.UtilityAI
 {
-    public class CompositeAction : IAction
+    public class CompositeAction : Action
     {
-        private List<IAction> _actions = new List<IAction>();
+        private List<Action> _actions = new List<Action>();
 
-        public void Execute(Blackboard context)
+        public override TaskStatus Update(Blackboard context)
         {
             for (var i = 0; i < _actions.Count; ++i)
-                _actions[i].Execute(context);
+                _actions[i].Update(context);
+            return TaskStatus.Success;
         }
 
-        public CompositeAction AddAction(IAction action)
+        public CompositeAction AddAction(Action action)
         {
             _actions.Add(action);
             return this;

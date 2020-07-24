@@ -2,7 +2,7 @@
 
 namespace Crimson.AI.UtilityAI
 {
-    public abstract class ActionWithOptions<T> : IAction
+    public abstract class ActionWithOptions<T> : Action
     {
         protected List<IActionOptionAppraisal<T>> _appraisals = new List<IActionOptionAppraisal<T>>();
 
@@ -27,8 +27,6 @@ namespace Crimson.AI.UtilityAI
 
             return result;
         }
-
-        public abstract void Execute(Blackboard context);
 
         public ActionWithOptions<T> AddScorer(IActionOptionAppraisal<T> scorer)
         {

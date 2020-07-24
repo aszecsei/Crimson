@@ -3,22 +3,36 @@ using System.Collections.Generic;
 
 namespace Crimson.AI.HTN
 {
-    public abstract class PrimitiveTask : Task
+    public abstract class PrimitiveTask : Operator, ITask
     {
-        private int _cost;
+        private readonly List<IConditional> _preConditions = new List<IConditional>();
         
-        public PrimitiveTask(string name, int cost = 1)
+        public override int Cost { get; }
+
+        protected PrimitiveTask(string name, int cost = 1)
         {
             Name = name;
-            _cost = cost;
+            Cost = cost;
         }
-        
-        public virtual void Execute(Blackboard context) {}
 
-        public virtual int GetCost(Blackboard context) => _cost;
+        public override bool IsSatisfied(Blackboard context)
+        {
+            for (int i = 0; i < _preConditions.Count; ++i)
+            {
+                if (_preConditions[i].Update(context) != TaskStatus.Success)
+                    return false;
+            }
+
+            return true;
+        }
+
+        public void AddPreCondition(IConditional condition)
+        {
+            _preConditions.Add(condition);
+        }
+
+        public virtual int GetCost(Blackboard context) => Cost;
 
         public virtual int GetHeuristic(Blackboard context) => GetCost(context);
-
-        public abstract TaskStatus Update(Blackboard context);
     }
 }

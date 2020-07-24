@@ -2,13 +2,13 @@
 
 namespace Crimson.AI.UtilityAI
 {
-    public abstract class Reasoner
+    public abstract class Reasoner : Operator
     {
         public IConsideration DefaultConsideration = new FixedScoreConsideration();
         
         protected List<IConsideration> _considerations = new List<IConsideration>();
 
-        public IAction? Select(Blackboard context)
+        public Action? Select(Blackboard context)
         {
             var consideration = SelectBestConsideration(context);
             return consideration?.Action;
@@ -26,6 +26,12 @@ namespace Crimson.AI.UtilityAI
         {
             DefaultConsideration = defaultConsideration;
             return this;
+        }
+
+        public override TaskStatus Update(Blackboard context)
+        {
+            var action = Select(context);
+            return action?.Update(context) ?? TaskStatus.Invalid;
         }
     }
 }

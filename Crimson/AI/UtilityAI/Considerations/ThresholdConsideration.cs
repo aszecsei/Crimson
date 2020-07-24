@@ -8,7 +8,7 @@ namespace Crimson.AI.UtilityAI
     public class ThresholdConsideration : IConsideration
     {
         public float Threshold;
-        public IAction Action { get; set; }
+        public Action? Action { get; set; }
         private List<IAppraisal> _appraisals = new List<IAppraisal>();
 
         public ThresholdConsideration(float threshold = 0)

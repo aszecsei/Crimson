@@ -6,7 +6,7 @@ namespace Crimson.AI.UtilityAI
     /// Wraps an <see cref="Action"/> for use as an <see cref="IAction"/> without
     /// having to create a new subclass
     /// </summary>
-    public class ActionExecutor : IAction
+    public class ActionExecutor : Action
     {
         private Action<Blackboard> _action;
 
@@ -15,9 +15,10 @@ namespace Crimson.AI.UtilityAI
             _action = action;
         }
 
-        public void Execute(Blackboard context)
+        public override TaskStatus Update(Blackboard context)
         {
             _action(context);
+            return TaskStatus.Success;
         }
     }
 }

@@ -8,13 +8,13 @@ namespace Crimson.AI
     /// </summary>
     public abstract class Operator : ICloneable
     {
-        public string? Name;
+        public string Name { get; set; }
 
         public virtual string OperatorType => "Operator";
 
         protected Operator()
         {
-            Name = GetType().GetCustomAttribute<AITag>()?.Tag;
+            Name = GetType().GetCustomAttribute<AITag>()?.Tag ?? "";
         }
         
         /// <summary>

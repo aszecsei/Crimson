@@ -14,7 +14,7 @@ namespace Crimson.AI.HTN
             _preConditions = new List<IConditional>(conditions);
         }
 
-        public void Add(Task subTask)
+        public void Add(ITask subTask)
         {
             _subTasks.Add(subTask.Name);
         }

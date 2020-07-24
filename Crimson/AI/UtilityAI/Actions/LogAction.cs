@@ -3,7 +3,7 @@
     /// <summary>
     /// An <see cref="IAction{T}"/> that logs text
     /// </summary>
-    public class LogAction : IAction
+    public class LogAction : Action
     {
         private readonly string _text;
 
@@ -12,9 +12,10 @@
             _text = text;
         }
 
-        public void Execute(Blackboard context)
+        public override TaskStatus Update(Blackboard context)
         {
             Utils.Log(_text);
+            return TaskStatus.Success;
         }
     }
 }

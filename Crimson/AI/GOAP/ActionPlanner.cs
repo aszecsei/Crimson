@@ -6,15 +6,15 @@ namespace Crimson.AI.GOAP
 {
     public class ActionPlanner : IEnumerable<Action>
     {
-        private List<Action> _actions = new List<Action>();
-        private List<Action> _viableActions = new List<Action>();
+        private readonly List<Action> _actions = new List<Action>();
+        private readonly List<Action> _viableActions = new List<Action>();
 
         public void Add(Action action)
         {
             _actions.Add(action);
         }
 
-        public Stack<Action>? Plan(Blackboard startState, Blackboard goalState, List<AStarNode>? selectedNodes = null)
+        public Plan? Plan(Blackboard startState, Blackboard goalState, List<AStarNode>? selectedNodes = null)
         {
             _viableActions.Clear();
             for (var i = 0; i < _actions.Count; ++i)
@@ -23,7 +23,8 @@ namespace Crimson.AI.GOAP
                     _viableActions.Add(_actions[i]);
             }
 
-            return AStar.Plan(this, startState, goalState, selectedNodes);
+            var res = AStar.Plan(this, startState, goalState, selectedNodes);
+            return res != null ? new Plan(res.ToArray()) : null;
         }
 
         public IEnumerator<Action> GetEnumerator()

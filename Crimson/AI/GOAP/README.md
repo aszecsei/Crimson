@@ -9,8 +9,8 @@ GOAP was made popular by the old FPS F.E.A.R. The AI in F.E.A.R. consisted of a 
 The brains of the operation. You give the ActionPlanner all of your Actions, the current world state and your goal state and it will give you back the best possible plan to achieve the goal state.
 
 
-## Action/ActionT
-Actions define a list of pre conditions that they require and a list of post conditions that will occur when the Action is performed. ActionT is just a subclass of Action with a handy context object of type T.
+## Action
+Actions define a list of pre conditions that they require and a list of post conditions that will occur when the Action is performed.
 
 
 ## Agent

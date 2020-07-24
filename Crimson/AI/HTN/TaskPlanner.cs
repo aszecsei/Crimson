@@ -58,7 +58,7 @@ namespace Crimson.AI.HTN
                 var current = fringe.Dequeue();
 
                 if (current.TasksToProcess.IsEmpty())
-                    return new Plan(current.PartialPlan);
+                    return new Plan(current.PartialPlan.ToArray());
 
                 ITask taskToProcess = current.TasksToProcess[0];
                 switch (taskToProcess)

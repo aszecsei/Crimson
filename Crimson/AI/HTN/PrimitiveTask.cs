@@ -6,7 +6,9 @@ namespace Crimson.AI.HTN
     public abstract class PrimitiveTask : Operator, ITask
     {
         private readonly List<IConditional> _preConditions = new List<IConditional>();
-        
+
+        public override string OperatorType => "PrimitiveTask";
+
         public override int Cost { get; }
 
         protected PrimitiveTask(string name, int cost = 1)

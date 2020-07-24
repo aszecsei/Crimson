@@ -1,18 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Crimson.AI.HTN
+namespace Crimson.AI.GOAP
 {
     /// <summary>
     /// Wraps a sequence of primitive tasks. Runnable from an <see cref="Agent"/>.
     /// </summary>
-    public class Plan : Operator, IEnumerable<PrimitiveTask>
+    public class Plan : Operator, IEnumerable<Action>
     {
-        private readonly PrimitiveTask[] _plan;
+        private readonly Action[] _plan;
         private TaskInstance[] _instances = new TaskInstance[0];
         private int _currentOperator = 0;
 
-        public Plan(PrimitiveTask[] plan)
+        public Plan(Action[] plan)
         {
             _plan = plan;
         }
@@ -43,9 +43,9 @@ namespace Crimson.AI.HTN
             return result;
         }
 
-        public IEnumerator<PrimitiveTask> GetEnumerator()
+        public IEnumerator<Action> GetEnumerator()
         {
-            return ((IEnumerable<PrimitiveTask>)_plan).GetEnumerator();
+            return ((IEnumerable<Action>)_plan).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

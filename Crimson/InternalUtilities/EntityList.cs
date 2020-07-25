@@ -64,6 +64,12 @@ namespace Crimson
             unsorted = true;
         }
 
+        public void Sort()
+        {
+            unsorted = false;
+            entities.Sort(CompareDepth);
+        }
+
         public void UpdateLists()
         {
             if (toAdd.Count > 0)
@@ -113,8 +119,7 @@ namespace Crimson
 
             if (unsorted)
             {
-                unsorted = false;
-                entities.Sort(CompareDepth);
+                Sort();
             }
 
             if (toAdd.Count > 0)

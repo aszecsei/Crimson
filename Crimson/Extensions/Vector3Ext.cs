@@ -86,5 +86,17 @@ namespace Crimson
         {
             return new Vector2(vec.X, vec.Y);
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ManhattanDistance(this Vector3 vec, Vector3 other)
+        {
+            return Mathf.Abs(vec.X - other.X) + Mathf.Abs(vec.Y - other.Y) + Mathf.Abs(vec.Z - other.Z);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ChebyshevDistance(this Vector3 vec, Vector3 other)
+        {
+            return Mathf.Max(Mathf.Abs(vec.X - other.X), Mathf.Abs(vec.Y - other.Y), Mathf.Abs(vec.Z - other.Z));
+        }
     }
 }

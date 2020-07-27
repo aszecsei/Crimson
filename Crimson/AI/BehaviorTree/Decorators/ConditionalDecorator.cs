@@ -1,12 +1,12 @@
 ﻿namespace Crimson.AI.BehaviorTree
 {
-    public class ConditionalDecorator : Decorator, IConditional
+    public class ConditionalDecorator : Decorator
     {
-        private IConditional _conditional;
-        private bool _shouldReevaluate;
+        private readonly IConditional _conditional;
+        private readonly bool _shouldReevaluate;
         private TaskStatus _conditionalStatus;
 
-        public ConditionalDecorator(IConditional conditional, bool shouldReevaluate = true)
+        public ConditionalDecorator(IConditional conditional, bool shouldReevaluate = true, bool isInversed = false, AbortMode abortMode = AbortMode.None) : base(isInversed, abortMode)
         {
             Assert.IsNotNull(conditional, "conditional must not be null");
             _conditional = conditional;
@@ -25,16 +25,12 @@
             _conditionalStatus = TaskStatus.Invalid;
         }
 
-        public override TaskStatus Update(Blackboard context)
+        protected override TaskStatus Tick(Blackboard context)
         {
-            Assert.IsNotNull(ChildInstance, "child must not be null");
-
-            _conditionalStatus = ExecuteConditional(context);
-
-            if (_conditionalStatus == TaskStatus.Success)
+            var status = ExecuteConditional(context);
+            if (status == TaskStatus.Success)
                 return ChildInstance!.Tick(context);
-
-            return TaskStatus.Failure;
+            return status;
         }
 
         internal TaskStatus ExecuteConditional(Blackboard context, bool forceUpdate = false)

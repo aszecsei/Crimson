@@ -253,6 +253,17 @@ namespace Crimson
             return random.NextFloat() * max;
         }
 
+        public static byte NextByte(this Random random)
+        {
+            return (byte)random.Next(256);
+        }
+
+        public static void NextBytes(this Random random, Span<byte> bytes)
+        {
+            for (var i = 0; i < bytes.Length; ++i)
+                bytes[i] = random.NextByte();
+        }
+
         public static float NextAngle(this Random random)
         {
             return random.NextFloat() * MathHelper.TwoPi;
@@ -263,6 +274,28 @@ namespace Crimson
         public static Vector2 ShakeVector(this Random random)
         {
             return new Vector2(random.Choose(s_shakeVectorOffsets), random.Choose(s_shakeVectorOffsets));
+        }
+
+        public static Vector2 NextVector(this Random random, Vector2 min, Vector2 max)
+        {
+            return new Vector2(random.Range(min.X, max.X), random.Range(min.Y, max.Y));
+        }
+        
+        public static Vector3 NextVector(this Random random, Vector3 min, Vector3 max)
+        {
+            return new Vector3(random.Range(min.X, max.X), random.Range(min.Y, max.Y), random.Range(min.Z, max.Z));
+        }
+        
+        public static Vector4 NextVector(this Random random, Vector4 min, Vector4 max)
+        {
+            return new Vector4(random.Range(min.X, max.X), random.Range(min.Y, max.Y), random.Range(min.Z, max.Z), random.Range(min.W, max.W));
+        }
+        
+        public static Color NextColor(this Random random)
+        {
+            Span<byte> buffer = stackalloc byte[3];
+            Random.NextBytes(buffer);
+            return new Color(buffer[0], buffer[1], buffer[2]);
         }
 
         #endregion

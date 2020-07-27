@@ -1,4 +1,5 @@
 ﻿using System;
+using Crimson.AI.BehaviorTree;
 
 namespace Crimson.AI
 {
@@ -15,7 +16,7 @@ namespace Crimson.AI
 
         internal TaskInstance(Operator @operator)
         {
-            Operator = @operator;
+            Operator = (Operator)@operator.Clone();
         }
 
         #region Operator Shortcuts
@@ -36,7 +37,18 @@ namespace Crimson.AI
         /// </summary>
         /// <param name="context">The current world state.</param>
         /// <returns>A value describing whether the operator is currently running, has finished successfully or unsuccessfully, or has entered an invalid state.</returns>
-        public TaskStatus Update(Blackboard context) => Operator.Update(context);
+        public TaskStatus Update(Blackboard context)
+        {
+            var status = Operator.Update(context);
+            
+            if (Operator is Decorator decorator && decorator.IsInversed)
+            {
+                if (status == TaskStatus.Success) return TaskStatus.Failure;
+                if (status == TaskStatus.Failure) return TaskStatus.Success;
+            }
+
+            return status;
+        }
         
         public void OnStart() => Operator.OnStart();
         
@@ -55,11 +67,11 @@ namespace Crimson.AI
         
         internal TaskStatus Tick(Blackboard context)
         {
-            if (Status == TaskStatus.Invalid)
+            if (Status != TaskStatus.Running)
                 Operator.OnStart();
 
             Status = Update(context);
-            
+
             if (Status != TaskStatus.Running)
                 Operator.OnEnd();
 

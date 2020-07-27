@@ -3,7 +3,7 @@
 namespace Crimson.AI.BehaviorTree
 {
     [AITag("Random")]
-    public class RandomProbability : Behavior, IConditional
+    public class RandomProbability : IConditional
     {
         private readonly float _successProbability;
 
@@ -12,7 +12,7 @@ namespace Crimson.AI.BehaviorTree
             _successProbability = probability;
         }
 
-        public override TaskStatus Update(Blackboard context)
+        public TaskStatus Update(Blackboard context)
         {
             if (Utils.Random.NextFloat() > _successProbability)
                 return TaskStatus.Success;

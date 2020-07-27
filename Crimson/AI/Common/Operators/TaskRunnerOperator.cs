@@ -1,10 +1,10 @@
-﻿namespace Crimson.AI.BehaviorTree
+﻿namespace Crimson.AI
 {
-    public class TaskRunnerReference : Behavior
+    public class TaskRunnerOperator : Operator
     {
         private Agent _childAgent;
 
-        public TaskRunnerReference(Agent agent)
+        public TaskRunnerOperator(Agent agent)
         {
             _childAgent = agent;
         }

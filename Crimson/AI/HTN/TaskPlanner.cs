@@ -2,12 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using Crimson.Collections;
+using Priority_Queue;
 
 namespace Crimson.AI.HTN
 {
     public class TaskPlanner : IEnumerable<ITask>
     {
-        private struct PlannerState : ICloneable
+        private const int MAX_NODES = 1000;
+        private class PlannerState : FastPriorityQueueNode, ICloneable
         {
             public List<ITask> TasksToProcess;
             public Blackboard WorkingWorldState;
@@ -43,7 +45,7 @@ namespace Crimson.AI.HTN
 
         public Plan? Plan(Blackboard context)
         {
-            SimplePriorityQueue<PlannerState> fringe = new SimplePriorityQueue<PlannerState>();
+            FastPriorityQueue<PlannerState> fringe = new FastPriorityQueue<PlannerState>(MAX_NODES);
             fringe.Enqueue(new PlannerState
             {
                 TasksToProcess = new List<ITask> { _tasks[_rootTask] },

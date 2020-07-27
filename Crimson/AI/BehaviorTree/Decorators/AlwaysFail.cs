@@ -3,7 +3,7 @@
     [AITag("Fail")]
     public class AlwaysFail : Decorator
     {
-        public override TaskStatus Update(Blackboard context)
+        protected override TaskStatus Tick(Blackboard context)
         {
             Assert.IsNotNull(ChildInstance, "child must not be null");
 
@@ -13,6 +13,10 @@
                 return TaskStatus.Running;
 
             return TaskStatus.Failure;
+        }
+
+        public AlwaysFail() : base(false)
+        {
         }
     }
 }

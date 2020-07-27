@@ -134,6 +134,15 @@ namespace Crimson
             return true;
         }
 
+        public readonly bool Intersects(in Rectangle rect)
+        {
+            if (rect.Left > Max.X || Min.X > rect.Right)
+                return false;
+            if (rect.Top > Max.Y || Min.Y > rect.Bottom)
+                return false;
+            return true;
+        }
+
         /// <summary>
         /// Sets the bounds to the <c>min</c> and <c>max</c> value of the box.
         /// </summary>

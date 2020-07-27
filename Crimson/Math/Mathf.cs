@@ -354,7 +354,7 @@ namespace Crimson
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Max(int a, int b, int c)
+        public static int Max(int a, int b, int c)
         {
             return Mathf.Max(Mathf.Max(a, b), c);
         }

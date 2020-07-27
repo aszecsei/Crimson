@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Crimson.Collections;
+using Priority_Queue;
 
 namespace Crimson.AI.Pathfinding
 {
@@ -8,7 +8,7 @@ namespace Crimson.AI.Pathfinding
         /// <summary>
 		/// wraps up the raw data in a small class with the extra fields the PriorityQueue requires
 		/// </summary>
-		class WeightedNode<T> : PriorityQueueNode
+		class WeightedNode<T> : FastPriorityQueueNode
 		{
 			public T Data;
 
@@ -26,7 +26,7 @@ namespace Crimson.AI.Pathfinding
 			cameFrom.Add(start, start);
 
 			var costSoFar = new Dictionary<T, int>();
-			var frontier = new PriorityQueue<WeightedNode<T>>(1000);
+			var frontier = new FastPriorityQueue<WeightedNode<T>>(1000);
 			frontier.Enqueue(new WeightedNode<T>(start), 0);
 
 			costSoFar[start] = 0;

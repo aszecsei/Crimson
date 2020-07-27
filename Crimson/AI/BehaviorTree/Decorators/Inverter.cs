@@ -3,7 +3,9 @@
     [AITag("Invert")]
     public class Inverter : Decorator
     {
-        public override TaskStatus Update(Blackboard context)
+        public Inverter() : base(false) {}
+
+        protected override TaskStatus Tick(Blackboard context)
         {
             Assert.IsNotNull(ChildInstance, "child must not be null");
 

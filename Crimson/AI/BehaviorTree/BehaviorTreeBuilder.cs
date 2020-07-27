@@ -5,38 +5,25 @@ namespace Crimson.AI.BehaviorTree
 {
     public class BehaviorTreeBuilder
     {
-        private readonly Blackboard _context;
-        private Behavior? _currentNode;
-        private readonly Stack<Behavior> _parentNodeStack = new Stack<Behavior>();
+        private Node? _currentNode;
+        private readonly Stack<Composite> _parentNodeStack = new Stack<Composite>();
 
-        public BehaviorTreeBuilder(Blackboard context)
+        private BehaviorTreeBuilder() {}
+
+        public static BehaviorTreeBuilder Begin()
         {
-            _context = context;
+            return new BehaviorTreeBuilder();
         }
 
-        public static BehaviorTreeBuilder Begin(Blackboard context)
-        {
-            return new BehaviorTreeBuilder(context);
-        }
-
-        private BehaviorTreeBuilder SetChildOnParent(Behavior child)
+        private BehaviorTreeBuilder SetChildOnParent(Node child)
         {
             var parent = _parentNodeStack.Peek();
-            switch (parent)
-            {
-                case Composite composite:
-                    composite.AddChild(child);
-                    break;
-                case Decorator decorator:
-                    decorator.Child = child;
-                    EndDecorator();
-                    break;
-            }
-
+            parent.AddChild(child);
+            _currentNode = child;
             return this;
         }
 
-        private BehaviorTreeBuilder PushParentNode(Behavior composite)
+        private BehaviorTreeBuilder PushParentNode(Composite composite)
         {
             if (_parentNodeStack.Count > 0)
                 SetChildOnParent(composite);
@@ -45,116 +32,104 @@ namespace Crimson.AI.BehaviorTree
             return this;
         }
 
-        private void EndDecorator()
-        {
-            _currentNode = _parentNodeStack.Pop();
-        }
-
         #region Leaf Nodes (actions and sub trees)
 
-        public BehaviorTreeBuilder Action(Func<Blackboard, TaskStatus> func)
+        public BehaviorTreeBuilder Task(Operator @operator)
         {
-            Assert.IsFalse(_parentNodeStack.Count == 0, "can't create an unnested action node. it must be a leaf node");
-            return SetChildOnParent(new ExecuteAction(func));
+            Assert.IsFalse(_parentNodeStack.Count == 0, "can't create an unnested task node. it must be a leaf node");
+            return SetChildOnParent(new Task(@operator));
         }
 
-        public BehaviorTreeBuilder Action(Func<Blackboard, bool> func)
+        public BehaviorTreeBuilder Wait(float duration)
         {
-            return Action(t => func(t) ? TaskStatus.Success : TaskStatus.Failure);
+            return Task(new WaitOperator(duration));
         }
 
-        public BehaviorTreeBuilder Action(Behavior action)
+        public BehaviorTreeBuilder Log(string text, bool isError = false)
         {
-            Assert.IsFalse(_parentNodeStack.Count == 0, "can't create an unnested action node. it must be a leaf node");
-            return SetChildOnParent(action);
+            return Task(new LogOperator(text, isError));
+        }
+        
+        public BehaviorTreeBuilder Task(Func<Blackboard, TaskStatus> action, int utility = 1, int cost = 1)
+        {
+            return Task(new ExecuteOperator(action, utility, cost));
+        }
+        
+        public BehaviorTreeBuilder FinishWithResult(TaskStatus result)
+        {
+            return Task(new FinishWithResult(result));
         }
 
-        public BehaviorTreeBuilder Conditional(Func<Blackboard, TaskStatus> func)
+        public BehaviorTreeBuilder FinishWithResult(string result)
         {
-            Assert.IsFalse(_parentNodeStack.Count == 0, "can't create an unnested conditional node. it must be a leaf node");
-            return SetChildOnParent(new ExecuteActionConditional(func));
+            return Task(new FinishWithResult(result));
         }
 
-        public BehaviorTreeBuilder Conditional(Func<Blackboard, bool> func)
+        public BehaviorTreeBuilder TaskRunner(Agent agent)
         {
-            return Conditional(t => func(t) ? TaskStatus.Success : TaskStatus.Failure);
-        }
-
-        public BehaviorTreeBuilder LogAction(string text)
-        {
-            Assert.IsFalse(_parentNodeStack.Count == 0, "can't create an unnested action node. it must be a leaf node");
-            return SetChildOnParent(new LogAction(text));
-        }
-
-        public BehaviorTreeBuilder WaitAction(float waitTime)
-        {
-            Assert.IsFalse(_parentNodeStack.Count == 0, "can't create an unnested action node. it must be a leaf node");
-            return SetChildOnParent(new WaitAction(waitTime));
-        }
-
-        public BehaviorTreeBuilder SubTaskRunner(Agent subTree)
-        {
-            Assert.IsFalse(_parentNodeStack.Count == 0, "can't splice an unnested sub tree, there must be a parent tree");
-            return SetChildOnParent(new TaskRunnerReference(subTree));
+            return Task(new TaskRunnerOperator(agent));
         }
 
         #endregion
 
         #region Decorators
 
-        public BehaviorTreeBuilder ConditionalDecorator(Func<Blackboard, TaskStatus> func, bool shouldReevaluate = true)
-        {
-            return PushParentNode(new ConditionalDecorator(new ExecuteActionConditional(func), shouldReevaluate));
-        }
-
-        public BehaviorTreeBuilder ConditionalDecorator(Func<Blackboard, bool> func, bool shouldReevaluate = true)
-        {
-            return ConditionalDecorator(t => func(t) ? TaskStatus.Success : TaskStatus.Failure, shouldReevaluate);
-        }
-
-        public BehaviorTreeBuilder ConditionalDecorator(IConditional cond, bool shouldReevaluate = true)
-        {
-            return PushParentNode(new ConditionalDecorator(cond, shouldReevaluate));
-        }
-
         public BehaviorTreeBuilder Decorator(Decorator deco)
         {
-            return PushParentNode(deco);
+            Assert.IsNotNull(_currentNode, "can't add a decorator without creating a node first");
+            _currentNode!.Add(deco);
+            return this;
+        }
+        
+        public BehaviorTreeBuilder ConditionalDecorator(IConditional cond, bool shouldReevaluate = true, bool isInversed = false, AbortMode abortMode = AbortMode.None)
+        {
+            return Decorator(new ConditionalDecorator(cond, shouldReevaluate, isInversed, abortMode));
         }
 
         public BehaviorTreeBuilder AlwaysFail()
         {
-            return PushParentNode(new AlwaysFail());
+            return Decorator(new AlwaysFail());
         }
 
         public BehaviorTreeBuilder AlwaysSucceed()
         {
-            return PushParentNode(new AlwaysSucceed());
+            return Decorator(new AlwaysSucceed());
         }
 
         public BehaviorTreeBuilder Inverter()
         {
-            return PushParentNode(new Inverter());
+            return Decorator(new Inverter());
         }
 
         public BehaviorTreeBuilder Repeater(int count, bool endOnFailure = false)
         {
-            return PushParentNode(new Repeater(count, endOnFailure));
+            return Decorator(new Repeater(count, endOnFailure));
         }
 
         public BehaviorTreeBuilder Repeater(bool endOnFailure = false)
         {
-            return PushParentNode(new Repeater(endOnFailure));
+            return Decorator(new Repeater(endOnFailure));
         }
 
         public BehaviorTreeBuilder UntilFail()
         {
-            return PushParentNode(new UntilFail());
+            return Decorator(new UntilFail());
         }
 
         public BehaviorTreeBuilder UntilSuccess()
         {
-            return PushParentNode(new UntilSuccess());
+            return Decorator(new UntilSuccess());
+        }
+
+        #endregion
+
+        #region Services
+
+        public BehaviorTreeBuilder Service(Service service)
+        {
+            Assert.IsNotNull(_currentNode, "can't add a service without creating a node first");
+            _currentNode!.Add(service);
+            return this;
         }
 
         #endregion
@@ -178,9 +153,9 @@ namespace Crimson.AI.BehaviorTree
         }
 
 
-        public BehaviorTreeBuilder Selector(AbortType abortType = AbortType.None)
+        public BehaviorTreeBuilder Selector()
         {
-            return PushParentNode(new Selector(abortType));
+            return PushParentNode(new Selector());
         }
 
 
@@ -190,9 +165,9 @@ namespace Crimson.AI.BehaviorTree
         }
 
 
-        public BehaviorTreeBuilder Sequence(AbortType abortType = AbortType.None)
+        public BehaviorTreeBuilder Sequence()
         {
-            return PushParentNode(new Sequence(abortType));
+            return PushParentNode(new Sequence());
         }
 
 
@@ -204,18 +179,19 @@ namespace Crimson.AI.BehaviorTree
 
         public BehaviorTreeBuilder EndComposite()
         {
-            Assert.IsTrue(_parentNodeStack.Peek() is Composite,
-                "attempting to end a composite but the top node is a decorator");
             _currentNode = _parentNodeStack.Pop();
             return this;
         }
 
         #endregion
 
-        public Agent Build(float updatePeriod = 0.2f)
+        public BehaviorTree Build(float updatePeriod = 0.2f)
         {
             Assert.IsNotNull(_currentNode, "can't create a behavior tree without any nodes");
-            return new Agent(_context, _currentNode!, updatePeriod);
+            return new BehaviorTree
+            {
+                Root = _currentNode!
+            };
         }
     }
 }

@@ -3,7 +3,7 @@
     [AITag("Parallel")]
     public class Parallel : Composite
     {
-        public override TaskStatus Update(Blackboard context)
+        protected override TaskStatus Tick(Blackboard context)
         {
             var didAllSucceed = true;
             for (var i = 0; i < ChildrenInstances.Length; ++i)

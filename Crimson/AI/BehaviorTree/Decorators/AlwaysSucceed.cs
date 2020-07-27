@@ -3,7 +3,9 @@
     [AITag("Succeed")]
     public class AlwaysSucceed : Decorator
     {
-        public override TaskStatus Update(Blackboard context)
+        public AlwaysSucceed() : base(false) {}
+
+        protected override TaskStatus Tick(Blackboard context)
         {
             Assert.IsNotNull(ChildInstance, "child must not be null");
 

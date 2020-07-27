@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
-using Crimson.Collections;
+using Priority_Queue;
 
 namespace Crimson.AI.Pathfinding
 {
     public static class AStarPathfinder
     {
-        private class AStarNode<T> : PriorityQueueNode
+        private const int MAX_NODES = 1000;
+        
+        private class AStarNode<T> : FastPriorityQueueNode
         {
             public readonly T Data;
 
@@ -20,7 +22,7 @@ namespace Crimson.AI.Pathfinding
             cameFrom = new Dictionary<T, T> {{start, start}};
 
             var costSoFar = new Dictionary<T, int>();
-            var frontier = new PriorityQueue<AStarNode<T>>(1000);
+            var frontier = new FastPriorityQueue<AStarNode<T>>(MAX_NODES);
             frontier.Enqueue(new AStarNode<T>(start), 0);
 
             costSoFar[start] = 0;

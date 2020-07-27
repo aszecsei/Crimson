@@ -9,7 +9,7 @@
         public override void OnStart()
         {
             // Sort from high utility to low utility
-            Children.Sort((Behavior c1, Behavior c2) => c2.Utility.CompareTo(c1.Utility));
+            Children.Sort((Node c1, Node c2) => c2.Utility.CompareTo(c1.Utility));
         }
     }
 }

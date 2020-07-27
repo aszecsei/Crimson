@@ -3,16 +3,11 @@
     [AITag("Sequence")]
     public class Sequence : Composite
     {
-        public Sequence(AbortType abortType = AbortType.None)
-        {
-            AbortType = abortType;
-        }
-
-        public override TaskStatus Update(Blackboard context)
+        protected override TaskStatus Tick(Blackboard context)
         {
             if (CurrentChildIndex != 0)
                 HandleConditionalAborts(context);
-
+            
             var current = ChildrenInstances[CurrentChildIndex];
             var status = current.Tick(context);
 
@@ -29,13 +24,13 @@
 
             return TaskStatus.Running;
         }
-
+        
         private void HandleConditionalAborts(Blackboard context)
         {
             if (HasLowerPriorityConditionalAbort)
                 UpdateLowerPriorityAbortConditional(context, TaskStatus.Success);
-
-            if (AbortType.HasFlag(AbortType.Self))
+            
+            if (HasSelfConditionalAbort)
                 UpdateSelfAbortConditional(context, TaskStatus.Success);
         }
     }

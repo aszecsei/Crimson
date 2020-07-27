@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace Crimson.AI.BehaviorTree
+namespace Crimson.AI
 {
-    public class ExecuteAction : Behavior
+    public class ExecuteOperator : Operator
     {
         private readonly Func<Blackboard, TaskStatus> _action;
-
-        public ExecuteAction(Func<Blackboard, TaskStatus> action, int utility = 1, int cost = 1)
+        
+        public ExecuteOperator(Func<Blackboard, TaskStatus> action, int utility = 1, int cost = 1)
         {
             _action = action;
             Utility = utility;

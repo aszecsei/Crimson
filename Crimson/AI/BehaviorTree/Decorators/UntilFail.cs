@@ -3,7 +3,9 @@
     [AITag("UntilFail")]
     public class UntilFail : Decorator
     {
-        public override TaskStatus Update(Blackboard context)
+        public UntilFail() : base(false) {}
+
+        protected override TaskStatus Tick(Blackboard context)
         {
             Assert.IsNotNull(ChildInstance, "child must not be null");
 

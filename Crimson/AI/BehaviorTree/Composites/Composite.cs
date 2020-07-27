@@ -2,13 +2,15 @@
 
 namespace Crimson.AI.BehaviorTree
 {
-    public abstract class Composite : Behavior
+    public abstract class Composite : Node
     {
-        public AbortType AbortType = AbortType.None;
-        
-        protected readonly List<Behavior> Children = new List<Behavior>();
+        protected readonly List<Node> Children = new List<Node>();
         protected TaskInstance[] ChildrenInstances = new TaskInstance[0];
         protected bool HasLowerPriorityConditionalAbort;
+        protected bool HasSelfConditionalAbort;
+        /// <summary>
+        /// Index of currently active child node.
+        /// </summary>
         protected int CurrentChildIndex = 0;
 
         public override int Cost
@@ -37,7 +39,10 @@ namespace Crimson.AI.BehaviorTree
 
         public override void OnStart()
         {
+            base.OnStart();
+            
             HasLowerPriorityConditionalAbort = HasLowerPriorityConditionalAbortInChildren();
+            HasSelfConditionalAbort = HasSelfConditionalAbortInChildren();
             CurrentChildIndex = 0;
             
             ChildrenInstances = new TaskInstance[Children.Count];
@@ -47,18 +52,18 @@ namespace Crimson.AI.BehaviorTree
 
         public override void OnEnd()
         {
+            base.OnEnd();
+            
             for (var i = 0; i < ChildrenInstances.Length; ++i)
+            {
                 ChildrenInstances[i].Invalidate();
+            }
+            ChildrenInstances = new TaskInstance[0];
         }
 
-        public void AddChild(Behavior child)
+        public void AddChild(Node child)
         {
             Children.Add(child);
-        }
-
-        public bool IsFirstChildConditional()
-        {
-            return Children[0] is IConditional;
         }
         
         private bool HasLowerPriorityConditionalAbortInChildren()
@@ -66,54 +71,60 @@ namespace Crimson.AI.BehaviorTree
             for (var i = 0; i < Children.Count; i++)
             {
                 // check for a Composite with an abortType set
-                if (Children[i] is Composite composite && composite.AbortType.HasFlag(AbortType.LowerPriority))
+                for (var j = 0; j < Children[i].Decorators.Count; ++j)
                 {
-                    // now make sure the first child is a Conditional
-                    if (composite.IsFirstChildConditional())
+                    if (Children[i].Decorators[j].AbortMode.HasFlag(AbortMode.LowerPriority))
+                    {
                         return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool HasSelfConditionalAbortInChildren()
+        {
+            for (var i = 0; i < Children.Count; i++)
+            {
+                // check for a Composite with an abortType set
+                for (var j = 0; j < Children[i].Decorators.Count; ++j)
+                {
+                    if (Children[i].Decorators[j].AbortMode.HasFlag(AbortMode.Self))
+                    {
+                        return true;
+                    }
                 }
             }
 
             return false;
         }
         
+        /// <summary>
+        /// Checks if any children with a "lower priority abort" decorator has its status changed
+        /// </summary>
         protected void UpdateLowerPriorityAbortConditional(Blackboard context, TaskStatus statusCheck)
         {
-            // check any lower priority tasks to see if they changed status
+            // check any higher priority tasks to see if they changed status
             for (var i = 0; i < CurrentChildIndex; i++)
             {
-                if (Children[i] is Composite composite && composite.AbortType.HasFlag(AbortType.LowerPriority))
+                bool hasAbort = false;
+                for (var j = 0; j < Children[i].Decorators.Count; ++j)
                 {
-                    // now we get the status of only the Conditional (update instead of tick) to see if it changed taking care with ConditionalDecorators
-                    var child = composite.Children[0];
-                    var status = UpdateConditionalNode(context, child);
-                    if (status != statusCheck)
+                    if (Children[i].Decorators[j].AbortMode.HasFlag(AbortMode.LowerPriority))
                     {
-                        CurrentChildIndex = i;
-
-                        // we have an abort so we invalidate the children so they get reevaluated
-                        for (var j = i; j < ChildrenInstances.Length; j++)
-                            ChildrenInstances[j].Invalidate();
-                        break;
+                        var child = Children[i];
+                        var status = UpdateConditionals(context, child);
+                        if (status != statusCheck)
+                        {
+                            hasAbort = true;
+                        }
                     }
                 }
-            }
-        }
-        
-        protected void UpdateSelfAbortConditional(Blackboard context, TaskStatus statusCheck)
-        {
-            // check any IConditional child tasks to see if they changed status
-            for (var i = 0; i < CurrentChildIndex; i++)
-            {
-                var child = Children[i];
-                if (!(child is IConditional))
-                    continue;
 
-                var status = UpdateConditionalNode(context, child);
-                if (status != statusCheck)
+                if (hasAbort)
                 {
                     CurrentChildIndex = i;
-
                     // we have an abort so we invalidate the children so they get reevaluated
                     for (var j = i; j < ChildrenInstances.Length; j++)
                         ChildrenInstances[j].Invalidate();
@@ -122,12 +133,33 @@ namespace Crimson.AI.BehaviorTree
             }
         }
         
-        private TaskStatus UpdateConditionalNode(Blackboard context, Behavior node)
+        protected void UpdateSelfAbortConditional(Blackboard context, TaskStatus statusCheck)
         {
-            if (node is ConditionalDecorator decorator)
-                return decorator.ExecuteConditional(context, true);
-            else
-                return node.Update(context);
+            var child = Children[CurrentChildIndex];
+            var status = UpdateConditionals(context, child);
+            if (status != statusCheck)
+            {
+                CurrentChildIndex--;
+
+                // we have an abort so we invalidate the children so they get reevaluated
+                for (var j = CurrentChildIndex; j < ChildrenInstances.Length; j++)
+                    ChildrenInstances[j].Invalidate();
+            }
+        }
+        
+        private TaskStatus UpdateConditionals(Blackboard context, Node node)
+        {
+            for (var i = 0; i < node.Decorators.Count; ++i)
+            {
+                if (node.Decorators[i] is ConditionalDecorator conditionalDecorator)
+                {
+                    var status = conditionalDecorator.ExecuteConditional(context, true);
+                    if (status != TaskStatus.Success)
+                        return status;
+                }
+            }
+
+            return TaskStatus.Success;
         }
     }
 }

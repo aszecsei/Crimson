@@ -7,16 +7,11 @@
     [AITag("Selector")]
     public class Selector : Composite
     {
-        public Selector(AbortType abortType = AbortType.None)
-        {
-            AbortType = abortType;
-        }
-
-        public override TaskStatus Update(Blackboard context)
+        protected override TaskStatus Tick(Blackboard context)
         {
             if (CurrentChildIndex != 0)
                 HandleConditionalAborts(context);
-
+            
             var current = ChildrenInstances[CurrentChildIndex];
             var status = current.Tick(context);
 
@@ -33,14 +28,13 @@
 
             return TaskStatus.Running;
         }
-        
-        void HandleConditionalAborts(Blackboard context)
+
+        private void HandleConditionalAborts(Blackboard context)
         {
-            // check any lower priority tasks to see if they changed to a success
             if (HasLowerPriorityConditionalAbort)
                 UpdateLowerPriorityAbortConditional(context, TaskStatus.Failure);
-
-            if (AbortType.HasFlag(AbortType.Self))
+            
+            if (HasSelfConditionalAbort)
                 UpdateSelfAbortConditional(context, TaskStatus.Failure);
         }
     }

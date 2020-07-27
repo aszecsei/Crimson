@@ -9,14 +9,14 @@
 
         private int _iterationCount;
 
-        public Repeater(int count, bool endOnFailure = false)
+        public Repeater(int count, bool endOnFailure = false) : base(false)
         {
             Count = count;
             RepeatForever = false;
             EndOnFailure = endOnFailure;
         }
 
-        public Repeater(bool endOnFailure = false)
+        public Repeater(bool endOnFailure = false) : base(false)
         {
             Count = -1;
             RepeatForever = true;
@@ -25,10 +25,11 @@
 
         public override void OnStart()
         {
+            base.OnStart();
             _iterationCount = 0;
         }
 
-        public override TaskStatus Update(Blackboard context)
+        protected override TaskStatus Tick(Blackboard context)
         {
             Assert.IsNotNull(ChildInstance, "child must not be null");
 

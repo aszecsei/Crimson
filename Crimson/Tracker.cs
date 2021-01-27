@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Xna.Framework;
 
+using Crimson.Physics;
+
 namespace Crimson
 {
     public class Tracker
@@ -17,14 +19,14 @@ namespace Crimson
             foreach (Type type in StoredComponentTypes)
                 Components.Add(type, new List<Component>());
 
-            CollidableComponents = new Dictionary<Type, List<Collider2D>>(TrackedComponentTypes.Count);
+            CollidableComponents = new Dictionary<Type, List<CollidableComponent>>(TrackedComponentTypes.Count);
             foreach (Type type in StoredCollidableComponentTypes)
-                CollidableComponents.Add(type, new List<Collider2D>());
+                CollidableComponents.Add(type, new List<CollidableComponent>());
         }
 
         public Dictionary<Type, List<Entity>> Entities { get; }
         public Dictionary<Type, List<Component>> Components { get; }
-        public Dictionary<Type, List<Collider2D>> CollidableComponents { get; }
+        public Dictionary<Type, List<CollidableComponent>> CollidableComponents { get; }
 
         public bool IsEntityTracked<T>() where T : Entity
         {
@@ -228,7 +230,7 @@ namespace Crimson
                     Components[track].Add(component);
             if (TrackedCollidableComponentTypes.TryGetValue(type, out trackAs))
                 foreach (Type track in trackAs)
-                    CollidableComponents[track].Add((Collider2D)component);
+                    CollidableComponents[track].Add((CollidableComponent)component);
         }
 
         internal void ComponentRemoved(Component component)
@@ -241,7 +243,7 @@ namespace Crimson
                     Components[track].Remove(component);
             if (TrackedCollidableComponentTypes.TryGetValue(type, out trackAs))
                 foreach (Type track in trackAs)
-                    CollidableComponents[track].Remove((Collider2D)component);
+                    CollidableComponents[track].Remove((CollidableComponent)component);
         }
 
         public void LogEntities()
@@ -338,7 +340,7 @@ namespace Crimson
                                     TrackedComponentTypes[subclass].Add(type);
                                 }
 
-                        if (typeof(Collider2D).IsAssignableFrom(type))
+                        if (typeof(CollidableComponent).IsAssignableFrom(type))
                         {
                             if (!type.IsAbstract)
                             {

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using Microsoft.Xna.Framework;
 
 namespace Crimson
 {
     [StructLayout(LayoutKind.Sequential)]
+    [DataContract]
     public struct Vector3Int : IEquatable<Vector3Int>
     {
         private static readonly Vector3Int down = new Vector3Int(0, -1, 0);
@@ -31,9 +33,12 @@ namespace Crimson
         public static Vector3Int UnitX => unitX;
         public static Vector3Int UnitY => unitY;
         public static Vector3Int UnitZ => unitZ;
-        
+
+        [DataMember]
         public int X;
+        [DataMember]
         public int Y;
+        [DataMember]
         public int Z;
 
         public Vector3Int(int x, int y, int z)

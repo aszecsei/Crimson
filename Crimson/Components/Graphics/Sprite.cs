@@ -427,7 +427,7 @@ namespace Crimson
 
         #region Cloning from SpriteBank
 
-        internal Sprite()
+        protected Sprite()
             : base(null, true)
         {
         }

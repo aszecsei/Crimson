@@ -579,7 +579,17 @@ namespace Crimson
         {
             return ReflectAngle(angleRadians, axis.Angle());
         }
-        
+
+        public static Vector2 ClosestPointOnLine(Vector2 lineA, Vector2 lineB, Vector2 closestTo)
+        {
+            Vector2 v = lineB - lineA;
+            Vector2 w = closestTo - lineA;
+            float t = Vector2.Dot(w, v) / Vector2.Dot(v, v);
+            t = MathHelper.Clamp(t, 0, 1);
+
+            return lineA + v * t;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Snap(float value, float increment)
         {
@@ -744,6 +754,12 @@ namespace Crimson
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2 Floor(Vector2 v)
+        {
+            return new Vector2(Mathf.Floor(v.X), Mathf.Floor(v.Y));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FloorToInt(float f)
         {
             return (int) Math.Floor(f);
@@ -753,6 +769,12 @@ namespace Crimson
         public static float Ceil(float f)
         {
             return (float) Math.Ceiling(f);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2 Ceil(Vector2 v)
+        {
+            return new Vector2(Mathf.Ceil(v.X), Mathf.Ceil(v.Y));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

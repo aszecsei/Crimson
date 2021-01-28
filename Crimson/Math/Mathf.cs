@@ -255,6 +255,9 @@ namespace Crimson
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Approximately(float a, float b, float tolerance = EPSILON) => Mathf.Abs(a - b) < tolerance;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Approximately(Vector2 a, Vector2 b, float tolerance = EPSILON) => Approximately(a.X, b.X) && Approximately(a.Y, b.Y);
+
         public static int Digits(this int num)
         {
             var digits = 1;

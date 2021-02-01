@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 
 namespace Crimson
@@ -69,12 +70,43 @@ namespace Crimson
             return new Color(Mathf.Lerp(from.R, to.R, t),
                 Mathf.Lerp(from.G, to.G, t), Mathf.Lerp(from.B, to.B, t), Mathf.Lerp(from.A, to.A, t));
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Lerp(Color from, Color to, out Color result, float t)
         {
             result = new Color(Mathf.Lerp(from.R, to.R, t),
                 Mathf.Lerp(from.G, to.G, t), Mathf.Lerp(from.B, to.B, t), Mathf.Lerp(from.A, to.A, t));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static System.Numerics.Vector4 ToVector4SysNum(this Color color)
+        {
+            return new System.Numerics.Vector4(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);
+        }
+
+        public static Color ColorFromHSV(float hue, float saturation, float value)
+        {
+            int    hi = Mathf.FloorToInt(hue / 60) % 6;
+            float  f  = hue / 60 - Mathf.Floor(hue / 60);
+
+            value = value * 255;
+            int v = Mathf.RoundToInt(value);
+            int p = Mathf.RoundToInt(value * (1 - saturation));
+            int q = Mathf.RoundToInt(value * (1 - f       * saturation));
+            int t = Mathf.RoundToInt(value * (1 - (1 - f) * saturation));
+
+            if (hi == 0)
+                return new Color(v, t, p, 255);
+            else if (hi == 1)
+                return new Color(q, v, p, 255);
+            else if (hi == 2)
+                return new Color(p, v, t, 255);
+            else if (hi == 3)
+                return new Color(p, q, v, 255);
+            else if (hi == 4)
+                return new Color(t, p, v, 255);
+            else
+                return new Color(v, p, q, 255);
         }
     }
 }

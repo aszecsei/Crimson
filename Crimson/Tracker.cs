@@ -293,78 +293,81 @@ namespace Crimson
 
         public static void Initialize()
         {
-            foreach (Type type in Assembly.GetEntryAssembly().GetTypes())
+            foreach ( var assembly in AppDomain.CurrentDomain.GetAssemblies() )
             {
-                Tracked? attr = type.GetCustomAttribute<Tracked>();
-                if (attr != null)
+                foreach ( Type type in assembly.GetTypes() )
                 {
-                    var inherited = attr.Inherited;
-
-                    if (typeof(Entity).IsAssignableFrom(type))
+                    Tracked? attr = type.GetCustomAttribute<Tracked>();
+                    if ( attr != null )
                     {
-                        if (!type.IsAbstract)
+                        var inherited = attr.Inherited;
+
+                        if ( typeof(Entity).IsAssignableFrom(type) )
                         {
-                            if (!TrackedEntityTypes.ContainsKey(type))
-                                TrackedEntityTypes.Add(type, new List<Type>());
-                            TrackedEntityTypes[type].Add(type);
-                        }
-
-                        StoredEntityTypes.Add(type);
-
-                        if (inherited)
-                            foreach (Type subclass in GetSubclasses(type))
-                                if (!subclass.IsAbstract)
-                                {
-                                    if (!TrackedEntityTypes.ContainsKey(subclass))
-                                        TrackedEntityTypes.Add(subclass, new List<Type>());
-                                    TrackedEntityTypes[subclass].Add(type);
-                                }
-                    }
-                    else if (typeof(Component).IsAssignableFrom(type))
-                    {
-                        if (!type.IsAbstract)
-                        {
-                            if (!TrackedComponentTypes.ContainsKey(type))
-                                TrackedComponentTypes.Add(type, new List<Type>());
-                            TrackedComponentTypes[type].Add(type);
-                        }
-
-                        StoredComponentTypes.Add(type);
-
-                        if (inherited)
-                            foreach (Type subclass in GetSubclasses(type))
-                                if (!subclass.IsAbstract)
-                                {
-                                    if (!TrackedComponentTypes.ContainsKey(subclass))
-                                        TrackedComponentTypes.Add(subclass, new List<Type>());
-                                    TrackedComponentTypes[subclass].Add(type);
-                                }
-
-                        if (typeof(CollidableComponent).IsAssignableFrom(type))
-                        {
-                            if (!type.IsAbstract)
+                            if ( !type.IsAbstract )
                             {
-                                if (!TrackedCollidableComponentTypes.ContainsKey(type))
-                                    TrackedCollidableComponentTypes.Add(type, new List<Type>());
-                                TrackedCollidableComponentTypes[type].Add(type);
+                                if ( !TrackedEntityTypes.ContainsKey(type) )
+                                    TrackedEntityTypes.Add(type, new List<Type>());
+                                TrackedEntityTypes[type].Add(type);
                             }
 
-                            StoredCollidableComponentTypes.Add(type);
+                            StoredEntityTypes.Add(type);
 
-                            if (inherited)
-                                foreach (Type subclass in GetSubclasses(type))
-                                    if (!subclass.IsAbstract)
+                            if ( inherited )
+                                foreach ( Type subclass in GetSubclasses(type) )
+                                    if ( !subclass.IsAbstract )
                                     {
-                                        if (!TrackedCollidableComponentTypes.ContainsKey(subclass))
-                                            TrackedCollidableComponentTypes.Add(subclass, new List<Type>());
-                                        TrackedCollidableComponentTypes[subclass].Add(type);
+                                        if ( !TrackedEntityTypes.ContainsKey(subclass) )
+                                            TrackedEntityTypes.Add(subclass, new List<Type>());
+                                        TrackedEntityTypes[subclass].Add(type);
                                     }
                         }
-                    }
-                    else
-                    {
-                        throw new Exception("Type '" + type.Name +
-                                            "' cannot be Tracked because it does not derive from Entity or Component");
+                        else if ( typeof(Component).IsAssignableFrom(type) )
+                        {
+                            if ( !type.IsAbstract )
+                            {
+                                if ( !TrackedComponentTypes.ContainsKey(type) )
+                                    TrackedComponentTypes.Add(type, new List<Type>());
+                                TrackedComponentTypes[type].Add(type);
+                            }
+
+                            StoredComponentTypes.Add(type);
+
+                            if ( inherited )
+                                foreach ( Type subclass in GetSubclasses(type) )
+                                    if ( !subclass.IsAbstract )
+                                    {
+                                        if ( !TrackedComponentTypes.ContainsKey(subclass) )
+                                            TrackedComponentTypes.Add(subclass, new List<Type>());
+                                        TrackedComponentTypes[subclass].Add(type);
+                                    }
+
+                            if ( typeof(CollidableComponent).IsAssignableFrom(type) )
+                            {
+                                if ( !type.IsAbstract )
+                                {
+                                    if ( !TrackedCollidableComponentTypes.ContainsKey(type) )
+                                        TrackedCollidableComponentTypes.Add(type, new List<Type>());
+                                    TrackedCollidableComponentTypes[type].Add(type);
+                                }
+
+                                StoredCollidableComponentTypes.Add(type);
+
+                                if ( inherited )
+                                    foreach ( Type subclass in GetSubclasses(type) )
+                                        if ( !subclass.IsAbstract )
+                                        {
+                                            if ( !TrackedCollidableComponentTypes.ContainsKey(subclass) )
+                                                TrackedCollidableComponentTypes.Add(subclass, new List<Type>());
+                                            TrackedCollidableComponentTypes[subclass].Add(type);
+                                        }
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Type '" + type.Name +
+                                                "' cannot be Tracked because it does not derive from Entity or Component");
+                        }
                     }
                 }
             }
@@ -374,9 +377,10 @@ namespace Crimson
         {
             var matches = new List<Type>();
 
-            foreach (Type check in Assembly.GetEntryAssembly().GetTypes())
-                if (type != check && type.IsAssignableFrom(check))
-                    matches.Add(check);
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies() )
+                foreach (Type check in assembly.GetTypes())
+                    if (type != check && type.IsAssignableFrom(check))
+                        matches.Add(check);
 
             return matches;
         }

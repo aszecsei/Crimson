@@ -31,7 +31,7 @@ namespace Crimson
         public RendererList RendererList { get; }
         public Tracker Tracker { get; }
 
-        public event Action OnEndOfFrame;
+        public event Action? OnEndOfFrame;
 
         public virtual void Begin()
         {
@@ -71,7 +71,7 @@ namespace Crimson
 
             if (OnEndOfFrame != null)
             {
-                OnEndOfFrame();
+                OnEndOfFrame.Invoke();
                 OnEndOfFrame = null;
             }
         }

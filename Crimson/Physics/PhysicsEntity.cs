@@ -17,6 +17,14 @@ namespace Crimson.Physics
         {
         }
 
+        public override void DebugRender(Camera camera)
+        {
+            base.DebugRender(camera);
+
+            if ( Collider != null )
+                Collider.Render(camera, Collidable ? Color.Red : Color.DarkRed);
+        }
+
         #region Collider
 
         public Collider? Collider

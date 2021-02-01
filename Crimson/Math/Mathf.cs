@@ -225,7 +225,7 @@ namespace Crimson
 
             return val + Mathf.Clamp(diff, -maxMove, maxMove);
         }
-        
+
         public static float AngleDiff(float radiansA, float radiansB)
         {
             var diff = radiansB - radiansA;
@@ -355,7 +355,7 @@ namespace Crimson
         {
             return a > b ? a : b;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Max(int a, int b, int c)
         {
@@ -507,24 +507,24 @@ namespace Crimson
         {
             return (1 - t) * a + t * b;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Lerp(double a, double b, float t)
         {
             return (1 - t) * a + t * b;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal Lerp(decimal a, decimal b, decimal t)
         {
             return (1 - t) * a + t * b;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ClosestPowerOfTwo(int value)
         {
             var nextPowerOfTwo = Mathf.NextPowerOfTwo(value);
-            
+
             // if value is between nextPowerOfTwo and pre-pre nextPowerOfTwo
             if (nextPowerOfTwo - value > nextPowerOfTwo >> 2)
             {
@@ -534,7 +534,7 @@ namespace Crimson
 
             return nextPowerOfTwo;
         }
-        
+
         public static int NextPowerOfTwo(int value)
         {
             if (value < 0)
@@ -560,7 +560,7 @@ namespace Crimson
         public static float LerpSnap(float value1, float value2, float amount, float snapThreshold = .1f)
         {
             var ret = Mathf.Lerp(value1, value2, amount);
-            if (Math.Abs(ret - value2) < snapThreshold) return value2;
+            if ( Mathf.Abs(ret - value2) < snapThreshold ) return value2;
 
             return ret;
         }
@@ -570,7 +570,7 @@ namespace Crimson
         {
             return Mathf.Lerp(value1, value2, Mathf.Clamp(lerp, 0, 1));
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ReflectAngle(float angle, float axis = 0)
         {
@@ -749,7 +749,7 @@ namespace Crimson
         }
 
         #region Rounding
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Floor(float f)
         {

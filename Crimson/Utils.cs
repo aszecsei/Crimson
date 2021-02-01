@@ -149,7 +149,7 @@ namespace Crimson
 
             return ret;
         }
-        
+
         [Pure]
         public static string ReplaceAt(this string str, int index, char replace)
         {
@@ -280,17 +280,17 @@ namespace Crimson
         {
             return new Vector2(random.Range(min.X, max.X), random.Range(min.Y, max.Y));
         }
-        
+
         public static Vector3 NextVector(this Random random, Vector3 min, Vector3 max)
         {
             return new Vector3(random.Range(min.X, max.X), random.Range(min.Y, max.Y), random.Range(min.Z, max.Z));
         }
-        
+
         public static Vector4 NextVector(this Random random, Vector4 min, Vector4 max)
         {
             return new Vector4(random.Range(min.X, max.X), random.Range(min.Y, max.Y), random.Range(min.Z, max.Z), random.Range(min.W, max.W));
         }
-        
+
         public static Color NextColor(this Random random)
         {
             Span<byte> buffer = stackalloc byte[3];
@@ -346,7 +346,7 @@ namespace Crimson
 
             return data;
         }
-        
+
         public static Vector3[] ParseVector3List(string list, char separator = '|')
         {
             var entries = list.Split(separator);
@@ -391,6 +391,18 @@ namespace Crimson
             var ret = new int[values.Length];
 
             for (var i = 0; i < values.Length; i++) ret[i] = Convert.ToInt32(values[i].Trim());
+
+            return ret;
+        }
+
+        public static char[] ReadCSVChar(string csv)
+        {
+            if (csv == "") return new char[0];
+
+            var values = csv.Split(',');
+            var ret    = new char[values.Length];
+
+            for (var i = 0; i < values.Length; i++) ret[i] = Convert.ToChar(values[i].Trim());
 
             return ret;
         }
@@ -1197,12 +1209,12 @@ namespace Crimson
                 s_stopwatch = null;
             }
         }
-        
+
         public static void Assert(bool condition)
         {
             Assert(condition);
         }
-        
+
         public static void Assert(bool condition, string message)
         {
             Assert(condition, message);
@@ -1219,13 +1231,13 @@ namespace Crimson
         }
 
         #endregion
-        
+
         public static bool IsSameOrSubclass(Type potentialBase, Type potentialDescendant)
         {
             return potentialDescendant.IsSubclassOf(potentialBase)
                    || potentialDescendant == potentialBase;
         }
-        
+
         public static string NormalizePath(string path)
         {
             unsafe

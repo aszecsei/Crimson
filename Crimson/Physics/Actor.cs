@@ -6,8 +6,8 @@ namespace Crimson.Physics
 
     public ref struct CollisionData
     {
-        public Solid Pusher;
-        public Solid Hit;
+        public Platform Pusher;
+        public Platform Hit;
         public Vector2 Direction;
         public Vector2 TargetPosition;
     }
@@ -35,24 +35,39 @@ namespace Crimson.Physics
 
                 while ( move != 0 )
                 {
-                    var first = CollideFirst<Solid>(Position + new Vector2(sign, 0));
-                    if ( first == null )
-                    {
-                        // No solid immediately beside us
-                        Position.X += sign;
-                        move -= sign;
-                    }
-                    else
+                    Platform first = CollideFirst<Solid>(Position + new Vector2(sign, 0));
+                    if ( first != null )
                     {
                         // Hit a solid!
                         onCollide?.Invoke(new CollisionData
                         {
-                            Hit = first,
-                            Direction = new Vector2(sign, 0),
+                            Hit            = first,
+                            Direction      = new Vector2(sign, 0),
                             TargetPosition = Position + new Vector2(sign, 0)
                         });
                         break;
                     }
+
+                    first = CollideFirst<JumpThru>(Position + new Vector2(sign, 0));
+                    if ( first != null )
+                    {
+                        // Check the jumpthru's orientation to see if we can ignore it
+                        JumpThru jt = (JumpThru)first;
+                        if ( (jt.Rotation == 1 && sign < 0) || (jt.Rotation == 3 && sign > 0) )
+                        {
+                            onCollide?.Invoke(new CollisionData
+                            {
+                                Hit            = first,
+                                Direction      = new Vector2(sign, 0),
+                                TargetPosition = Position + new Vector2(sign, 0)
+                            });
+                            break;
+                        }
+                    }
+
+                    // We're good
+                    Position.X += sign;
+                    move       -= sign;
                 }
             }
         }
@@ -63,14 +78,8 @@ namespace Crimson.Physics
 
             while ( move != 0 )
             {
-                var first = CollideFirst<Solid>(Position + new Vector2(sign, 0));
-                if ( first == null )
-                {
-                    // No solid immediately beside us
-                    Position.X += sign;
-                    move       -= sign;
-                }
-                else
+                Platform first = CollideFirst<Solid>(Position + new Vector2(sign, 0));
+                if ( first != null )
                 {
                     // Hit a solid!
                     onCollide?.Invoke(new CollisionData
@@ -79,7 +88,29 @@ namespace Crimson.Physics
                         Direction      = new Vector2(sign, 0),
                         TargetPosition = Position + new Vector2(sign, 0)
                     });
+                    break;
                 }
+
+                first = CollideFirst<JumpThru>(Position + new Vector2(sign, 0));
+                if ( first != null )
+                {
+                    // Check the jumpthru's orientation to see if we can ignore it
+                    JumpThru jt = (JumpThru)first;
+                    if ( (jt.Rotation == 1 && sign < 0) || (jt.Rotation == 3 && sign > 0) )
+                    {
+                        onCollide?.Invoke(new CollisionData
+                        {
+                            Hit            = first,
+                            Direction      = new Vector2(sign, 0),
+                            TargetPosition = Position + new Vector2(sign, 0)
+                        });
+                        break;
+                    }
+                }
+
+                // We're good
+                Position.X += sign;
+                move       -= sign;
             }
         }
 
@@ -95,24 +126,39 @@ namespace Crimson.Physics
 
                 while ( move != 0 )
                 {
-                    var first = CollideFirst<Solid>(Position + new Vector2(0, sign));
-                    if ( first == null )
-                    {
-                        // No solid immediately beside us
-                        Position.Y += sign;
-                        move -= sign;
-                    }
-                    else
+                    Platform first = CollideFirst<Solid>(Position + new Vector2(0, sign));
+                    if ( first != null )
                     {
                         // Hit a solid!
                         onCollide?.Invoke(new CollisionData
                         {
-                            Hit = first,
-                            Direction = new Vector2(0, sign),
+                            Hit            = first,
+                            Direction      = new Vector2(0, sign),
                             TargetPosition = Position + new Vector2(0, sign)
                         });
                         break;
                     }
+
+                    first = CollideFirst<JumpThru>(Position + new Vector2(0, sign));
+                    if ( first != null )
+                    {
+                        // Check the jumpthru's orientation to see if we can ignore it
+                        JumpThru jt = (JumpThru)first;
+                        if ( (jt.Rotation == 0 && sign > 0) || (jt.Rotation == 2 && sign < 0) )
+                        {
+                            onCollide?.Invoke(new CollisionData
+                            {
+                                Hit            = first,
+                                Direction      = new Vector2(sign, 0),
+                                TargetPosition = Position + new Vector2(sign, 0)
+                            });
+                            break;
+                        }
+                    }
+
+                    // We're good
+                    Position.Y += sign;
+                    move       -= sign;
                 }
             }
         }
@@ -123,14 +169,8 @@ namespace Crimson.Physics
 
             while ( move != 0 )
             {
-                var first = CollideFirst<Solid>(Position + new Vector2(0, sign));
-                if ( first == null )
-                {
-                    // No solid immediately beside us
-                    Position.Y += sign;
-                    move       -= sign;
-                }
-                else
+                Platform first = CollideFirst<Solid>(Position + new Vector2(0, sign));
+                if ( first != null )
                 {
                     // Hit a solid!
                     onCollide?.Invoke(new CollisionData
@@ -139,18 +179,58 @@ namespace Crimson.Physics
                         Direction      = new Vector2(0, sign),
                         TargetPosition = Position + new Vector2(0, sign)
                     });
+                    break;
                 }
+
+                first = CollideFirst<JumpThru>(Position + new Vector2(0, sign));
+                if ( first != null )
+                {
+                    // Check the jumpthru's orientation to see if we can ignore it
+                    JumpThru jt = (JumpThru)first;
+                    if ( (jt.Rotation == 0 && sign > 0) || (jt.Rotation == 2 && sign < 0) )
+                    {
+                        onCollide?.Invoke(new CollisionData
+                        {
+                            Hit            = first,
+                            Direction      = new Vector2(sign, 0),
+                            TargetPosition = Position + new Vector2(sign, 0)
+                        });
+                        break;
+                    }
+                }
+
+                // We're good
+                Position.Y += sign;
+                move       -= sign;
             }
         }
 
         protected void MoveTowardsX(float amount, float maxDistance)
         {
-            // TODO
+            float clampedAmount = Mathf.Clamp(amount - X, -maxDistance, maxDistance);
+            xRemainder += clampedAmount;
+            int move = Mathf.RoundToInt(xRemainder);
+
+            int sign = Mathf.Sign(move);
+            while ( move != 0 )
+            {
+                Position.X += sign;
+                move -= sign;
+            }
         }
 
         protected void MoveTowardsY(float amount, float maxDistance)
         {
-            // TODO
+            float clampedAmount = Mathf.Clamp(amount - Y, -maxDistance, maxDistance);
+            yRemainder += clampedAmount;
+            int move = Mathf.RoundToInt(yRemainder);
+
+            int sign = Mathf.Sign(move);
+            while ( move != 0 )
+            {
+                Position.Y += sign;
+                move       -= sign;
+            }
         }
 
         protected void ZeroRemainderX()
@@ -166,6 +246,16 @@ namespace Crimson.Physics
         public virtual bool IsRiding(Solid solid)
         {
             if ( solid.CollideCheck(this, Position + Vector2.UnitY) )
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public virtual bool IsRiding(JumpThru jumpThru)
+        {
+            if ( jumpThru.CollideCheck(this, Position + Vector2.UnitY) )
             {
                 return true;
             }

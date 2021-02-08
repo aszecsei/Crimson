@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace Crimson.Physics
 {
-    [Tracked(true)]
-    public class Solid : PhysicsEntity
+    public class Solid : Platform
     {
-        public Action<Vector2>? OnCollide;
-
         private float xRemainder;
         private float yRemainder;
 

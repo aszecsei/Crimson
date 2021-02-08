@@ -9,6 +9,8 @@ namespace Crimson.Physics
         public bool Collidable = true;
         private Collider? _collider;
 
+        public Vector2 LiftSpeed = Vector2.Zero;
+
         public PhysicsEntity(Vector2 position) : base(position)
         {
         }

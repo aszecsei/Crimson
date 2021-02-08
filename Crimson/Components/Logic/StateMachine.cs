@@ -8,13 +8,13 @@ namespace Crimson
         private readonly Action[] _begins;
 
         public bool ChangedStates;
-        private readonly Func<IEnumerator>[] _coroutines;
+        private readonly Func<IEnumerator>?[] _coroutines;
         private readonly Coroutine? _currentCoroutine;
-        private readonly Action[] _ends;
+        private readonly Action?[] _ends;
         public bool Locked;
         public bool Log;
         private int _state;
-        private readonly Func<int>[] _updates;
+        private readonly Func<int>?[] _updates;
 
         public StateMachine(int maxStates = 10)
             : base(true, false)
@@ -136,8 +136,8 @@ namespace Crimson
             }
         }
 
-        public void SetCallbacks(int state, Func<int> onUpdate, Func<IEnumerator> coroutine = null, Action begin = null,
-            Action end = null)
+        public void SetCallbacks(int state, Func<int>? onUpdate, Func<IEnumerator>? coroutine = null, Action? begin = null,
+            Action? end = null)
         {
             _updates[state] = onUpdate;
             _begins[state] = begin;

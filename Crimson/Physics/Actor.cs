@@ -91,6 +91,26 @@ namespace Crimson.Physics
             }
         }
 
+        protected void MoveTowardsX(float amount, float maxDistance)
+        {
+            // TODO
+        }
+
+        protected void MoveTowardsY(float amount, float maxDistance)
+        {
+            // TODO
+        }
+
+        protected void ZeroRemainderX()
+        {
+            xRemainder = 0;
+        }
+
+        protected void ZeroRemainderY()
+        {
+            yRemainder = 0;
+        }
+
         public virtual bool IsRiding(Solid solid)
         {
             if ( solid.CollideCheck(this, Position + Vector2.UnitY) )

@@ -29,7 +29,7 @@ namespace Crimson.Input
             foreach (Node node in Nodes)
             {
                 var value = node.Value;
-                if (value != 0)
+                if (!Mathf.Approximately(value, 0))
                 {
                     Value = value;
                     break;

@@ -46,7 +46,7 @@ namespace Crimson
         {
             return Mathf.Atan2(vector.Y, vector.X);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Clamp(in this Vector2 value, Vector2 min, Vector2 max)
         {
@@ -64,13 +64,21 @@ namespace Crimson
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2 SafeNormalize(in this Vector2 vector, Vector2 ifZero)
+        {
+            if (vector == Vector2.Zero)
+                return ifZero;
+            return Vector2.Normalize(vector);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Toward(Vector2 from, Vector2 to, float length)
         {
             if (from == to) return Vector2.Zero;
 
             return (to - from).SafeNormalize(length);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 LerpSnap(Vector2 value1, Vector2 value2, float amount, float snapThresholdSq = .1f)
         {
@@ -85,7 +93,7 @@ namespace Crimson
         {
             return new Vector2(Mathf.Sign(vec.X), Mathf.Sign(vec.Y));
         }
-        
+
         public static Vector2 ClosestPointOnLine(this Vector2 closestTo, Vector2 lineA, Vector2 lineB)
         {
             Vector2 v = lineB - lineA;
@@ -101,7 +109,7 @@ namespace Crimson
         {
             return new Vector2(-vector.Y, vector.X);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Abs(this Vector2 val)
         {
@@ -125,7 +133,7 @@ namespace Crimson
             angle = Mathf.Floor((angle + divider / 2f) / divider) * divider;
             return Mathf.AngleToVector(angle);
         }
-        
+
         public static Vector2 Snapped(this Vector2 vec, float slices)
         {
             var divider = MathHelper.TwoPi / slices;
@@ -195,7 +203,7 @@ namespace Crimson
 
             return v;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Rotate(this Vector2 vec, float angleRadians)
         {
@@ -214,7 +222,7 @@ namespace Crimson
         {
             return Mathf.Abs(vec.X - other.X) + Mathf.Abs(vec.Y - other.Y);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ChebyshevDistance(this Vector2 vec, Vector2 other)
         {

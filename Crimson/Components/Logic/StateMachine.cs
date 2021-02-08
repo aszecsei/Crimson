@@ -155,6 +155,8 @@ namespace Crimson
 
         public override void Update()
         {
+            base.Update();
+
             ChangedStates = false;
 
             if (_updates[_state] != null)

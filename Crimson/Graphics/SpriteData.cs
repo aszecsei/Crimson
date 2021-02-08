@@ -24,7 +24,7 @@ namespace Crimson
             Atlas = atlas;
         }
 
-        public void Add(XmlElement xml, string overridePath = null)
+        public void Add(XmlElement xml, string overridePath = null, string pathPrefix = null)
         {
             var source = new SpriteDataSource {XML = xml};
             source.Path = source.XML.Attr("path");
@@ -76,7 +76,7 @@ namespace Crimson
                     else
                         path = normalPath + path;
 
-                    Sprite.Add(id, path, anim.AttrFloat("delay", masterDelay), into, frames);
+                    Sprite.Add(id, (string.IsNullOrEmpty(pathPrefix) ? "" : pathPrefix) + path, anim.AttrFloat("delay", masterDelay), into, frames);
                 }
 
                 //Build Loops
@@ -91,7 +91,7 @@ namespace Crimson
                     else
                         path = normalPath + path;
 
-                    Sprite.AddLoop(id, path, loop.AttrFloat("delay", masterDelay), frames);
+                    Sprite.AddLoop(id, (string.IsNullOrEmpty(pathPrefix) ? "" : pathPrefix) + path, loop.AttrFloat("delay", masterDelay), frames);
                 }
 
                 //Origin

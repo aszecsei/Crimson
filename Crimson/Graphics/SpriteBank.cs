@@ -18,6 +18,11 @@ namespace Crimson
             SpriteData = new Dictionary<string, SpriteData>(StringComparer.OrdinalIgnoreCase);
 
             var elements = new Dictionary<string, XmlElement>();
+            string basePath = null;
+            if ( XML["Sprites"].HasAttr("path") )
+            {
+                basePath = XML["Sprites"].Attr("path");
+            }
             foreach (object e in XML["Sprites"].ChildNodes)
                 if (e is XmlElement)
                 {
@@ -28,9 +33,9 @@ namespace Crimson
                         throw new Exception("Duplicate sprite name in SpriteData: '" + element.Name + "'!");
 
                     SpriteData data = SpriteData[element.Name] = new SpriteData(Atlas);
-                    if (element.HasAttr("copy")) data.Add(elements[element.Attr("copy")], element.Attr("path"));
+                    if (element.HasAttr("copy")) data.Add(elements[element.Attr("copy")], element.Attr("path"), basePath);
 
-                    data.Add(element);
+                    data.Add(element, null, basePath);
                 }
         }
 

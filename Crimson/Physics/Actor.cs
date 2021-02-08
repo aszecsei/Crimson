@@ -57,6 +57,32 @@ namespace Crimson.Physics
             }
         }
 
+        public void MoveXExact(int move, Collision onCollide = null)
+        {
+            int sign = Mathf.Sign(move);
+
+            while ( move != 0 )
+            {
+                var first = CollideFirst<Solid>(Position + new Vector2(sign, 0));
+                if ( first == null )
+                {
+                    // No solid immediately beside us
+                    Position.X += sign;
+                    move       -= sign;
+                }
+                else
+                {
+                    // Hit a solid!
+                    onCollide?.Invoke(new CollisionData
+                    {
+                        Hit            = first,
+                        Direction      = new Vector2(sign, 0),
+                        TargetPosition = Position + new Vector2(sign, 0)
+                    });
+                }
+            }
+        }
+
         public void MoveY(float amount, Collision onCollide = null)
         {
             yRemainder += amount;
@@ -87,6 +113,32 @@ namespace Crimson.Physics
                         });
                         break;
                     }
+                }
+            }
+        }
+
+        public void MoveYExact(int move, Collision onCollide = null)
+        {
+            int sign = Mathf.Sign(move);
+
+            while ( move != 0 )
+            {
+                var first = CollideFirst<Solid>(Position + new Vector2(0, sign));
+                if ( first == null )
+                {
+                    // No solid immediately beside us
+                    Position.Y += sign;
+                    move       -= sign;
+                }
+                else
+                {
+                    // Hit a solid!
+                    onCollide?.Invoke(new CollisionData
+                    {
+                        Hit            = first,
+                        Direction      = new Vector2(0, sign),
+                        TargetPosition = Position + new Vector2(0, sign)
+                    });
                 }
             }
         }

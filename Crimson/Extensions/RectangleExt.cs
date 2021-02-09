@@ -27,7 +27,7 @@ namespace Crimson
             float minY = Mathf.Min(c1R.Y, c2R.Y, c3R.Y, c4R.Y);
             float maxY = Mathf.Max(c1R.Y, c2R.Y, c3R.Y, c4R.Y);
 
-            return new Rectangle(Mathf.FloorToInt(minX), Mathf.FloorToInt(minY), Mathf.CeilToInt(maxX - minX), Mathf.CeilToInt(maxY - minY));
+            return new Rectangle(Mathf.RoundToInt(minX), Mathf.RoundToInt(minY), Mathf.RoundToInt(maxX - minX), Mathf.RoundToInt(maxY - minY));
         }
     }
 }

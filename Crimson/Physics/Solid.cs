@@ -8,6 +8,8 @@ namespace Crimson.Physics
         private float xRemainder;
         private float yRemainder;
 
+        public List<Entity> AttachedEntities = new List<Entity>();
+
         public Solid() { }
 
         public Solid(Vector2 position)
@@ -52,6 +54,11 @@ namespace Crimson.Physics
                     xRemainder -= moveX;
                     Position.X += moveX;
 
+                    foreach ( var entity in AttachedEntities )
+                    {
+                        entity.Position.X += moveX;
+                    }
+
                     List<Entity> allActors = Scene.Tracker.GetEntities<Actor>();
                     foreach ( Actor actor in allActors )
                     {
@@ -82,6 +89,11 @@ namespace Crimson.Physics
                 {
                     yRemainder -= moveY;
                     Position.Y += moveY;
+
+                    foreach ( var entity in AttachedEntities )
+                    {
+                        entity.Position.Y += moveY;
+                    }
 
                     List<Entity> allActors = Scene.Tracker.GetEntities<Actor>();
                     foreach ( Actor actor in allActors )

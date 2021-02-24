@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 
 namespace Crimson
@@ -227,6 +228,25 @@ namespace Crimson
         public static float ChebyshevDistance(this Vector2 vec, Vector2 other)
         {
             return Mathf.Max(Mathf.Abs(vec.X - other.X), Mathf.Abs(vec.Y - other.Y));
+        }
+
+        public static Vector2 ClosestTo(this IList<Vector2> collection, Vector2 point)
+        {
+            if ( collection.Count == 0 ) return Vector2.Zero;
+            Vector2 closest          = collection[0];
+            float   closestSqrLength = (collection[0] - point).LengthSquared();
+
+            for ( int i = 0; i < collection.Count; ++i )
+            {
+                float sqrDist = (collection[i] - point).LengthSquared();
+                if ( sqrDist < closestSqrLength )
+                {
+                    closest          = collection[i];
+                    closestSqrLength = sqrDist;
+                }
+            }
+
+            return closest;
         }
     }
 }

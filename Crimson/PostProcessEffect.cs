@@ -5,7 +5,7 @@ namespace Crimson
 {
     public class PostProcessEffect
     {
-        protected RenderTarget2D? RenderTarget2D;
+        protected VirtualRenderTarget? RenderTarget2D;
 
         protected RenderTarget2D? Was;
 
@@ -21,6 +21,11 @@ namespace Crimson
             RenderTarget2D?.Dispose();
         }
 
+        public virtual void Update()
+        {
+
+        }
+
         public virtual void BeforeRender()
         {
             if (RenderTarget2D != null &&
@@ -30,8 +35,8 @@ namespace Crimson
                 RenderTarget2D = null;
             }
 
-            if (RenderTarget2D == null)
-                RenderTarget2D = Utils.CreateRenderTarget(Engine.ViewWidth, Engine.ViewHeight);
+            if ( RenderTarget2D == null )
+                RenderTarget2D = VirtualContent.CreateRenderTarget("post-process", Engine.ViewWidth, Engine.ViewHeight);
 
             Was = Engine.Instance.RenderTarget;
             Engine.Instance.RenderTarget = RenderTarget2D;
@@ -39,9 +44,16 @@ namespace Crimson
                 Color.Transparent, 1, 0);
         }
 
+        protected virtual void SetEffectParameters()
+        {
+
+        }
+
         public virtual void AfterRender()
         {
             Engine.Instance.RenderTarget = Was;
+
+            SetEffectParameters();
 
             Draw.SpriteBatch.Begin(effect: Effect, blendState: BlendState.AlphaBlend);
             Draw.SpriteBatch.Draw(RenderTarget2D, Vector2.Zero, Color.White);

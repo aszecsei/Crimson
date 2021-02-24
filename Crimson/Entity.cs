@@ -18,8 +18,9 @@ namespace Crimson
 
         public Entity(Vector2 position)
         {
-            Position = position;
+            Position   = position;
             Components = new ComponentList(this);
+            Coroutines = new CoroutineList();
         }
 
         public Entity()
@@ -27,8 +28,9 @@ namespace Crimson
         {
         }
 
-        public Scene? Scene { get; private set; }
+        public Scene?        Scene      { get; private set; }
         public ComponentList Components { get; }
+        public CoroutineList Coroutines { get; }
 
         public int Depth
         {
@@ -122,11 +124,13 @@ namespace Crimson
         /// </summary>
         public virtual void Update()
         {
+            Coroutines.HandleUpdate();
             Components.Update();
         }
 
         public virtual void LateUpdate()
         {
+            Coroutines.HandleEndOfFrame();
             Components.LateUpdate();
         }
 
@@ -278,7 +282,7 @@ namespace Crimson
         {
             return Components.Get<T>();
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetComponents<T>(List<T> list) where T : Component
         {
@@ -335,7 +339,7 @@ namespace Crimson
         public Entity? Closest(BitTag tag)
         {
             if (Scene == null) return null;
-            
+
             List<Entity> list = Scene[tag];
             Entity? closest = null;
 
@@ -365,5 +369,25 @@ namespace Crimson
         }
 
         #endregion
+
+        public Coroutine StartCoroutine(IEnumerator routine)
+        {
+            return Coroutines.StartCoroutine(routine);
+        }
+
+        public void StopAllCoroutines()
+        {
+            Coroutines.StopAllCoroutines();
+        }
+
+        public void StopCoroutine(IEnumerator routine)
+        {
+            Coroutines.StopCoroutine(routine);
+        }
+
+        public void StopCoroutine(Coroutine routine)
+        {
+            Coroutines.StopCoroutine(routine);
+        }
     }
 }

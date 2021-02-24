@@ -75,7 +75,7 @@ namespace Crimson.Input
                 Deadzone = deadzone;
             }
 
-            public override Vector2 Value => CInput.gamePadData[GamepadIndex].GetLeftStick(Deadzone);
+            public override Vector2 Value => CInput.GamePads[GamepadIndex].GetLeftStick(Deadzone);
         }
 
         public class PadRightStick : Node
@@ -89,7 +89,7 @@ namespace Crimson.Input
                 Deadzone = deadzone;
             }
 
-            public override Vector2 Value => CInput.gamePadData[GamepadIndex].GetRightStick(Deadzone);
+            public override Vector2 Value => CInput.GamePads[GamepadIndex].GetRightStick(Deadzone);
         }
 
         public class PadDpad : Node
@@ -107,13 +107,13 @@ namespace Crimson.Input
                 {
                     var value = Vector2.Zero;
 
-                    if (CInput.gamePadData[GamepadIndex].DPadRightCheck)
+                    if (CInput.GamePads[GamepadIndex].DPadRightCheck)
                         value.X = 1f;
-                    else if (CInput.gamePadData[GamepadIndex].DPadLeftCheck) value.X = -1f;
+                    else if (CInput.GamePads[GamepadIndex].DPadLeftCheck) value.X = -1f;
 
-                    if (CInput.gamePadData[GamepadIndex].DPadDownCheck)
+                    if (CInput.GamePads[GamepadIndex].DPadDownCheck)
                         value.Y = 1f;
-                    else if (CInput.gamePadData[GamepadIndex].DPadUpCheck) value.Y = -1f;
+                    else if (CInput.GamePads[GamepadIndex].DPadUpCheck) value.Y = -1f;
 
                     return value;
                 }
@@ -146,9 +146,9 @@ namespace Crimson.Input
             public override void Update()
             {
                 //X Axis
-                if (CInput.keyboardData.Check(Left))
+                if (CInput.Keyboard.Check(Left))
                 {
-                    if (CInput.keyboardData.Check(Right))
+                    if (CInput.Keyboard.Check(Right))
                     {
                         switch (OverlapBehavior)
                         {
@@ -177,7 +177,7 @@ namespace Crimson.Input
                         value.X = -1;
                     }
                 }
-                else if (CInput.keyboardData.Check(Right))
+                else if (CInput.Keyboard.Check(Right))
                 {
                     turnedX = false;
                     value.X = 1;
@@ -189,9 +189,9 @@ namespace Crimson.Input
                 }
 
                 //Y Axis
-                if (CInput.keyboardData.Check(Up))
+                if (CInput.Keyboard.Check(Up))
                 {
-                    if (CInput.keyboardData.Check(Down))
+                    if (CInput.Keyboard.Check(Down))
                     {
                         switch (OverlapBehavior)
                         {
@@ -220,7 +220,7 @@ namespace Crimson.Input
                         value.Y = -1;
                     }
                 }
-                else if (CInput.keyboardData.Check(Down))
+                else if (CInput.Keyboard.Check(Down))
                 {
                     turnedY = false;
                     value.Y = 1;

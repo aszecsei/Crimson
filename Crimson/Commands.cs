@@ -119,7 +119,7 @@ namespace Crimson
             {
                 _canOpen = true;
             }
-            else if (CInput.keyboardData.Pressed(Keys.OemTilde, Keys.Oem8))
+            else if (CInput.Keyboard.Pressed(Keys.OemTilde, Keys.Oem8))
             {
                 Open = true;
                 if (Engine.Scene != null) Engine.Scene.Paused = true;
@@ -127,7 +127,7 @@ namespace Crimson
             }
 
             for (var i = 0; i < FunctionKeyActions.Length; i++)
-                if (CInput.keyboardData.Pressed(Keys.F1 + i))
+                if (CInput.Keyboard.Pressed(Keys.F1 + i))
                     ExecuteFunctionKeyAction(i);
         }
 

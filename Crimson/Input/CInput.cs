@@ -21,17 +21,17 @@ namespace Crimson.Input
         /// <summary>
         ///     Represents the input information from the currently attached keyboard.
         /// </summary>
-        public static KeyboardData keyboardData { get; private set; }
+        public static KeyboardData Keyboard { get; private set; }
 
         /// <summary>
         ///     Represents the input information from the currently attached mouse.
         /// </summary>
-        public static MouseData mouseData { get; private set; }
+        public static MouseData Mouse { get; private set; }
 
         /// <summary>
         ///     Represents the input information from all currently attached controllers.
         /// </summary>
-        public static GamePadData[] gamePadData { get; private set; }
+        public static GamePadData[] GamePads { get; private set; }
 
         /// <summary>
         ///     False if input should be enabled, true otherwise.
@@ -48,10 +48,10 @@ namespace Crimson.Input
         public static void Initialize()
         {
             // Init devices
-            keyboardData = new KeyboardData();
-            mouseData = new MouseData();
-            gamePadData = new GamePadData[4];
-            for (var i = 0; i < 4; i++) gamePadData[i] = new GamePadData((PlayerIndex) i);
+            Keyboard = new KeyboardData();
+            Mouse = new MouseData();
+            GamePads = new GamePadData[4];
+            for (var i = 0; i < 4; i++) GamePads[i] = new GamePadData((PlayerIndex) i);
 
             VirtualInputs = new List<VirtualInput>();
         }
@@ -61,7 +61,7 @@ namespace Crimson.Input
         /// </summary>
         public static void Shutdown()
         {
-            foreach (var gamepad in gamePadData) gamepad.StopRumble();
+            foreach (var gamepad in GamePads) gamepad.StopRumble();
         }
 
         /// <summary>
@@ -69,9 +69,9 @@ namespace Crimson.Input
         /// </summary>
         public static void Update()
         {
-            keyboardData.Update();
-            mouseData.Update();
-            for (var i = 0; i < 4; i++) gamePadData[i].Update();
+            Keyboard.Update();
+            Mouse.Update();
+            for (var i = 0; i < 4; i++) GamePads[i].Update();
 
             UpdateVirtualInputs();
         }
@@ -81,9 +81,9 @@ namespace Crimson.Input
         /// </summary>
         public static void UpdateNull()
         {
-            keyboardData.UpdateNull();
-            mouseData.UpdateNull();
-            for (var i = 0; i < 4; i++) gamePadData[i].UpdateNull();
+            Keyboard.UpdateNull();
+            Mouse.UpdateNull();
+            for (var i = 0; i < 4; i++) GamePads[i].UpdateNull();
 
             UpdateVirtualInputs();
         }
@@ -109,7 +109,7 @@ namespace Crimson.Input
             public void Update()
             {
                 PreviousState = CurrentState;
-                CurrentState = Keyboard.GetState();
+                CurrentState = Microsoft.Xna.Framework.Input.Keyboard.GetState();
             }
 
             public void UpdateNull()
@@ -191,7 +191,7 @@ namespace Crimson.Input
             public void Update()
             {
                 PreviousState = CurrentState;
-                CurrentState = Mouse.GetState();
+                CurrentState = Microsoft.Xna.Framework.Input.Mouse.GetState();
             }
 
             public void UpdateNull()
@@ -260,7 +260,7 @@ namespace Crimson.Input
                 set
                 {
                     var vector = Vector2.Transform(value, Engine.ScreenMatrix);
-                    Mouse.SetPosition(Mathf.RoundToInt(vector.X), Mathf.RoundToInt(vector.Y));
+                    Microsoft.Xna.Framework.Input.Mouse.SetPosition(Mathf.RoundToInt(vector.X), Mathf.RoundToInt(vector.Y));
                 }
             }
 
@@ -668,7 +668,7 @@ namespace Crimson.Input
 
         public static void RumbleFirst(float strength, float time)
         {
-            gamePadData[0].Rumble(strength, time);
+            GamePads[0].Rumble(strength, time);
         }
 
         public static int Axis(bool negative, bool positive, int bothValue = 0)

@@ -59,7 +59,7 @@ namespace Crimson.Input
             }
 
             public override float Value =>
-                Mathf.SignThreshold(CInput.gamePadData[GamepadIndex].GetLeftStick().X, Deadzone);
+                Mathf.SignThreshold(CInput.GamePads[GamepadIndex].GetLeftStick().X, Deadzone);
         }
 
         public class PadLeftStickY : Node
@@ -74,7 +74,7 @@ namespace Crimson.Input
             }
 
             public override float Value =>
-                Mathf.SignThreshold(CInput.gamePadData[GamepadIndex].GetLeftStick().Y, Deadzone);
+                Mathf.SignThreshold(CInput.GamePads[GamepadIndex].GetLeftStick().Y, Deadzone);
         }
 
         public class PadRightStickX : Node
@@ -89,7 +89,7 @@ namespace Crimson.Input
             }
 
             public override float Value =>
-                Mathf.SignThreshold(CInput.gamePadData[GamepadIndex].GetRightStick().X, Deadzone);
+                Mathf.SignThreshold(CInput.GamePads[GamepadIndex].GetRightStick().X, Deadzone);
         }
 
         public class PadRightStickY : Node
@@ -104,7 +104,7 @@ namespace Crimson.Input
             }
 
             public override float Value =>
-                Mathf.SignThreshold(CInput.gamePadData[GamepadIndex].GetRightStick().Y, Deadzone);
+                Mathf.SignThreshold(CInput.GamePads[GamepadIndex].GetRightStick().Y, Deadzone);
         }
 
         public class PadDpadLeftRight : Node
@@ -120,9 +120,9 @@ namespace Crimson.Input
             {
                 get
                 {
-                    if (CInput.gamePadData[GamepadIndex].DPadRightCheck) return 1f;
+                    if (CInput.GamePads[GamepadIndex].DPadRightCheck) return 1f;
 
-                    if (CInput.gamePadData[GamepadIndex].DPadLeftCheck) return -1f;
+                    if (CInput.GamePads[GamepadIndex].DPadLeftCheck) return -1f;
 
                     return 0;
                 }
@@ -142,9 +142,9 @@ namespace Crimson.Input
             {
                 get
                 {
-                    if (CInput.gamePadData[GamepadIndex].DPadDownCheck) return 1f;
+                    if (CInput.GamePads[GamepadIndex].DPadDownCheck) return 1f;
 
-                    if (CInput.gamePadData[GamepadIndex].DPadUpCheck) return -1f;
+                    if (CInput.GamePads[GamepadIndex].DPadUpCheck) return -1f;
 
                     return 0;
                 }
@@ -171,9 +171,9 @@ namespace Crimson.Input
 
             public override void Update()
             {
-                if (CInput.keyboardData.Check(Positive))
+                if (CInput.Keyboard.Check(Positive))
                 {
-                    if (CInput.keyboardData.Check(Negative))
+                    if (CInput.Keyboard.Check(Negative))
                     {
                         switch (OverlapBehavior)
                         {
@@ -202,7 +202,7 @@ namespace Crimson.Input
                         value = 1;
                     }
                 }
-                else if (CInput.keyboardData.Check(Negative))
+                else if (CInput.Keyboard.Check(Negative))
                 {
                     turned = false;
                     value = -1;

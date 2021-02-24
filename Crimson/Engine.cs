@@ -213,7 +213,7 @@ namespace Crimson
             CInput.Update();
 
 #if !CONSOLE
-            if (ExitOnEscapeKeypress && CInput.keyboardData.Pressed(Keys.Escape))
+            if (ExitOnEscapeKeypress && CInput.Keyboard.Pressed(Keys.Escape))
             {
                 Exit();
                 return;

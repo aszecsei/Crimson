@@ -618,7 +618,7 @@ namespace Crimson
         public static int Wrap(int value, int minValue, int maxValue)
         {
             if (value >= maxValue) return minValue;
-            if (value < minValue) return maxValue;
+            if (value < minValue) return maxValue - 1;
             return value;
         }
 

@@ -183,11 +183,11 @@ namespace Crimson.Input
                 Key = key;
             }
 
-            public override bool Check => CInput.keyboardData.Check(Key);
+            public override bool Check => CInput.Keyboard.Check(Key);
 
-            public override bool Pressed => CInput.keyboardData.Pressed(Key);
+            public override bool Pressed => CInput.Keyboard.Pressed(Key);
 
-            public override bool Released => CInput.keyboardData.Released(Key);
+            public override bool Released => CInput.Keyboard.Released(Key);
         }
 
         public class PadButton : Node
@@ -201,11 +201,11 @@ namespace Crimson.Input
                 Button = button;
             }
 
-            public override bool Check => CInput.gamePadData[GamepadIndex].Check(Button);
+            public override bool Check => CInput.GamePads[GamepadIndex].Check(Button);
 
-            public override bool Pressed => CInput.gamePadData[GamepadIndex].Pressed(Button);
+            public override bool Pressed => CInput.GamePads[GamepadIndex].Pressed(Button);
 
-            public override bool Released => CInput.gamePadData[GamepadIndex].Released(Button);
+            public override bool Released => CInput.GamePads[GamepadIndex].Released(Button);
         }
 
         #region Pad Left Stick
@@ -221,11 +221,11 @@ namespace Crimson.Input
                 Deadzone = deadzone;
             }
 
-            public override bool Check => CInput.gamePadData[GamepadIndex].LeftStickRightCheck(Deadzone);
+            public override bool Check => CInput.GamePads[GamepadIndex].LeftStickRightCheck(Deadzone);
 
-            public override bool Pressed => CInput.gamePadData[GamepadIndex].LeftStickRightPressed(Deadzone);
+            public override bool Pressed => CInput.GamePads[GamepadIndex].LeftStickRightPressed(Deadzone);
 
-            public override bool Released => CInput.gamePadData[GamepadIndex].LeftStickRightReleased(Deadzone);
+            public override bool Released => CInput.GamePads[GamepadIndex].LeftStickRightReleased(Deadzone);
         }
 
         public class PadLeftStickLeft : Node
@@ -239,11 +239,11 @@ namespace Crimson.Input
                 Deadzone = deadzone;
             }
 
-            public override bool Check => CInput.gamePadData[GamepadIndex].LeftStickLeftCheck(Deadzone);
+            public override bool Check => CInput.GamePads[GamepadIndex].LeftStickLeftCheck(Deadzone);
 
-            public override bool Pressed => CInput.gamePadData[GamepadIndex].LeftStickLeftPressed(Deadzone);
+            public override bool Pressed => CInput.GamePads[GamepadIndex].LeftStickLeftPressed(Deadzone);
 
-            public override bool Released => CInput.gamePadData[GamepadIndex].LeftStickLeftReleased(Deadzone);
+            public override bool Released => CInput.GamePads[GamepadIndex].LeftStickLeftReleased(Deadzone);
         }
 
         public class PadLeftStickUp : Node
@@ -257,11 +257,11 @@ namespace Crimson.Input
                 Deadzone = deadzone;
             }
 
-            public override bool Check => CInput.gamePadData[GamepadIndex].LeftStickUpCheck(Deadzone);
+            public override bool Check => CInput.GamePads[GamepadIndex].LeftStickUpCheck(Deadzone);
 
-            public override bool Pressed => CInput.gamePadData[GamepadIndex].LeftStickUpPressed(Deadzone);
+            public override bool Pressed => CInput.GamePads[GamepadIndex].LeftStickUpPressed(Deadzone);
 
-            public override bool Released => CInput.gamePadData[GamepadIndex].LeftStickUpReleased(Deadzone);
+            public override bool Released => CInput.GamePads[GamepadIndex].LeftStickUpReleased(Deadzone);
         }
 
         public class PadLeftStickDown : Node
@@ -275,11 +275,11 @@ namespace Crimson.Input
                 Deadzone = deadzone;
             }
 
-            public override bool Check => CInput.gamePadData[GamepadIndex].LeftStickDownCheck(Deadzone);
+            public override bool Check => CInput.GamePads[GamepadIndex].LeftStickDownCheck(Deadzone);
 
-            public override bool Pressed => CInput.gamePadData[GamepadIndex].LeftStickDownPressed(Deadzone);
+            public override bool Pressed => CInput.GamePads[GamepadIndex].LeftStickDownPressed(Deadzone);
 
-            public override bool Released => CInput.gamePadData[GamepadIndex].LeftStickDownReleased(Deadzone);
+            public override bool Released => CInput.GamePads[GamepadIndex].LeftStickDownReleased(Deadzone);
         }
 
         #endregion
@@ -297,11 +297,11 @@ namespace Crimson.Input
                 Deadzone = deadzone;
             }
 
-            public override bool Check => CInput.gamePadData[GamepadIndex].RightStickRightCheck(Deadzone);
+            public override bool Check => CInput.GamePads[GamepadIndex].RightStickRightCheck(Deadzone);
 
-            public override bool Pressed => CInput.gamePadData[GamepadIndex].RightStickRightPressed(Deadzone);
+            public override bool Pressed => CInput.GamePads[GamepadIndex].RightStickRightPressed(Deadzone);
 
-            public override bool Released => CInput.gamePadData[GamepadIndex].RightStickRightReleased(Deadzone);
+            public override bool Released => CInput.GamePads[GamepadIndex].RightStickRightReleased(Deadzone);
         }
 
         public class PadRightStickLeft : Node
@@ -315,11 +315,11 @@ namespace Crimson.Input
                 Deadzone = deadzone;
             }
 
-            public override bool Check => CInput.gamePadData[GamepadIndex].RightStickLeftCheck(Deadzone);
+            public override bool Check => CInput.GamePads[GamepadIndex].RightStickLeftCheck(Deadzone);
 
-            public override bool Pressed => CInput.gamePadData[GamepadIndex].RightStickLeftPressed(Deadzone);
+            public override bool Pressed => CInput.GamePads[GamepadIndex].RightStickLeftPressed(Deadzone);
 
-            public override bool Released => CInput.gamePadData[GamepadIndex].RightStickLeftReleased(Deadzone);
+            public override bool Released => CInput.GamePads[GamepadIndex].RightStickLeftReleased(Deadzone);
         }
 
         public class PadRightStickUp : Node
@@ -333,11 +333,11 @@ namespace Crimson.Input
                 Deadzone = deadzone;
             }
 
-            public override bool Check => CInput.gamePadData[GamepadIndex].RightStickUpCheck(Deadzone);
+            public override bool Check => CInput.GamePads[GamepadIndex].RightStickUpCheck(Deadzone);
 
-            public override bool Pressed => CInput.gamePadData[GamepadIndex].RightStickUpPressed(Deadzone);
+            public override bool Pressed => CInput.GamePads[GamepadIndex].RightStickUpPressed(Deadzone);
 
-            public override bool Released => CInput.gamePadData[GamepadIndex].RightStickUpReleased(Deadzone);
+            public override bool Released => CInput.GamePads[GamepadIndex].RightStickUpReleased(Deadzone);
         }
 
         public class PadRightStickDown : Node
@@ -351,11 +351,11 @@ namespace Crimson.Input
                 Deadzone = deadzone;
             }
 
-            public override bool Check => CInput.gamePadData[GamepadIndex].RightStickDownCheck(Deadzone);
+            public override bool Check => CInput.GamePads[GamepadIndex].RightStickDownCheck(Deadzone);
 
-            public override bool Pressed => CInput.gamePadData[GamepadIndex].RightStickDownPressed(Deadzone);
+            public override bool Pressed => CInput.GamePads[GamepadIndex].RightStickDownPressed(Deadzone);
 
-            public override bool Released => CInput.gamePadData[GamepadIndex].RightStickDownReleased(Deadzone);
+            public override bool Released => CInput.GamePads[GamepadIndex].RightStickDownReleased(Deadzone);
         }
 
         #endregion
@@ -373,11 +373,11 @@ namespace Crimson.Input
                 Threshold = threshold;
             }
 
-            public override bool Check => CInput.gamePadData[GamepadIndex].LeftTriggerCheck(Threshold);
+            public override bool Check => CInput.GamePads[GamepadIndex].LeftTriggerCheck(Threshold);
 
-            public override bool Pressed => CInput.gamePadData[GamepadIndex].LeftTriggerPressed(Threshold);
+            public override bool Pressed => CInput.GamePads[GamepadIndex].LeftTriggerPressed(Threshold);
 
-            public override bool Released => CInput.gamePadData[GamepadIndex].LeftTriggerReleased(Threshold);
+            public override bool Released => CInput.GamePads[GamepadIndex].LeftTriggerReleased(Threshold);
         }
 
         public class PadRightTrigger : Node
@@ -391,11 +391,11 @@ namespace Crimson.Input
                 Threshold = threshold;
             }
 
-            public override bool Check => CInput.gamePadData[GamepadIndex].RightTriggerCheck(Threshold);
+            public override bool Check => CInput.GamePads[GamepadIndex].RightTriggerCheck(Threshold);
 
-            public override bool Pressed => CInput.gamePadData[GamepadIndex].RightTriggerPressed(Threshold);
+            public override bool Pressed => CInput.GamePads[GamepadIndex].RightTriggerPressed(Threshold);
 
-            public override bool Released => CInput.gamePadData[GamepadIndex].RightTriggerReleased(Threshold);
+            public override bool Released => CInput.GamePads[GamepadIndex].RightTriggerReleased(Threshold);
         }
 
         #endregion
@@ -411,11 +411,11 @@ namespace Crimson.Input
                 GamepadIndex = gamepadIndex;
             }
 
-            public override bool Check => CInput.gamePadData[GamepadIndex].DPadRightCheck;
+            public override bool Check => CInput.GamePads[GamepadIndex].DPadRightCheck;
 
-            public override bool Pressed => CInput.gamePadData[GamepadIndex].DPadRightPressed;
+            public override bool Pressed => CInput.GamePads[GamepadIndex].DPadRightPressed;
 
-            public override bool Released => CInput.gamePadData[GamepadIndex].DPadRightReleased;
+            public override bool Released => CInput.GamePads[GamepadIndex].DPadRightReleased;
         }
 
         public class PadDPadLeft : Node
@@ -427,11 +427,11 @@ namespace Crimson.Input
                 GamepadIndex = gamepadIndex;
             }
 
-            public override bool Check => CInput.gamePadData[GamepadIndex].DPadLeftCheck;
+            public override bool Check => CInput.GamePads[GamepadIndex].DPadLeftCheck;
 
-            public override bool Pressed => CInput.gamePadData[GamepadIndex].DPadLeftPressed;
+            public override bool Pressed => CInput.GamePads[GamepadIndex].DPadLeftPressed;
 
-            public override bool Released => CInput.gamePadData[GamepadIndex].DPadLeftReleased;
+            public override bool Released => CInput.GamePads[GamepadIndex].DPadLeftReleased;
         }
 
         public class PadDPadUp : Node
@@ -443,11 +443,11 @@ namespace Crimson.Input
                 GamepadIndex = gamepadIndex;
             }
 
-            public override bool Check => CInput.gamePadData[GamepadIndex].DPadUpCheck;
+            public override bool Check => CInput.GamePads[GamepadIndex].DPadUpCheck;
 
-            public override bool Pressed => CInput.gamePadData[GamepadIndex].DPadUpPressed;
+            public override bool Pressed => CInput.GamePads[GamepadIndex].DPadUpPressed;
 
-            public override bool Released => CInput.gamePadData[GamepadIndex].DPadUpReleased;
+            public override bool Released => CInput.GamePads[GamepadIndex].DPadUpReleased;
         }
 
         public class PadDPadDown : Node
@@ -459,11 +459,11 @@ namespace Crimson.Input
                 GamepadIndex = gamepadIndex;
             }
 
-            public override bool Check => CInput.gamePadData[GamepadIndex].DPadDownCheck;
+            public override bool Check => CInput.GamePads[GamepadIndex].DPadDownCheck;
 
-            public override bool Pressed => CInput.gamePadData[GamepadIndex].DPadDownPressed;
+            public override bool Pressed => CInput.GamePads[GamepadIndex].DPadDownPressed;
 
-            public override bool Released => CInput.gamePadData[GamepadIndex].DPadDownReleased;
+            public override bool Released => CInput.GamePads[GamepadIndex].DPadDownReleased;
         }
 
         #endregion
@@ -472,29 +472,29 @@ namespace Crimson.Input
 
         public class MouseLeftButton : Node
         {
-            public override bool Check => CInput.mouseData.CheckLeftButton;
+            public override bool Check => CInput.Mouse.CheckLeftButton;
 
-            public override bool Pressed => CInput.mouseData.PressedLeftButton;
+            public override bool Pressed => CInput.Mouse.PressedLeftButton;
 
-            public override bool Released => CInput.mouseData.ReleasedLeftButton;
+            public override bool Released => CInput.Mouse.ReleasedLeftButton;
         }
 
         public class MouseRightButton : Node
         {
-            public override bool Check => CInput.mouseData.CheckRightButton;
+            public override bool Check => CInput.Mouse.CheckRightButton;
 
-            public override bool Pressed => CInput.mouseData.PressedRightButton;
+            public override bool Pressed => CInput.Mouse.PressedRightButton;
 
-            public override bool Released => CInput.mouseData.ReleasedRightButton;
+            public override bool Released => CInput.Mouse.ReleasedRightButton;
         }
 
         public class MouseMiddleButton : Node
         {
-            public override bool Check => CInput.mouseData.CheckMiddleButton;
+            public override bool Check => CInput.Mouse.CheckMiddleButton;
 
-            public override bool Pressed => CInput.mouseData.PressedMiddleButton;
+            public override bool Pressed => CInput.Mouse.PressedMiddleButton;
 
-            public override bool Released => CInput.mouseData.ReleasedMiddleButton;
+            public override bool Released => CInput.Mouse.ReleasedMiddleButton;
         }
 
         #endregion

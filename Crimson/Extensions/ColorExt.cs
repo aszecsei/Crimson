@@ -25,6 +25,11 @@ namespace Crimson
             return Color.White;
         }
 
+        public static string ColorToHex(this Color color)
+        {
+            return $"{color.R:X2}{color.G:X2}{color.B:X2}";
+        }
+
         public static Color HexToColor(int hex)
         {
             var r = (byte) (hex >> 16);

@@ -18,13 +18,18 @@ namespace Crimson
             Texture = texture;
         }
 
+        public bool Outline = false;
+
         public virtual float Width => Texture.Width;
 
         public virtual float Height => Texture.Height;
 
         public override void Render()
         {
-            Texture?.Draw(RenderPosition, Origin, Color, Scale, Rotation, Effects);
+            if ( !Outline )
+                Texture?.Draw(RenderPosition, Origin, Color, Scale, Rotation, Effects);
+            else
+                Texture?.DrawOutline(RenderPosition, Origin, Color, Scale, Rotation, Effects);
         }
 
         public Image SetOrigin(float x, float y)

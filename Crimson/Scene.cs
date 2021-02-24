@@ -16,20 +16,22 @@ namespace Crimson
 
         public Scene()
         {
-            Tracker = new Tracker();
-            Entities = new EntityList(this);
-            TagLists = new TagLists();
+            Tracker      = new Tracker();
+            Entities     = new EntityList(this);
+            TagLists     = new TagLists();
             RendererList = new RendererList(this);
+            Coroutines   = new CoroutineList();
 
             _actualDepthLookup = new Dictionary<int, double>();
         }
 
         public bool Focused { get; private set; }
 
-        public EntityList Entities { get; }
-        public TagLists TagLists { get; }
-        public RendererList RendererList { get; }
-        public Tracker Tracker { get; }
+        public EntityList    Entities     { get; }
+        public TagLists      TagLists     { get; }
+        public RendererList  RendererList { get; }
+        public Tracker       Tracker      { get; }
+        public CoroutineList Coroutines   { get; }
 
         public event Action? OnEndOfFrame;
 
@@ -63,11 +65,14 @@ namespace Crimson
                 Entities.Update();
                 RendererList.Update();
             }
+
+            Coroutines.HandleUpdate();
         }
 
         public virtual void AfterUpdate()
         {
             if (!Paused) Entities.LateUpdate();
+            Coroutines.HandleEndOfFrame();
 
             if (OnEndOfFrame != null)
             {
@@ -89,7 +94,7 @@ namespace Crimson
         public virtual void AfterRender()
         {
             RendererList.AfterRender();
-            
+
             Entities.EndOfFrame();
         }
 
@@ -193,9 +198,29 @@ namespace Crimson
             Entities.Add(entity);
         }
 
+        public void Add(IEnumerable<Entity> entities)
+        {
+            Entities.Add(entities);
+        }
+
+        public void Add(params Entity[] entities)
+        {
+            Entities.Add(entities);
+        }
+
         public void Remove(Entity entity)
         {
             Entities.Remove(entity);
+        }
+
+        public void Remove(IEnumerable<Entity> entities)
+        {
+            Entities.Remove(entities);
+        }
+
+        public void Remove(params Entity[] entities)
+        {
+            Entities.Remove(entities);
         }
 
         public IEnumerator<Entity> GetEnumerator()
@@ -231,6 +256,40 @@ namespace Crimson
                     list.Add(entity);
 
             return list;
+        }
+
+        public void Add(Renderer renderer)
+        {
+            RendererList.Add(renderer);
+        }
+
+        public void Remove(Renderer renderer)
+        {
+            RendererList.Remove(renderer);
+        }
+
+        #endregion
+
+        #region Coroutines
+
+        public Coroutine StartCoroutine(IEnumerator routine)
+        {
+            return Coroutines.StartCoroutine(routine);
+        }
+
+        public void StopAllCoroutines()
+        {
+            Coroutines.StopAllCoroutines();
+        }
+
+        public void StopCoroutine(IEnumerator routine)
+        {
+            Coroutines.StopCoroutine(routine);
+        }
+
+        public void StopCoroutine(Coroutine routine)
+        {
+            Coroutines.StopCoroutine(routine);
         }
 
         #endregion

@@ -10,12 +10,14 @@ namespace Crimson
 
         public virtual void Update(Scene scene)
         {
+            var arr = PostProcessStack.ToArray();
+            for (var i = 0; i < arr.Length; i++) arr[i].Update();
         }
 
         public virtual void BeforeRender(Scene scene)
         {
             var arr = PostProcessStack.ToArray();
-            for (var i = 0; i < arr.Length; i++) arr[i].BeforeRender();
+            for (var i = arr.Length - 1; i >= 0; i--) arr[i].BeforeRender();
         }
 
         public virtual void Render(Scene scene)

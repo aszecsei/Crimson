@@ -32,7 +32,7 @@ namespace Crimson
             removing.Clear();
         }
 
-        internal void Update()
+        public void Update()
         {
             foreach (Renderer renderer in Renderers) renderer.Update(scene);
         }

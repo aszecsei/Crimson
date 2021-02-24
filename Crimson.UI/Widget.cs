@@ -229,14 +229,14 @@ namespace Crimson.UI
             Validate();
 
             // Determine widget state
-            Vector2 mousePos = CInput.mouseData.RawPosition;
+            Vector2 mousePos = CInput.Mouse.RawPosition;
             if (Visibility == Visibility.Visible && CanSupportFocus)
             {
                 if (Hit(mousePos) == this)
                 {
                     Focused = true;
                     IsHovered = true;
-                    Selected = CInput.mouseData.CheckLeftButton;
+                    Selected = CInput.Mouse.CheckLeftButton;
                 }
             }
         }

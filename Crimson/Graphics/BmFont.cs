@@ -286,7 +286,7 @@ namespace Crimson
         {
             Face = face;
         }
-        
+
         public BmFontSize AddFontSize(string path, Atlas atlas = null, bool outline = false)
         {
             var data = Utils.LoadXML(path)["font"];
@@ -307,7 +307,7 @@ namespace Crimson
             foreach (XmlElement page in pages)
             {
                 var file = page.Attr("file");
-                var atlasPath = Utils.NormalizePath(Path.Combine("Fonts", Path.GetFileNameWithoutExtension(file)));
+                var atlasPath = Utils.NormalizePath(Path.GetFileNameWithoutExtension(file));
 
                 if (atlas != null && atlas.Has(atlasPath))
                 {

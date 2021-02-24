@@ -355,8 +355,7 @@ namespace Crimson
                 if (ext != ".png" && ext != ".xnb") continue;
 
                 // get path and load
-                var fileStream = new FileStream(file.Substring(contentDirectoryLength + 1), FileMode.Open,
-                    FileAccess.Read);
+                var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
                 var texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
                 fileStream.Close();
 

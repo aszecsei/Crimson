@@ -278,9 +278,9 @@ namespace Crimson
     /// </summary>
     public class BmFont
     {
-        public string Face;
-        public List<BmFontSize> Sizes = new List<BmFontSize>();
-        public List<CTexture> Textures = new List<CTexture>();
+        public  string               Face;
+        public  List<BmFontSize>     Sizes            = new List<BmFontSize>();
+        private List<VirtualTexture> _managedTextures = new List<VirtualTexture>();
 
         public BmFont(string face)
         {
@@ -302,7 +302,7 @@ namespace Crimson
                     return fs;
 
             // get textures
-            Textures = new List<CTexture>();
+            List<CTexture> textures = new List<CTexture>();
             var pages = data["pages"];
             foreach (XmlElement page in pages)
             {
@@ -311,20 +311,20 @@ namespace Crimson
 
                 if (atlas != null && atlas.Has(atlasPath))
                 {
-                    Textures.Add(atlas[atlasPath]);
+                    textures.Add(atlas[atlasPath]);
+                    continue;
                 }
-                else
-                {
-                    var dir = Path.GetDirectoryName(path);
-                    dir = dir.Substring(Engine.ContentDirectory.Length + 1);
-                    Textures.Add(CTexture.FromFile(Path.Combine(dir, file)));
-                }
+
+                VirtualTexture tex = VirtualContent.CreateTexture(
+                    Path.Combine(Path.GetDirectoryName(path).Substring(Engine.ContentDirectory.Length + 1), file));
+                textures.Add(new CTexture(tex));
+                _managedTextures.Add(tex);
             }
 
             // create font size
             var fontSize = new BmFontSize()
             {
-                Textures = Textures,
+                Textures = textures,
                 Characters = new Dictionary<int, BmFontCharacter>(),
                 LineHeight = data["common"].AttrInt("lineHeight"),
                 Size = size,
@@ -336,7 +336,7 @@ namespace Crimson
             {
                 var id = character.AttrInt("id");
                 var page = character.AttrInt("page", 0);
-                fontSize.Characters.Add(id, new BmFontCharacter(id, Textures[page], character));
+                fontSize.Characters.Add(id, new BmFontCharacter(id, textures[page], character));
             }
 
             // get kerning
@@ -427,8 +427,8 @@ namespace Crimson
 
         public void Dispose()
         {
-            foreach (var tex in Textures)
-                tex.Dispose();
+            foreach (VirtualTexture managedTexture in _managedTextures)
+                managedTexture.Dispose();
             Sizes.Clear();
         }
     }

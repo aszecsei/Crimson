@@ -15,14 +15,14 @@ namespace Crimson
         {
         }
 
-        public CTexture(Texture2D texture)
+        public CTexture(VirtualTexture texture)
         {
-            Texture = texture;
-            AtlasPath = null;
-            ClipRect = new Rectangle(0, 0, Texture.Width, Texture.Height);
+            Texture    = texture;
+            AtlasPath  = null;
+            ClipRect   = new Rectangle(0, 0, Texture.Width, Texture.Height);
             DrawOffset = Vector2.Zero;
-            Width = ClipRect.Width;
-            Height = ClipRect.Height;
+            Width      = ClipRect.Width;
+            Height     = ClipRect.Height;
             SetUtil();
         }
 
@@ -68,7 +68,7 @@ namespace Crimson
             AtlasPath = atlasPath;
         }
 
-        public CTexture(Texture2D texture, Vector2 drawOffset, int frameWidth, int frameHeight)
+        public CTexture(VirtualTexture texture, Vector2 drawOffset, int frameWidth, int frameHeight)
         {
             Texture = texture;
             ClipRect = new Rectangle(0, 0, texture.Width, texture.Height);
@@ -76,30 +76,6 @@ namespace Crimson
             Width = frameWidth;
             Height = frameHeight;
             SetUtil();
-        }
-
-        public CTexture(int width, int height, Color color)
-        {
-            Texture = new Texture2D(Engine.Instance.GraphicsDevice, width, height);
-            var colors = new Color[width * height];
-            for (var i = 0; i < width * height; i++) colors[i] = color;
-
-            Texture.SetData(colors);
-
-            ClipRect = new Rectangle(0, 0, width, height);
-            DrawOffset = Vector2.Zero;
-            Width = width;
-            Height = height;
-            SetUtil();
-        }
-
-        public static CTexture FromFile(string filename)
-        {
-            var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read);
-            Texture2D texture = Texture2D.FromStream(Engine.Instance.GraphicsDevice, fileStream);
-            fileStream.Close();
-
-            return new CTexture(texture);
         }
 
         private void SetUtil()
@@ -145,17 +121,17 @@ namespace Crimson
 
         #region Properties
 
-        public Texture2D Texture { get; private set; }
-        public Rectangle ClipRect { get; private set; }
-        public string AtlasPath { get; private set; }
-        public Vector2 DrawOffset { get; private set; }
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-        public Vector2 Center { get; private set; }
-        public float LeftUV { get; private set; }
-        public float RightUV { get; private set; }
-        public float TopUV { get; private set; }
-        public float BottomUV { get; private set; }
+        public VirtualTexture Texture  { get; private set; }
+        public Rectangle      ClipRect { get; private set; }
+        public string         AtlasPath;
+        public Vector2        DrawOffset { get; private set; }
+        public int            Width      { get; private set; }
+        public int            Height     { get; private set; }
+        public Vector2        Center     { get; private set; }
+        public float          LeftUV     { get; private set; }
+        public float          RightUV    { get; private set; }
+        public float          TopUV      { get; private set; }
+        public float          BottomUV   { get; private set; }
 
         #endregion
 
@@ -197,7 +173,7 @@ namespace Crimson
 #if DEBUG
             if (Texture.IsDisposed) throw new Exception("Texture2D is disposed");
 #endif
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, Color.White, 0, -DrawOffset, 1f,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, Color.White, 0, -DrawOffset, 1f,
                 SpriteEffects.None, 0);
         }
 
@@ -206,7 +182,7 @@ namespace Crimson
 #if DEBUG
             if (Texture.IsDisposed) throw new Exception("Texture2D is disposed");
 #endif
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, Color.White, 0, origin - DrawOffset, 1f,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, Color.White, 0, origin - DrawOffset, 1f,
                 SpriteEffects.None, 0);
         }
 
@@ -215,7 +191,7 @@ namespace Crimson
 #if DEBUG
             if (Texture.IsDisposed) throw new Exception("Texture2D is disposed");
 #endif
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, color, 0, -DrawOffset, 1f, SpriteEffects.None,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, color, 0, -DrawOffset, 1f, SpriteEffects.None,
                 0);
         }
 
@@ -224,7 +200,7 @@ namespace Crimson
 #if DEBUG
             if (Texture.IsDisposed) throw new Exception("Texture2D Is Disposed");
 #endif
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, color, 0, origin - DrawOffset, 1f,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, color, 0, origin - DrawOffset, 1f,
                 SpriteEffects.None, 0);
         }
 
@@ -233,7 +209,7 @@ namespace Crimson
 #if DEBUG
             if (Texture.IsDisposed) throw new Exception("Texture2D is disposed");
 #endif
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, color, 0, origin - DrawOffset, scale,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, color, 0, origin - DrawOffset, scale,
                 SpriteEffects.None, 0);
         }
 
@@ -242,7 +218,7 @@ namespace Crimson
 #if DEBUG
             if (Texture.IsDisposed) throw new Exception("Texture2D Is Disposed");
 #endif
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, color, 0, origin - DrawOffset, scale,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, color, 0, origin - DrawOffset, scale,
                 SpriteEffects.None, 0);
         }
 
@@ -251,7 +227,7 @@ namespace Crimson
 #if DEBUG
             if (Texture.IsDisposed) throw new Exception("Texture2D is disposed");
 #endif
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, color, rotation, origin - DrawOffset, scale,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, color, rotation, origin - DrawOffset, scale,
                 flip, 0);
         }
 
@@ -267,7 +243,7 @@ namespace Crimson
 #if DEBUG
             if (Texture.IsDisposed) throw new Exception("Texture2D is disposed");
 #endif
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, color, rotation, origin - DrawOffset, scale,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, color, rotation, origin - DrawOffset, scale,
                 flip, 0);
         }
 
@@ -282,10 +258,10 @@ namespace Crimson
             for (var i = -1; i <= 1; i++)
             for (var j = -1; j <= 1; j++)
                 if (i != 0 || j != 0)
-                    Crimson.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0,
+                    Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0,
                         -DrawOffset, 1f, SpriteEffects.None, 0);
 
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, Color.White, 0, -DrawOffset, 1f,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, Color.White, 0, -DrawOffset, 1f,
                 SpriteEffects.None, 0);
         }
 
@@ -298,10 +274,10 @@ namespace Crimson
             for (var i = -1; i <= 1; i++)
             for (var j = -1; j <= 1; j++)
                 if (i != 0 || j != 0)
-                    Crimson.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0,
+                    Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0,
                         origin - DrawOffset, 1f, SpriteEffects.None, 0);
 
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, Color.White, 0, origin - DrawOffset, 1f,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, Color.White, 0, origin - DrawOffset, 1f,
                 SpriteEffects.None, 0);
         }
 
@@ -314,10 +290,10 @@ namespace Crimson
             for (var i = -1; i <= 1; i++)
             for (var j = -1; j <= 1; j++)
                 if (i != 0 || j != 0)
-                    Crimson.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0,
+                    Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0,
                         origin - DrawOffset, 1f, SpriteEffects.None, 0);
 
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, color, 0, origin - DrawOffset, 1f,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, color, 0, origin - DrawOffset, 1f,
                 SpriteEffects.None, 0);
         }
 
@@ -330,10 +306,10 @@ namespace Crimson
             for (var i = -1; i <= 1; i++)
             for (var j = -1; j <= 1; j++)
                 if (i != 0 || j != 0)
-                    Crimson.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0,
+                    Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0,
                         origin - DrawOffset, scale, SpriteEffects.None, 0);
 
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, color, 0, origin - DrawOffset, scale,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, color, 0, origin - DrawOffset, scale,
                 SpriteEffects.None, 0);
         }
 
@@ -346,10 +322,10 @@ namespace Crimson
             for (var i = -1; i <= 1; i++)
             for (var j = -1; j <= 1; j++)
                 if (i != 0 || j != 0)
-                    Crimson.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black,
+                    Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position + new Vector2(i, j), ClipRect, Color.Black,
                         rotation, origin - DrawOffset, scale, SpriteEffects.None, 0);
 
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, color, rotation, origin - DrawOffset, scale,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, color, rotation, origin - DrawOffset, scale,
                 SpriteEffects.None, 0);
         }
 
@@ -369,10 +345,10 @@ namespace Crimson
             for (var i = -1; i <= 1; i++)
             for (var j = -1; j <= 1; j++)
                 if (i != 0 || j != 0)
-                    Crimson.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black,
+                    Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position + new Vector2(i, j), ClipRect, Color.Black,
                         rotation, origin - DrawOffset, scale, flip, 0);
 
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, color, rotation, origin - DrawOffset, scale,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, color, rotation, origin - DrawOffset, scale,
                 flip, 0);
         }
 
@@ -385,10 +361,10 @@ namespace Crimson
             for (var i = -1; i <= 1; i++)
             for (var j = -1; j <= 1; j++)
                 if (i != 0 || j != 0)
-                    Crimson.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0,
+                    Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position + new Vector2(i, j), ClipRect, Color.Black, 0,
                         origin - DrawOffset, scale, SpriteEffects.None, 0);
 
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, color, 0, origin - DrawOffset, scale,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, color, 0, origin - DrawOffset, scale,
                 SpriteEffects.None, 0);
         }
 
@@ -401,10 +377,10 @@ namespace Crimson
             for (var i = -1; i <= 1; i++)
             for (var j = -1; j <= 1; j++)
                 if (i != 0 || j != 0)
-                    Crimson.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black,
+                    Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position + new Vector2(i, j), ClipRect, Color.Black,
                         rotation, origin - DrawOffset, scale, SpriteEffects.None, 0);
 
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, color, rotation, origin - DrawOffset, scale,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, color, rotation, origin - DrawOffset, scale,
                 SpriteEffects.None, 0);
         }
 
@@ -424,10 +400,10 @@ namespace Crimson
             for (var i = -1; i <= 1; i++)
             for (var j = -1; j <= 1; j++)
                 if (i != 0 || j != 0)
-                    Crimson.Draw.SpriteBatch.Draw(Texture, position + new Vector2(i, j), ClipRect, Color.Black,
+                    Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position + new Vector2(i, j), ClipRect, Color.Black,
                         rotation, origin - DrawOffset, scale, flip, 0);
 
-            Crimson.Draw.SpriteBatch.Draw(Texture, position, ClipRect, color, rotation, origin - DrawOffset, scale,
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, color, rotation, origin - DrawOffset, scale,
                 flip, 0);
         }
 

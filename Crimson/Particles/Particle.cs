@@ -135,7 +135,7 @@ namespace Crimson
             if (Track != null)
                 renderAt += Track.Position;
 
-            Draw.SpriteBatch.Draw(Source.Texture, renderAt, Source.ClipRect, Color, Rotation, Source.Center, Size,
+            Draw.SpriteBatch.Draw(Source.Texture.Texture, renderAt, Source.ClipRect, Color, Rotation, Source.Center, Size,
                 SpriteEffects.None, 0);
         }
 
@@ -145,7 +145,7 @@ namespace Crimson
             if (Track != null)
                 renderAt += Track.Position;
 
-            Draw.SpriteBatch.Draw(Source.Texture, renderAt, Source.ClipRect, Color * alpha, Rotation, Source.Center,
+            Draw.SpriteBatch.Draw(Source.Texture.Texture, renderAt, Source.ClipRect, Color * alpha, Rotation, Source.Center,
                 Size, SpriteEffects.None, 0);
         }
     }

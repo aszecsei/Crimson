@@ -33,12 +33,17 @@ namespace Crimson
 
         internal VirtualTexture(string path)
         {
-
+            Name = Path = path;
+            Reload();
         }
 
         internal VirtualTexture(string name, int width, int height, Color color)
         {
-
+            Name   = name;
+            Width  = width;
+            Height = height;
+            _color = color;
+            Reload();
         }
 
         internal override void Unload()

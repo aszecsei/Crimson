@@ -52,14 +52,14 @@ namespace Crimson
 
         public static void UseDebugPixelTexture()
         {
-            var texture = new CTexture(2, 2, Color.White);
+            var texture = new CTexture(VirtualContent.CreateTexture("debug-pixel", 3, 3, Color.White));
             Pixel = new CTexture(texture, 0, 0, 1, 1);
             Particle = new CTexture(texture, 0, 0, 2, 2);
         }
 
         public static void Point(Vector2 at, Color color)
         {
-            SpriteBatch.Draw(Pixel.Texture, at, Pixel.ClipRect, color, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
+            SpriteBatch.Draw(Pixel.Texture.Texture, at, Pixel.ClipRect, color, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
         }
 
         #region Line
@@ -86,13 +86,13 @@ namespace Crimson
         public static void LineAngle(Vector2 start, float angle, float length, Color color)
         {
             SpriteBatch.Draw(
-                Pixel.Texture, start, Pixel.ClipRect, color, angle, Vector2.Zero, new Vector2(length, 1),
+                Pixel.Texture.Texture, start, Pixel.ClipRect, color, angle, Vector2.Zero, new Vector2(length, 1),
                 SpriteEffects.None, 0);
         }
 
         public static void LineAngle(Vector2 start, float angle, float length, Color color, float thickness)
         {
-            SpriteBatch.Draw(Pixel.Texture, start, Pixel.ClipRect, color, angle, new Vector2(0, .5f),
+            SpriteBatch.Draw(Pixel.Texture.Texture, start, Pixel.ClipRect, color, angle, new Vector2(0, .5f),
                 new Vector2(length, thickness),
                 SpriteEffects.None, 0);
         }
@@ -164,7 +164,7 @@ namespace Crimson
             s_rect.Y = (int) y;
             s_rect.Width = (int) width;
             s_rect.Height = (int) height;
-            SpriteBatch.Draw(Pixel.Texture, s_rect, Pixel.ClipRect, color);
+            SpriteBatch.Draw(Pixel.Texture.Texture, s_rect, Pixel.ClipRect, color);
         }
 
         public static void Rect(Vector2 position, float width, float height, Color color)
@@ -175,7 +175,7 @@ namespace Crimson
         public static void Rect(Rectangle rect, Color color)
         {
             s_rect = rect;
-            SpriteBatch.Draw(Pixel.Texture, rect, Pixel.ClipRect, color);
+            SpriteBatch.Draw(Pixel.Texture.Texture, rect, Pixel.ClipRect, color);
         }
 
         #endregion
@@ -189,21 +189,21 @@ namespace Crimson
             s_rect.Width = (int) width;
             s_rect.Height = 1;
 
-            SpriteBatch.Draw(Pixel.Texture, s_rect, Pixel.ClipRect, color);
+            SpriteBatch.Draw(Pixel.Texture.Texture, s_rect, Pixel.ClipRect, color);
 
             s_rect.Y += (int) height - 1;
 
-            SpriteBatch.Draw(Pixel.Texture, s_rect, Pixel.ClipRect, color);
+            SpriteBatch.Draw(Pixel.Texture.Texture, s_rect, Pixel.ClipRect, color);
 
             s_rect.Y -= (int) height - 1;
             s_rect.Width = 1;
             s_rect.Height = (int) height;
 
-            SpriteBatch.Draw(Pixel.Texture, s_rect, Pixel.ClipRect, color);
+            SpriteBatch.Draw(Pixel.Texture.Texture, s_rect, Pixel.ClipRect, color);
 
             s_rect.X += (int) width - 1;
 
-            SpriteBatch.Draw(Pixel.Texture, s_rect, Pixel.ClipRect, color);
+            SpriteBatch.Draw(Pixel.Texture.Texture, s_rect, Pixel.ClipRect, color);
         }
 
         public static void HollowRect(Vector2 position, float width, float height, Color color)

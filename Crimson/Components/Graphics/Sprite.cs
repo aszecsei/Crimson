@@ -149,7 +149,7 @@ namespace Crimson
                 var clip = Texture.GetRelativeRect(rectangle);
                 var clipOffset = new Vector2(-Math.Min(rectangle.X - Texture.DrawOffset.X, 0),
                     -Math.Min(rectangle.Y - Texture.DrawOffset.Y, 0));
-                Draw.SpriteBatch.Draw(Texture.Texture, RenderPosition + offset, clip, Color, Rotation,
+                Draw.SpriteBatch.Draw(Texture.Texture.Texture, RenderPosition + offset, clip, Color, Rotation,
                     Origin - clipOffset, Scale, Effects, 0);
             }
         }

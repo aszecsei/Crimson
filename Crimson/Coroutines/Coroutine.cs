@@ -19,8 +19,6 @@ namespace Crimson
             Active = true;
             Parent = parent;
             Waiting = null;
-
-            MoveNext();
         }
 
         private bool MoveNext()
@@ -38,7 +36,7 @@ namespace Crimson
                     _timer = ws.Duration;
                 }
             }
-            
+
             return canMoveNext;
         }
 
@@ -49,7 +47,7 @@ namespace Crimson
                 _timer -= Time.DeltaTime;
                 return;
             }
-            
+
             // If the last call was a WFS, we've finished the timer - and thus the WFS is complete :)
             if (Waiting is WaitForSeconds)
             {
@@ -97,7 +95,7 @@ namespace Crimson
                 MoveNext();
                 return;
             }
-            
+
             // We've got some weird return value here...
             Engine.Commands.Log($"Unexpected coroutine result: {Waiting.GetType().ToString()}");
         }

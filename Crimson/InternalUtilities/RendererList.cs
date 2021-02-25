@@ -32,6 +32,12 @@ namespace Crimson
             removing.Clear();
         }
 
+        public void BeforeUpdate()
+        {
+            foreach ( Renderer renderer in Renderers )
+                renderer.BeforeUpdate(scene);
+        }
+
         public void Update()
         {
             foreach (Renderer renderer in Renderers) renderer.Update(scene);

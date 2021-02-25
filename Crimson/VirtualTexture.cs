@@ -199,6 +199,8 @@ namespace Crimson
         {
             base.Dispose();
             Texture.Dispose();
+            Texture = null;
+            VirtualContent.Remove(this);
         }
     }
 }

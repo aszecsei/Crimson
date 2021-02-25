@@ -56,6 +56,7 @@ namespace Crimson
             Entities.UpdateLists();
             TagLists.UpdateLists();
             RendererList.UpdateLists();
+            RendererList.BeforeUpdate();
         }
 
         public virtual void Update()

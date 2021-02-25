@@ -4,20 +4,23 @@ namespace Crimson
 {
     public abstract class Renderer
     {
-        public Stack<PostProcessEffect> PostProcessStack = new Stack<PostProcessEffect>();
+        public PostProcessList PostProcessStack = new PostProcessList();
 
         public bool Visible = true;
 
+        public virtual void BeforeUpdate(Scene scene)
+        {
+            PostProcessStack.UpdateLists();
+        }
+
         public virtual void Update(Scene scene)
         {
-            var arr = PostProcessStack.ToArray();
-            for (var i = 0; i < arr.Length; i++) arr[i].Update();
+            PostProcessStack.Update();
         }
 
         public virtual void BeforeRender(Scene scene)
         {
-            var arr = PostProcessStack.ToArray();
-            for (var i = arr.Length - 1; i >= 0; i--) arr[i].BeforeRender();
+            PostProcessStack.BeforeRender();
         }
 
         public virtual void Render(Scene scene)
@@ -26,8 +29,7 @@ namespace Crimson
 
         public virtual void AfterRender(Scene scene)
         {
-            var arr = PostProcessStack.ToArray();
-            for (var i = 0; i < arr.Length; i++) arr[i].AfterRender();
+            PostProcessStack.AfterRender();
         }
     }
 }

@@ -247,6 +247,20 @@ namespace Crimson
                 flip, 0);
         }
 
+        public void Draw(Vector2 position,
+                         Vector2 origin,
+                         Color color,
+                         Vector2 scale,
+                         float rotation,
+                         Rectangle clip)
+        {
+#if DEBUG
+            if (Texture.IsDisposed) throw new Exception("Texture2D is disposed");
+#endif
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, GetRelativeRect(clip), color, rotation,
+                                          origin - DrawOffset, scale, SpriteEffects.None, 0f);
+        }
+
         #region Draw Outline
 
         public void DrawOutline(Vector2 position)

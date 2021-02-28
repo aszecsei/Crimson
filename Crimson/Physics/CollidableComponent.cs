@@ -9,8 +9,6 @@ namespace Crimson.Physics
 
         private Collider? collider;
 
-        public PhysicsEntity? PhysicsEntity => Entity as PhysicsEntity;
-
         public CollidableComponent(bool active, bool visible, bool colllidable)
             : base(active, visible)
         {
@@ -22,7 +20,7 @@ namespace Crimson.Physics
             get
             {
                 if ( collider == null )
-                    return PhysicsEntity?.Collider;
+                    return Entity?.Collider;
                 return collider;
             }
 
@@ -47,7 +45,7 @@ namespace Crimson.Physics
             get
             {
                 if ( collider == null )
-                    return PhysicsEntity.Width;
+                    return Entity.Width;
                 return collider.Width;
             }
         }
@@ -57,7 +55,7 @@ namespace Crimson.Physics
             get
             {
                 if ( collider == null )
-                    return PhysicsEntity.Height;
+                    return Entity.Height;
                 return collider.Height;
             }
         }
@@ -67,14 +65,14 @@ namespace Crimson.Physics
             get
             {
                 if ( collider == null )
-                    return PhysicsEntity.Left;
+                    return Entity.Left;
                 return Entity.X + collider.Left;
             }
 
             set
             {
                 if ( collider == null )
-                    PhysicsEntity.Left = value;
+                    Entity.Left = value;
                 else
                     Entity.X = value - collider.Left;
             }
@@ -85,16 +83,16 @@ namespace Crimson.Physics
             get
             {
                 if ( collider == null )
-                    return PhysicsEntity.Right;
+                    return Entity.Right;
                 return Entity.X + collider.Right;
             }
 
             set
             {
                 if ( collider == null )
-                    PhysicsEntity.Right = value;
+                    Entity.Right = value;
                 else
-                    PhysicsEntity.X = value - collider.Right;
+                    Entity.X = value - collider.Right;
             }
         }
 
@@ -103,16 +101,16 @@ namespace Crimson.Physics
             get
             {
                 if ( collider == null )
-                    return PhysicsEntity.Top;
+                    return Entity.Top;
                 return Entity.Y + collider.Top;
             }
 
             set
             {
                 if ( collider == null )
-                    PhysicsEntity.Top = value;
+                    Entity.Top = value;
                 else
-                    PhysicsEntity.Y = value - collider.Top;
+                    Entity.Y = value - collider.Top;
             }
         }
 
@@ -121,14 +119,14 @@ namespace Crimson.Physics
             get
             {
                 if ( collider == null )
-                    return PhysicsEntity.Bottom;
+                    return Entity.Bottom;
                 return Entity.Y + collider.Bottom;
             }
 
             set
             {
                 if ( collider == null )
-                    PhysicsEntity.Bottom = value;
+                    Entity.Bottom = value;
                 else
                     Entity.Y = value - collider.Bottom;
             }
@@ -139,14 +137,14 @@ namespace Crimson.Physics
             get
             {
                 if ( collider == null )
-                    return PhysicsEntity.CenterX;
+                    return Entity.CenterX;
                 return Entity.X + collider.CenterX;
             }
 
             set
             {
                 if ( collider == null )
-                    PhysicsEntity.CenterX = value;
+                    Entity.CenterX = value;
                 else
                     Entity.X = value - collider.CenterX;
             }
@@ -157,14 +155,14 @@ namespace Crimson.Physics
             get
             {
                 if ( collider == null )
-                    return PhysicsEntity.CenterY;
+                    return Entity.CenterY;
                 return Entity.Y + collider.CenterY;
             }
 
             set
             {
                 if ( collider == null )
-                    PhysicsEntity.CenterY = value;
+                    Entity.CenterY = value;
                 else
                     Entity.Y = value - collider.CenterY;
             }

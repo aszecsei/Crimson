@@ -231,7 +231,7 @@ namespace Crimson.Physics
             Component = null;
         }
 
-        public bool Collide(PhysicsEntity entity)
+        public bool Collide(Entity entity)
         {
             return entity.Collider == null ? false : Collide(entity.Collider);
         }

@@ -29,5 +29,32 @@ namespace Crimson
 
             return new Rectangle(Mathf.RoundToInt(minX), Mathf.RoundToInt(minY), Mathf.RoundToInt(maxX - minX), Mathf.RoundToInt(maxY - minY));
         }
+
+        public static Rectangle ClampTo(this Rectangle rect, Rectangle clamp)
+        {
+            if ( rect.X < clamp.X )
+            {
+                rect.Width -= (clamp.X - rect.X);
+                rect.X     =  clamp.X;
+            }
+
+            if ( rect.Y < clamp.Y )
+            {
+                rect.Height -= (clamp.Y - rect.Y);
+                rect.Y      =  clamp.Y;
+            }
+
+            if ( rect.Right > clamp.Right )
+            {
+                rect.Width = clamp.Right - rect.X;
+            }
+
+            if ( rect.Bottom > clamp.Bottom )
+            {
+                rect.Height = clamp.Bottom - rect.Y;
+            }
+
+            return rect;
+        }
     }
 }

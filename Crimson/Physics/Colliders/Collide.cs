@@ -22,14 +22,14 @@ namespace Crimson.Physics
     {
         #region Entity vs Entity
 
-        public static bool Check(PhysicsEntity a, PhysicsEntity b)
+        public static bool Check(Entity a, Entity b)
         {
             if ( a.Collider == null || b.Collider == null )
                 return false;
             return a != b && b.Collidable && a.Collider.Collide(b);
         }
 
-        public static bool Check(PhysicsEntity a, PhysicsEntity b, Vector2 at)
+        public static bool Check(Entity a, Entity b, Vector2 at)
         {
             Vector2 old = a.Position;
             a.Position = at;
@@ -38,14 +38,14 @@ namespace Crimson.Physics
             return ret;
         }
 
-        public static bool Check(PhysicsEntity a, CollidableComponent b)
+        public static bool Check(Entity a, CollidableComponent b)
         {
             if ( a.Collider == null || b.Collider == null )
                 return false;
-            return b.Collidable && b.PhysicsEntity.Collidable && a.Collider.Collide(b);
+            return b.Collidable && b.Collidable && a.Collider.Collide(b);
         }
 
-        public static bool Check(PhysicsEntity a, CollidableComponent b, Vector2 at)
+        public static bool Check(Entity a, CollidableComponent b, Vector2 at)
         {
             Vector2 old = a.Position;
             a.Position = at;
@@ -60,16 +60,16 @@ namespace Crimson.Physics
 
         #region Check
 
-        public static bool Check(PhysicsEntity a, IEnumerable<PhysicsEntity> b)
+        public static bool Check(Entity a, IEnumerable<Entity> b)
         {
-            foreach ( PhysicsEntity e in b )
+            foreach ( Entity e in b )
                 if ( Check(a, e) )
                     return true;
 
             return false;
         }
 
-        public static bool Check(PhysicsEntity a, IEnumerable<PhysicsEntity> b, Vector2 at)
+        public static bool Check(Entity a, IEnumerable<Entity> b, Vector2 at)
         {
             Vector2 old = a.Position;
             a.Position = at;
@@ -82,20 +82,20 @@ namespace Crimson.Physics
 
         #region First
 
-        public static PhysicsEntity First(PhysicsEntity a, IEnumerable<PhysicsEntity> b)
+        public static Entity First(Entity a, IEnumerable<Entity> b)
         {
-            foreach ( PhysicsEntity e in b )
+            foreach ( Entity e in b )
                 if ( Check(a, e) )
                     return e;
 
             return null;
         }
 
-        public static PhysicsEntity First(PhysicsEntity a, IEnumerable<PhysicsEntity> b, Vector2 at)
+        public static Entity First(Entity a, IEnumerable<Entity> b, Vector2 at)
         {
             Vector2 old = a.Position;
             a.Position = at;
-            PhysicsEntity ret = First(a, b);
+            Entity ret = First(a, b);
             a.Position = old;
             return ret;
         }
@@ -104,32 +104,32 @@ namespace Crimson.Physics
 
         #region All
 
-        public static List<PhysicsEntity> All(PhysicsEntity a, IEnumerable<PhysicsEntity> b, List<PhysicsEntity> into)
+        public static List<Entity> All(Entity a, IEnumerable<Entity> b, List<Entity> into)
         {
-            foreach ( PhysicsEntity e in b )
+            foreach ( Entity e in b )
                 if ( Check(a, e) )
                     into.Add(e);
 
             return into;
         }
 
-        public static List<PhysicsEntity> All(PhysicsEntity a, IEnumerable<PhysicsEntity> b, List<PhysicsEntity> into, Vector2 at)
+        public static List<Entity> All(Entity a, IEnumerable<Entity> b, List<Entity> into, Vector2 at)
         {
             Vector2 old = a.Position;
             a.Position = at;
-            List<PhysicsEntity> ret = All(a, b, into);
+            List<Entity> ret = All(a, b, into);
             a.Position = old;
             return ret;
         }
 
-        public static List<PhysicsEntity> All(PhysicsEntity a, IEnumerable<PhysicsEntity> b)
+        public static List<Entity> All(Entity a, IEnumerable<Entity> b)
         {
-            return All(a, b, new List<PhysicsEntity>());
+            return All(a, b, new List<Entity>());
         }
 
-        public static List<PhysicsEntity> All(PhysicsEntity a, IEnumerable<PhysicsEntity> b, Vector2 at)
+        public static List<Entity> All(Entity a, IEnumerable<Entity> b, Vector2 at)
         {
-            return All(a, b, new List<PhysicsEntity>(), at);
+            return All(a, b, new List<Entity>(), at);
         }
 
         #endregion
@@ -138,14 +138,14 @@ namespace Crimson.Physics
 
         #region Entity vs Point
 
-        public static bool CheckPoint(PhysicsEntity a, Vector2 point)
+        public static bool CheckPoint(Entity a, Vector2 point)
         {
             if ( a.Collider == null )
                 return false;
             return a.Collider.Collide(point);
         }
 
-        public static bool CheckPoint(PhysicsEntity a, Vector2 point, Vector2 at)
+        public static bool CheckPoint(Entity a, Vector2 point, Vector2 at)
         {
             Vector2 old = a.Position;
             a.Position = at;
@@ -158,14 +158,14 @@ namespace Crimson.Physics
 
         #region Entity vs Line
 
-        public static bool CheckLine(PhysicsEntity a, Vector2 from, Vector2 to)
+        public static bool CheckLine(Entity a, Vector2 from, Vector2 to)
         {
             if ( a.Collider == null )
                 return false;
             return a.Collider.Collide(from, to);
         }
 
-        public static bool CheckLine(PhysicsEntity a, Vector2 from, Vector2 to, Vector2 at)
+        public static bool CheckLine(Entity a, Vector2 from, Vector2 to, Vector2 at)
         {
             Vector2 old = a.Position;
             a.Position = at;
@@ -178,14 +178,14 @@ namespace Crimson.Physics
 
         #region Entity vs Rectangle
 
-        public static bool CheckRect(PhysicsEntity a, Rectangle rect)
+        public static bool CheckRect(Entity a, Rectangle rect)
         {
             if ( a.Collider == null )
                 return false;
             return a.Collider.Collide(rect);
         }
 
-        public static bool CheckRect(PhysicsEntity a, Rectangle rect, Vector2 at)
+        public static bool CheckRect(Entity a, Rectangle rect, Vector2 at)
         {
             Vector2 old = a.Position;
             a.Position = at;
@@ -398,7 +398,7 @@ namespace Crimson.Physics
         /*
          *  Bitflags and helpers for using the Cohen–Sutherland algorithm
          *  http://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
-         *  
+         *
          *  Sector bitflags:
          *      1001  1000  1010
          *      0001  0000  0010

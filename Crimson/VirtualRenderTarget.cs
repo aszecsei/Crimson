@@ -49,7 +49,7 @@ namespace Crimson
         {
             Unload();
             Target = new RenderTarget2D(Engine.Instance.GraphicsDevice, Width, Height, mipMap: false,
-                                        SurfaceFormat.Color, Depth ? DepthFormat.Depth24Stencil8 : DepthFormat.None,
+                                        SurfaceFormat.HdrBlendable, Depth ? DepthFormat.Depth24Stencil8 : DepthFormat.None,
                                         MultiSampleCount,
                                         Preserve
                                             ? RenderTargetUsage.PreserveContents

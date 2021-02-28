@@ -5,20 +5,22 @@ namespace Crimson
 {
     public class PostProcessEffect
     {
-        protected VirtualRenderTarget? RenderTarget2D;
+        protected VirtualRenderTarget? Src;
+        protected RenderTarget2D?      Dst;
 
-        protected RenderTarget2D? Was;
+        public int? OverrideWidth  = null;
+        public int? OverrideHeight = null;
 
         public PostProcessEffect(Effect effect)
         {
-            Effect = effect;
+            Effect    = effect;
         }
 
         public Effect Effect { get; }
 
         ~PostProcessEffect()
         {
-            RenderTarget2D?.Dispose();
+            Src?.Dispose();
         }
 
         public virtual void Update()
@@ -28,18 +30,20 @@ namespace Crimson
 
         public virtual void BeforeRender()
         {
-            if (RenderTarget2D != null &&
-                (RenderTarget2D.Width != Engine.ViewWidth || RenderTarget2D.Height != Engine.ViewHeight))
+            int width  = OverrideWidth  ?? Engine.ViewWidth;
+            int height = OverrideHeight ?? Engine.ViewHeight;
+
+            if (Src != null && (Src.Width != width || Src.Height != height))
             {
-                RenderTarget2D.Dispose();
-                RenderTarget2D = null;
+                Src.Dispose();
+                Src = null;
             }
 
-            if ( RenderTarget2D == null )
-                RenderTarget2D = VirtualContent.CreateRenderTarget("post-process", Engine.ViewWidth, Engine.ViewHeight);
+            if ( Src == null )
+                Src = VirtualContent.CreateRenderTarget("post-process", width, height);
 
-            Was = Engine.Instance.RenderTarget;
-            Engine.Instance.RenderTarget = RenderTarget2D;
+            Dst = Engine.Instance.RenderTarget;
+            Engine.Instance.RenderTarget = Src;
             Engine.Instance.GraphicsDevice.Clear(ClearOptions.DepthBuffer | ClearOptions.Stencil | ClearOptions.Target,
                 Color.Transparent, 1, 0);
         }
@@ -51,12 +55,18 @@ namespace Crimson
 
         public virtual void AfterRender()
         {
-            Engine.Instance.RenderTarget = Was;
+            int width  = OverrideWidth  ?? Engine.ViewWidth;
+            int height = OverrideHeight ?? Engine.ViewHeight;
+
+            int dstWidth  = Dst?.Width ?? Engine.ViewWidth;
+            int dstHeight = Dst?.Height ?? Engine.ViewHeight;
+
+            Engine.Instance.RenderTarget = Dst;
 
             SetEffectParameters();
 
             Draw.SpriteBatch.Begin(effect: Effect, blendState: BlendState.AlphaBlend);
-            Draw.SpriteBatch.Draw(RenderTarget2D, Vector2.Zero, Color.White);
+            Draw.SpriteBatch.Draw(Src!, new Rectangle(0, 0, dstWidth, dstHeight), new Rectangle(0, 0, width, height), Color.White);
             Draw.SpriteBatch.End();
         }
     }

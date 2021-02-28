@@ -39,7 +39,7 @@ namespace Crimson
 
         internal void BeforeRender()
         {
-            for (var i = 0; i < Effects.Count; i++)
+            for ( var i = Effects.Count - 1; i >= 0; --i )
             {
                 Effects[i].BeforeRender();
             }
@@ -47,7 +47,7 @@ namespace Crimson
 
         internal void AfterRender()
         {
-            for ( var i = Effects.Count - 1; i >= 0; --i )
+            for ( var i = 0; i < Effects.Count; ++i )
             {
                 Effects[i].AfterRender();
             }
@@ -55,6 +55,7 @@ namespace Crimson
 
         public void Push(PostProcessEffect effect)
         {
+            if ( Effects.Contains(effect) || _adding.Contains(effect) ) return;
             _adding.Add(effect);
         }
 

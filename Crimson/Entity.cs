@@ -160,6 +160,7 @@ namespace Crimson
         public virtual void DebugRender(Camera camera)
         {
             Components.DebugRender(camera);
+            Collider?.Render(camera, Collidable ? Color.Red : Color.DarkRed);
         }
 
         /// <summary>

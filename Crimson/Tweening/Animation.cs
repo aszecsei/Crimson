@@ -22,7 +22,7 @@ namespace Crimson.Tweening
         /// The index of the animation in the AnimManager list
         /// </summary>
         internal int ActiveId;
-        
+
         /// <summary>
         /// The timescale of the animation.
         /// </summary>
@@ -47,7 +47,7 @@ namespace Crimson.Tweening
         /// The animation's numeric ID
         /// </summary>
         public int? Id = null;
-        
+
         /// <summary>
         /// Called when the animation begins (before any delay)
         /// </summary>
@@ -56,6 +56,10 @@ namespace Crimson.Tweening
         /// Called when the animation begins to play (after any delay)
         /// </summary>
         public TweenCallback? OnPlay = null;
+        /// <summary>
+        /// Called every time the animation begins a loop cycle
+        /// </summary>
+        public TweenCallback? OnStepBegin = null;
         /// <summary>
         /// Called when the animation is paused
         /// </summary>
@@ -68,6 +72,10 @@ namespace Crimson.Tweening
         /// Called when the animation completes
         /// </summary>
         public TweenCallback? OnComplete = null;
+        /// <summary>
+        /// Called every time the animation finishes a single loop cycle
+        /// </summary>
+        public TweenCallback? OnStepComplete = null;
         /// <summary>
         /// Called when the animation is destroyed
         /// </summary>
@@ -157,7 +165,7 @@ namespace Crimson.Tweening
         /// The easing function for this animation
         /// </summary>
         public Easer Easer { get; internal set; } = Ease.Linear.GetEaser();
-        
+
         /// <summary>
         /// The type being modified by the animation, if any
         /// </summary>
@@ -206,7 +214,7 @@ namespace Crimson.Tweening
         {
             return 0;
         }
-        
+
         /// <summary>
         /// Called the moment the animation starts. For tweens, that means AFTER any delay has elapsed.
         /// </summary>
@@ -242,7 +250,13 @@ namespace Crimson.Tweening
                 if (t.OnPlay != null && withCallbacks)
                 {
                     t.OnPlay.Invoke();
-                    if (!t.Active) return true; // animation might have been killed by OnStart callback
+                    if (!t.Active) return true; // animation might have been killed by OnPlay callback
+                }
+
+                if ( t.OnStepBegin != null && withCallbacks )
+                {
+                    t.OnStepBegin.Invoke();
+                    if (!t.Active) return true; // animation might have been killed by OnStepBegin callback
                 }
             }
 
@@ -258,7 +272,7 @@ namespace Crimson.Tweening
                 newCompletedSteps = t.CompletedLoops < prevCompletedLoops ? prevCompletedLoops - t.CompletedLoops : (toPosition <= 0 && !wasRewinded ? 1 : 0);
                 if (wasComplete) newCompletedSteps--;
             } else newCompletedSteps = t.CompletedLoops > prevCompletedLoops ? t.CompletedLoops - prevCompletedLoops : 0;
-            
+
             t.Position = toPosition;
             if (t.Position > t.BaseDuration) t.Position = t.BaseDuration;
             else if (t.Position <= 0)
@@ -279,7 +293,7 @@ namespace Crimson.Tweening
                                                      ? t.CompletedLoops % 2 != 0
                                                      : t.CompletedLoops % 2 == 0);
             if (t.ApplyAnimation(prevPosition, prevCompletedLoops, newCompletedSteps, useInversePosition)) return true;
-            
+
             if (withCallbacks) t.OnUpdate?.Invoke();
             if (t.IsComplete && !wasComplete && withCallbacks)
             {
@@ -443,7 +457,7 @@ namespace Crimson.Tweening
                              && (!IsComplete && CompletedLoops % 2 != 0 || IsComplete && CompletedLoops % 2 == 0);
             return isInverse ? 1 - perc : perc;
         }
-        
+
         #endregion
     }
 
@@ -482,7 +496,7 @@ namespace Crimson.Tweening
 
             return t;
         }
-        
+
         public static T? SetLoops<T>(this T? t, int loops, LoopType loopType) where T : Tween
         {
             if (t == null || !t.Active || t.Locked) return t;
@@ -507,7 +521,7 @@ namespace Crimson.Tweening
             t.Easer = ease.GetEaser();
             return t;
         }
-        
+
         public static T? SetEase<T>(this T? t, Easer easer) where T : Tween
         {
             if (t == null || !t.Active) return t;
@@ -528,13 +542,13 @@ namespace Crimson.Tweening
             if (t == null || !t.Active) return t;
             return SetUpdate(t, TweenSubsystem.DefaultUpdateType, isIndependentUpdate);
         }
-        
+
         public static T? SetUpdate<T>(this T? t, UpdateType updateType) where T : Tween
         {
             if (t == null || !t.Active) return t;
             return SetUpdate(t, updateType, TweenSubsystem.DefaultTimeScaleIndependent);
         }
-        
+
         public static T? SetUpdate<T>(this T? t, UpdateType updateType, bool isIndependentUpdate) where T : Tween
         {
             if (t == null || !t.Active) return t;
@@ -561,7 +575,7 @@ namespace Crimson.Tweening
             t.OnPlay = action;
             return t;
         }
-        
+
         public static T? OnPause<T>(this T? t, TweenCallback action) where T : Tween
         {
             if (t == null || !t.Active) return t;
@@ -585,7 +599,7 @@ namespace Crimson.Tweening
             t.OnComplete = action;
             return t;
         }
-        
+
         public static T? OnKill<T>(this T? t, TweenCallback action) where T : Tween
         {
             if (t == null || !t.Active) return t;
@@ -598,7 +612,7 @@ namespace Crimson.Tweening
 
         #region Sequences-Only
 
-        /// <summary>Adds the given tween to the end of the Sequence. 
+        /// <summary>Adds the given tween to the end of the Sequence.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="t">The tween to append</param>
         public static Sequence Append(this Sequence s, Tween t)
@@ -609,7 +623,7 @@ namespace Crimson.Tweening
             Sequence.DoInsert(s, t, s.BaseDuration);
             return s;
         }
-        /// <summary>Adds the given tween to the beginning of the Sequence, pushing forward the other nested content. 
+        /// <summary>Adds the given tween to the beginning of the Sequence, pushing forward the other nested content.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="t">The tween to prepend</param>
         public static Sequence Prepend(this Sequence s, Tween t)
@@ -632,7 +646,7 @@ namespace Crimson.Tweening
             return s;
         }
         /// <summary>Inserts the given tween at the given time position in the Sequence,
-        /// automatically adding an interval if needed. 
+        /// automatically adding an interval if needed.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="atPosition">The time position where the tween will be placed</param>
         /// <param name="t">The tween to insert</param>
@@ -645,7 +659,7 @@ namespace Crimson.Tweening
             return s;
         }
 
-        /// <summary>Adds the given interval to the end of the Sequence. 
+        /// <summary>Adds the given interval to the end of the Sequence.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="interval">The interval duration</param>
         public static Sequence AppendInterval(this Sequence s, float interval)
@@ -655,7 +669,7 @@ namespace Crimson.Tweening
             Sequence.DoAppendInterval(s, interval);
             return s;
         }
-        /// <summary>Adds the given interval to the beginning of the Sequence, pushing forward the other nested content. 
+        /// <summary>Adds the given interval to the beginning of the Sequence, pushing forward the other nested content.
         /// Has no effect if the Sequence has already started</summary>
         /// <param name="interval">The interval duration</param>
         public static Sequence PrependInterval(this Sequence s, float interval)
@@ -667,12 +681,12 @@ namespace Crimson.Tweening
         }
 
         #endregion
-        
+
         public static T? Pause<T>(this T? t) where T : Animation
         {
             // TODO: Log warning here?
             if (t == null || !t.Active || t.IsSequenced) return t;
-            
+
             AnimManager.Pause(t);
             return t;
         }
@@ -681,7 +695,7 @@ namespace Crimson.Tweening
         {
             // TODO: Log warning here?
             if (t == null || !t.Active || t.IsSequenced) return t;
-            
+
             AnimManager.Play(t);
             return t;
         }

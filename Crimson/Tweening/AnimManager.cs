@@ -24,7 +24,7 @@ namespace Crimson.Tweening
         internal static Animation?[] ActiveAnimations = new Animation[DEFAULT_MAX_TWEENS + DEFAULT_MAX_SEQUENCES];
         private static Animation?[] s_pooledAnimations = new Animation[DEFAULT_MAX_TWEENS];
         private static readonly Stack<Animation> PooledSequences = new Stack<Animation>();
-        
+
         private static readonly List<Animation> KillList = new List<Animation>(DEFAULT_MAX_TWEENS + DEFAULT_MAX_SEQUENCES);
         private static int s_maxActiveLookupId;
         private static bool s_needsReorganization;
@@ -76,7 +76,7 @@ namespace Crimson.Tweening
                     IncreaseCapacities(CapacityIncreaseMode.TweensOnly);
                 }
             }
-            
+
             // Not found: create new Tween
             t = new TweenCore<T, TPlugOptions>();
             TotalTweens++;
@@ -131,7 +131,7 @@ namespace Crimson.Tweening
             TotalActiveTweens = TotalActiveSequences = 0;
             s_maxActiveLookupId = s_reorganizeFromId = -1;
             s_needsReorganization = false;
-            
+
             return totalDespawned;
         }
 
@@ -282,7 +282,7 @@ namespace Crimson.Tweening
                     MarkForKilling(anim);
                 }
             }
-            
+
             // Kill all eventually marked tweens
             if (totalInvalid > 0)
             {
@@ -335,6 +335,7 @@ namespace Crimson.Tweening
                     {
                         // If it hasn't played yet, startup routine will call it
                         t.OnPlay?.Invoke();
+                        t.OnStepBegin?.Invoke();
                     }
                 }
 
@@ -367,6 +368,8 @@ namespace Crimson.Tweening
                         {
                             toPosition += t.BaseDuration;
                             toCompletedLoops--;
+                            t.OnStepComplete?.Invoke();
+                            t.OnStepBegin?.Invoke();
                         }
 
                         if (toCompletedLoops < 0 || wasEndPosition && toCompletedLoops < 1)
@@ -383,6 +386,8 @@ namespace Crimson.Tweening
                         {
                             toPosition -= t.BaseDuration;
                             toCompletedLoops++;
+                            t.OnStepComplete?.Invoke();
+                            t.OnStepBegin?.Invoke();
                         }
                     }
 
@@ -397,7 +402,7 @@ namespace Crimson.Tweening
                     MarkForKilling(t);
                 }
             }
-            
+
             // Kill all eventually marked tweens
             if (willKill)
             {
@@ -488,7 +493,10 @@ namespace Crimson.Tweening
                                  anim.IsBackwards && (anim.CompletedLoops > 0 || anim.Position > 0)))
             {
                 anim.IsPlaying = true;
-                if (anim.PlayedOnce && anim.DelayComplete) anim.OnPlay?.Invoke();
+                if ( anim.PlayedOnce && anim.DelayComplete )
+                {
+                    anim.OnPlay?.Invoke();
+                }
                 return true;
             }
 
@@ -540,7 +548,11 @@ namespace Crimson.Tweening
             if (changeDelayTo >= 0 && anim.AnimationType == AnimationType.Tween) anim.Delay = changeDelayTo;
             Rewind(anim, includeDelay);
             anim.IsPlaying = true;
-            if (wasPaused && anim.PlayedOnce && anim.DelayComplete) anim.OnPlay?.Invoke();
+            if ( wasPaused && anim.PlayedOnce && anim.DelayComplete )
+            {
+                anim.OnPlay?.Invoke();
+                anim.OnStepBegin?.Invoke();
+            }
             return true;
         }
 
@@ -688,7 +700,7 @@ namespace Crimson.Tweening
             TotalActiveAnimations--;
             if (t.AnimationType == AnimationType.Tween) TotalActiveTweens--;
             else TotalActiveSequences--;
-            
+
             // Bounds safety checks
             if (TotalActiveAnimations < 0)
             {

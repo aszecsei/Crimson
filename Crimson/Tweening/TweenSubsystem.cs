@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Crimson.Tweening.Plugins;
 using Crimson.Tweening.Plugins.Options;
 using Microsoft.Xna.Framework;
@@ -53,7 +54,9 @@ namespace Crimson.Tweening
         /// Default auto-play behavior for newly created animations.
         /// </summary>
         public static AutoPlay DefaultAutoPlay = AutoPlay.All;
-        
+
+        private static List<Animation> s_pausedAnimations = new List<Animation>();
+
         /// <summary>
         /// In order to be faster, Tweening limits the max amount of active tweens you can
         /// have. If you go beyond that limit don't worry: it is automatically increased.
@@ -72,6 +75,24 @@ namespace Crimson.Tweening
         public static void Clear(bool isApplicationQuitting = false)
         {
             AnimManager.PurgeAll(isApplicationQuitting);
+        }
+
+        public static void Pause()
+        {
+            foreach ( var anim in AnimManager.ActiveAnimations )
+            {
+                anim?.Pause();
+                s_pausedAnimations.Add(anim);
+            }
+        }
+
+        public static void Resume()
+        {
+            foreach ( var anim in s_pausedAnimations )
+            {
+                anim?.Play();
+            }
+            s_pausedAnimations.Clear();
         }
 
         /// <summary>
@@ -143,7 +164,7 @@ namespace Crimson.Tweening
 
         #region Play Operations
 
-        
+
 
         #endregion
 
@@ -153,7 +174,7 @@ namespace Crimson.Tweening
         where TPlugOptions : struct, IPlugOptions
         {
             TweenCore<T, TPlugOptions> tween = AnimManager.GetTween<T, TPlugOptions>();
-            
+
             bool setupSuccessful = Tween.Setup(tween, getter, setter, endValue, duration, plugin);
             if (!setupSuccessful)
             {

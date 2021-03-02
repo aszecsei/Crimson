@@ -79,6 +79,11 @@ namespace Crimson
             Line(new Vector2(x1, y1), new Vector2(x2, y2), color);
         }
 
+        public static void Line(float x1, float y1, float x2, float y2, Color color, float t)
+        {
+            Line(new Vector2(x1, y1), new Vector2(x2, y2), color, t);
+        }
+
         #endregion
 
         #region Line Angle

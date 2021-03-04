@@ -248,5 +248,16 @@ namespace Crimson
 
             return closest;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static System.Numerics.Vector2 ToNumerics(this Vector2 vec)
+        {
+            return new System.Numerics.Vector2(vec.X, vec.Y);
+        }
+
+        public static Vector2 ToMonogame(this System.Numerics.Vector2 vec)
+        {
+            return new Vector2(vec.X, vec.Y);
+        }
     }
 }

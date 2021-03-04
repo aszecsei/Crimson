@@ -56,18 +56,19 @@ namespace Crimson
                     _toRemove.Add(data);
                 }
             }
-            
+
             // Remove all to-be-removed coroutines
             foreach (Coroutine data in _toRemove)
             {
                 _coroutineList.Remove(data);
             }
+            _toRemove.Clear();
         }
 
         public void HandleUpdate()
         {
             Clean();
-            
+
             for (int i = 0; i < _coroutineList.Count; i++)
                 _coroutineList[i].HandleUpdate();
         }

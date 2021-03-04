@@ -15,7 +15,7 @@ namespace Crimson
     public class Engine : Game
     {
         private const int TARGET_FRAMERATE = 60;
-        
+
         private static int s_viewPadding;
         private static bool s_resizing;
 
@@ -40,7 +40,7 @@ namespace Crimson
         public Engine(int width, int height, int windowWidth, int windowHeight, string windowTitle, bool fullscreen)
         {
             Instance = this;
-            
+
             Subsystems = new SubsystemList();
 
             Title = Window.Title = windowTitle;
@@ -51,7 +51,7 @@ namespace Crimson
             Graphics = new GraphicsDeviceManager(this);
             Graphics.DeviceReset += OnGraphicsReset;
             Graphics.DeviceCreated += OnGraphicsCreate;
-            
+
             Graphics.SynchronizeWithVerticalRetrace = true;
             Graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Graphics.PreferredBackBufferFormat = SurfaceFormat.Color;
@@ -209,7 +209,7 @@ namespace Crimson
             Time.Update(gameTime);
 
             Subsystems.Tick();
-            
+
             CInput.Update();
 
 #if !CONSOLE
@@ -227,21 +227,23 @@ namespace Crimson
                 Time.FreezeTimer = Mathf.Max(Time.FreezeTimer - Time.RawDeltaTime, 0);
                 isSceneFrozen = true;
             }
-            
+
             // Call the 3 update methods on subsystems, then the current scene.
-            Subsystems.BeforeUpdate();
             if (!isSceneFrozen)
             {
+                Subsystems.BeforeUpdate();
                 _scene?.BeforeUpdate();
             }
-            Subsystems.Update();
+
             if (!isSceneFrozen)
             {
+                Subsystems.Update();
                 _scene?.Update();
             }
-            Subsystems.AfterUpdate();
+
             if (!isSceneFrozen)
             {
+                Subsystems.AfterUpdate();
                 _scene?.AfterUpdate();
             }
 
@@ -290,14 +292,14 @@ namespace Crimson
 
             Subsystems.BeforeRender();
             _scene?.BeforeRender();
-            
+
             GraphicsDevice.Viewport = Viewport;
             GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer | ClearOptions.Stencil, ClearColor, 1,
                 0);
 
             // Render the current scene
             _scene?.Render();
-            
+
             Subsystems.AfterRender();
             _scene?.AfterRender();
         }
@@ -402,7 +404,7 @@ namespace Crimson
                 MinDepth = 0,
                 MaxDepth = 1
             };
-            
+
             // inform all subsystems that the view has changed
             Subsystems.ViewUpdated();
         }

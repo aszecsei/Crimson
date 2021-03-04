@@ -20,7 +20,6 @@ namespace Crimson
 
         public virtual void BeforeRender(Scene scene)
         {
-            PostProcessStack.BeforeRender();
         }
 
         public virtual void Render(Scene scene)
@@ -29,7 +28,6 @@ namespace Crimson
 
         public virtual void AfterRender(Scene scene)
         {
-            PostProcessStack.AfterRender();
         }
     }
 }

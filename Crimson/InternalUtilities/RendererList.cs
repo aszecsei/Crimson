@@ -61,7 +61,21 @@ namespace Crimson
                 if (!Renderers[i].Visible) continue;
 
                 Draw.Renderer = Renderers[i];
+                Renderers[i].PostProcessStack.BeforeRender();
+            }
+            for (var i = 0; i < Renderers.Count; i++)
+            {
+                if (!Renderers[i].Visible) continue;
+
+                Draw.Renderer = Renderers[i];
                 Renderers[i].Render(scene);
+            }
+            for (var i = 0; i < Renderers.Count; i++)
+            {
+                if (!Renderers[i].Visible) continue;
+
+                Draw.Renderer = Renderers[i];
+                Renderers[i].PostProcessStack.AfterRender();
             }
         }
 

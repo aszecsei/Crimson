@@ -84,6 +84,12 @@ namespace Crimson
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static System.Numerics.Vector3 ToVector3SysNum(this Color color)
+        {
+            return new System.Numerics.Vector3(color.R / 255f, color.G / 255f, color.B / 255f);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static System.Numerics.Vector4 ToVector4SysNum(this Color color)
         {
             return new System.Numerics.Vector4(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);

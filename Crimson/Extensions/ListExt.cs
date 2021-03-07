@@ -11,7 +11,7 @@ namespace Crimson
         {
             return index >= 0 && index < list.Count;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AddIfNotPresent<T>(this IList<T> list, T item)
         {
@@ -32,7 +32,7 @@ namespace Crimson
         {
             return list[list.Count - 1];
         }
-        
+
         public static void Shuffle<T>(this IList<T> list, Random random)
         {
             var i = list.Count;
@@ -91,6 +91,14 @@ namespace Crimson
         public static void ShuffleNotFirst<T>(this IList<T> list, T notFirst)
         {
             list.ShuffleNotFirst(Utils.Random, notFirst);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Swap<T>(this IList<T> list, int idx1, int idx2)
+        {
+            T temp = list[idx1];
+            list[idx1] = list[idx2];
+            list[idx2] = temp;
         }
     }
 }

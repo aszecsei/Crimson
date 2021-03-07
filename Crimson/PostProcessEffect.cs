@@ -65,7 +65,7 @@ namespace Crimson
 
             SetEffectParameters();
 
-            Draw.SpriteBatch.Begin(effect: Effect, blendState: BlendState.AlphaBlend);
+            Draw.SpriteBatch.Begin(effect: Effect, samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
             Draw.SpriteBatch.Draw(Src!, new Rectangle(0, 0, dstWidth, dstHeight), new Rectangle(0, 0, width, height), Color.White);
             Draw.SpriteBatch.End();
         }

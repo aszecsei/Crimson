@@ -1,4 +1,6 @@
-﻿namespace Crimson
+﻿using Microsoft.Xna.Framework;
+
+namespace Crimson
 {
     public class VirtualMap<T>
     {
@@ -107,6 +109,86 @@
                 clone[x, y] = this[x, y];
 
             return clone;
+        }
+    }
+
+    public static class VirtualMapExt
+    {
+        public struct RaycastCollisionData
+        {
+            public Vector2 Location;
+            public Point   Tile;
+        }
+
+        public static bool Raycast(this VirtualMap<bool> solids, Vector2 start, Vector2 end, out RaycastCollisionData collisionData, float maxDistance = Mathf.INFINITY)
+        {
+            Vector2 dir  = end - start;
+            float   dydx = dir.Y / dir.X;
+            float   dxdy = dir.X / dir.Y;
+            float   sx   = Mathf.Sqrt(1 + dydx * dydx);
+            float   sy   = Mathf.Sqrt(1 + dxdy * dxdy);
+
+            Point   mapCheck    = new Point(Mathf.FloorToInt(start.X), Mathf.FloorToInt(start.Y));
+            Vector2 rayLength1D = Vector2.Zero;
+            Point   step        = new Point(Mathf.Sign(dir.X), Mathf.Sign(dir.Y));
+            if ( dir.X < 0 )
+            {
+                rayLength1D.X = (start.X - mapCheck.X) * sx;
+            }
+            else
+            {
+                rayLength1D.X = (mapCheck.X + 1 - start.X) * sx;
+            }
+
+            if ( dir.Y < 0 )
+            {
+                rayLength1D.Y = (start.Y - mapCheck.Y) * sy;
+            }
+            else
+            {
+                rayLength1D.Y = (mapCheck.Y + 1 - start.Y) * sy;
+            }
+
+            bool        tileFound   = false;
+            float       distance    = 0f;
+            while ( !tileFound && distance < maxDistance )
+            {
+                if ( rayLength1D.X < rayLength1D.Y )
+                {
+                    mapCheck.X    += step.X;
+                    distance      =  rayLength1D.X;
+                    rayLength1D.X += sx;
+                }
+                else
+                {
+                    mapCheck.Y    += step.Y;
+                    distance      =  rayLength1D.Y;
+                    rayLength1D.Y += sy;
+                }
+
+                if ( solids.SafeCheck(mapCheck.X, mapCheck.Y) )
+                {
+                    tileFound = true;
+                }
+                else if ( mapCheck.X < 0 || mapCheck.Y < 0 || mapCheck.X >= solids.Columns ||
+                          mapCheck.Y >= solids.Rows )
+                {
+                    break;
+                }
+            }
+
+            if ( tileFound )
+            {
+                collisionData.Location = start + dir.SafeNormalize(distance);
+                collisionData.Tile = new Point(Mathf.FloorToInt(collisionData.Location.X), Mathf.FloorToInt(collisionData.Location.Y));
+                return true;
+            }
+            else
+            {
+                collisionData.Location = Vector2.Zero;
+                collisionData.Tile     = Point.Zero;
+                return false;
+            }
         }
     }
 }

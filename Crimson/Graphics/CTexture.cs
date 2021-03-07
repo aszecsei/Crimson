@@ -261,6 +261,11 @@ namespace Crimson
                                           origin - DrawOffset, scale, SpriteEffects.None, 0f);
         }
 
+        public void DrawCentered(Vector2 position, Color color)
+        {
+            Crimson.Draw.SpriteBatch.Draw(Texture.Texture, position, ClipRect, color, 0f, Center - DrawOffset, 1f, SpriteEffects.None, 0f);
+        }
+
         #region Draw Outline
 
         public void DrawOutline(Vector2 position)

@@ -177,7 +177,7 @@ namespace Crimson
                 v.Y = 0;
             }
 
-            return vector;
+            return v;
         }
 
         /// <summary>

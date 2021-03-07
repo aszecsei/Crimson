@@ -13,6 +13,8 @@ namespace Crimson
         private Matrix _matrix = Matrix.Identity;
         private Vector2 _origin = Vector2.Zero;
 
+        public Matrix BackdropMatrix = Matrix.Identity;
+
         private Vector2 _position = Vector2.Zero;
         private Vector2 _zoom = Vector2.One;
         private bool _lockToPixel = true;
@@ -234,6 +236,13 @@ namespace Crimson
                           Matrix.CreateScale(new Vector3(_zoom, 1)) *
                           Matrix.CreateTranslation(
                               new Vector3(new Vector2(Mathf.FloorToInt(_origin.X), Mathf.FloorToInt(_origin.Y)), 0));
+                BackdropMatrix = Matrix.Identity                           *
+                                 Matrix.CreateTranslation(
+                                     new Vector3(-Mathf.FloorToInt(_origin.X), -Mathf.FloorToInt(_origin.Y), 0)) *
+                                 Matrix.CreateRotationZ(_angle)            *
+                                 Matrix.CreateScale(new Vector3(_zoom, 1)) *
+                                 Matrix.CreateTranslation(
+                                     new Vector3(Mathf.FloorToInt(_origin.X), Mathf.FloorToInt(_origin.Y), 0));
             }
             else
             {
@@ -244,8 +253,15 @@ namespace Crimson
                           Matrix.CreateScale(new Vector3(_zoom, 1)) *
                           Matrix.CreateTranslation(
                               new Vector3(new Vector2(_origin.X, _origin.Y), 0));
+                BackdropMatrix = Matrix.Identity                           *
+                                 Matrix.CreateTranslation(
+                                     new Vector3(-_origin.X, -_origin.Y, 0)) *
+                                 Matrix.CreateRotationZ(_angle)                                                  *
+                                 Matrix.CreateScale(new Vector3(_zoom, 1))                                       *
+                                 Matrix.CreateTranslation(
+                                     new Vector3(_origin.X, _origin.Y, 0));
             }
-            
+
             _inverse = Matrix.Invert(_matrix);
             _dirty = false;
         }

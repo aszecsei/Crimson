@@ -83,10 +83,11 @@ namespace Crimson
             nextSlot = (nextSlot + 1) % particles.Length;
         }
 
-        public void Emit(ParticleType type, Vector2 position, float direction)
+        public void Emit(ParticleType type, Vector2 position, float direction, float accelerationRotation = 0f)
         {
-            type.Create(ref particles[nextSlot], position, direction);
-            nextSlot = (nextSlot + 1) % particles.Length;
+            var p = type.Create(ref particles[nextSlot], position, direction);
+            p.AccelerationRotation = accelerationRotation;
+            nextSlot               = (nextSlot + 1) % particles.Length;
         }
 
         public void Emit(ParticleType type, Vector2 position, Color color)
@@ -101,16 +102,17 @@ namespace Crimson
             nextSlot = (nextSlot + 1) % particles.Length;
         }
 
-        public void Emit(ParticleType type, int amount, Vector2 position, Vector2 positionRange)
+        public void Emit(ParticleType type, Vector2 position, Color color, float direction, float accelerationRotation)
         {
-            for (var i = 0; i < amount; i++)
-                Emit(type, Utils.Random.Range(position - positionRange, position + positionRange));
+            var particle = type.Create(ref particles[nextSlot], position, color, direction);
+            particle.AccelerationRotation = accelerationRotation;
+            nextSlot                      = (nextSlot + 1) % particles.Length;
         }
 
-        public void Emit(ParticleType type, int amount, Vector2 position, Vector2 positionRange, float direction)
+        public void Emit(ParticleType type, int amount, Vector2 position, Vector2 positionRange, float direction = 0f, float accelerationRotation = 0f)
         {
             for (var i = 0; i < amount; i++)
-                Emit(type, Utils.Random.Range(position - positionRange, position + positionRange), direction);
+                Emit(type, Utils.Random.Range(position - positionRange, position + positionRange), direction, accelerationRotation);
         }
 
         public void Emit(ParticleType type, int amount, Vector2 position, Vector2 positionRange, Color color)

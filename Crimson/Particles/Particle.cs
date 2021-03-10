@@ -14,18 +14,19 @@ namespace Crimson
         public ParticleType Type;
         public CTexture Source;
 
-        public bool Active;
-        public Color Color;
-        public Color StartColor;
+        public bool    Active;
+        public Color   Color;
+        public Color   StartColor;
         public Vector2 Position;
         public Vector2 Speed;
-        public float Size;
-        public float StartSize;
-        public float Life;
-        public float StartLife;
-        public float ColorSwitch;
-        public float Rotation;
-        public float Spin;
+        public float   AccelerationRotation;
+        public float   Size;
+        public float   StartSize;
+        public float   Life;
+        public float   StartLife;
+        public float   ColorSwitch;
+        public float   Rotation;
+        public float   Spin;
 
         public bool SimulateFor(float duration)
         {
@@ -119,7 +120,7 @@ namespace Crimson
 
             //Speed
             Position += Speed * dt;
-            Speed += Type.Acceleration * dt;
+            Speed += Type.Acceleration.Rotate(AccelerationRotation) * dt;
             Speed = Speed.Approach(Vector2.Zero, Type.Friction * dt);
             if (Type.SpeedMultiplier != 1)
                 Speed *= Mathf.Pow(Type.SpeedMultiplier, dt);

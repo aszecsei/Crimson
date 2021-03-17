@@ -8,8 +8,9 @@ namespace Crimson
         public RenderTarget2D? Target;
         public int             MultiSampleCount;
 
-        public bool      Depth    { get; private set; }
-        public bool      Preserve { get; private set; }
+        public bool Depth    { get; private set; }
+        public bool Preserve { get; private set; }
+        public bool Hdr      { get; private set; }
 
         public bool IsDisposed
         {
@@ -26,7 +27,7 @@ namespace Crimson
 
         public Rectangle Bounds => Target.Bounds;
 
-        internal VirtualRenderTarget(string name, int width, int height, int multiSampleCount, bool depth, bool preserve)
+        internal VirtualRenderTarget(string name, int width, int height, int multiSampleCount, bool depth, bool preserve, bool hdr)
         {
             Name             = name;
             Width            = width;
@@ -34,6 +35,7 @@ namespace Crimson
             MultiSampleCount = multiSampleCount;
             Depth            = depth;
             Preserve         = preserve;
+            Hdr              = hdr;
             Reload();
         }
 
@@ -49,7 +51,7 @@ namespace Crimson
         {
             Unload();
             Target = new RenderTarget2D(Engine.Instance.GraphicsDevice, Width, Height, mipMap: false,
-                                        SurfaceFormat.HdrBlendable, Depth ? DepthFormat.Depth24Stencil8 : DepthFormat.None,
+                                        Hdr ? SurfaceFormat.HdrBlendable : SurfaceFormat.Color, Depth ? DepthFormat.Depth24Stencil8 : DepthFormat.None,
                                         MultiSampleCount,
                                         Preserve
                                             ? RenderTargetUsage.PreserveContents

@@ -31,10 +31,11 @@ namespace Crimson
             int    height,
             bool   depth            = false,
             bool   preserve         = true,
-            int    multiSampleCount = 0
+            int    multiSampleCount = 0,
+            bool hdr = false
         )
         {
-            VirtualRenderTarget asset = new VirtualRenderTarget(name, width, height, multiSampleCount, depth, preserve);
+            VirtualRenderTarget asset = new VirtualRenderTarget(name, width, height, multiSampleCount, depth, preserve, hdr);
             s_assets.Add(asset);
             return asset;
         }

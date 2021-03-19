@@ -512,18 +512,16 @@ namespace Crimson
         private void BuildCommandsList()
         {
 #if !CONSOLE
+            AppDomain currentDomain = AppDomain.CurrentDomain;
 
-            //Check for Commands
-            foreach (var type in Assembly.GetCallingAssembly().GetTypes())
-            foreach (var method in type.GetMethods(
-                BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
-                ProcessMethod(method);
-
-            //Check the calling assembly for Commands
-            foreach (var type in Assembly.GetEntryAssembly().GetTypes())
-            foreach (var method in type.GetMethods(
-                BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
-                ProcessMethod(method);
+            foreach ( var assembly in currentDomain.GetAssemblies() )
+            {
+                // Check for Commands
+                foreach (var type in assembly.GetTypes())
+                    foreach (var method in type.GetMethods(
+                        BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+                        ProcessMethod(method);
+            }
 
             //Maintain the sorted command list
             foreach (var command in _commands) _sorted.Add(command.Key);

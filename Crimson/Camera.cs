@@ -68,6 +68,7 @@ namespace Crimson
             get => _position;
             set
             {
+                if ( _position == value ) return;
                 _dirty = true;
                 _position = value;
             }
@@ -78,6 +79,7 @@ namespace Crimson
             get => _origin;
             set
             {
+                if ( _origin == value ) return;
                 _dirty = true;
                 _origin = value;
             }
@@ -88,6 +90,7 @@ namespace Crimson
             get => _position.X;
             set
             {
+                if ( _position.X == value ) return;
                 _dirty = true;
                 _position.X = value;
             }
@@ -98,6 +101,7 @@ namespace Crimson
             get => _position.Y;
             set
             {
+                if ( _position.Y == value ) return;
                 _dirty = true;
                 _position.Y = value;
             }
@@ -108,6 +112,7 @@ namespace Crimson
             get => _zoom.X;
             set
             {
+                if ( _zoom.X == value ) return;
                 _dirty = true;
                 _zoom.X = _zoom.Y = value;
             }
@@ -118,6 +123,7 @@ namespace Crimson
             get => _angle;
             set
             {
+                if ( _angle == value ) return;
                 _dirty = true;
                 _angle = value;
             }
@@ -227,39 +233,41 @@ namespace Crimson
 
         private void UpdateMatrices()
         {
+            float   backdropOriginValue = Mathf.Max((float)Viewport.Width / 2, (float)Viewport.Height / 2);
+            Vector2 backdropOrigin      = new Vector2(backdropOriginValue, backdropOriginValue);
             if (_lockToPixel)
             {
                 _matrix = Matrix.Identity *
                           Matrix.CreateTranslation(
-                              new Vector3(-new Vector2(Mathf.FloorToInt(_position.X), Mathf.FloorToInt(_position.Y)), 0)) *
+                              new Vector3(-Mathf.Floor(_position), 0)) *
                           Matrix.CreateRotationZ(_angle) *
                           Matrix.CreateScale(new Vector3(_zoom, 1)) *
                           Matrix.CreateTranslation(
-                              new Vector3(new Vector2(Mathf.FloorToInt(_origin.X), Mathf.FloorToInt(_origin.Y)), 0));
+                              new Vector3(Mathf.Floor(_origin), 0));
                 BackdropMatrix = Matrix.Identity                           *
                                  Matrix.CreateTranslation(
-                                     new Vector3(-Mathf.FloorToInt(_origin.X), -Mathf.FloorToInt(_origin.Y), 0)) *
+                                     new Vector3(-Mathf.Floor(backdropOrigin), 0)) *
                                  Matrix.CreateRotationZ(_angle)            *
                                  Matrix.CreateScale(new Vector3(_zoom, 1)) *
                                  Matrix.CreateTranslation(
-                                     new Vector3(Mathf.FloorToInt(_origin.X), Mathf.FloorToInt(_origin.Y), 0));
+                                     new Vector3(Mathf.Floor(backdropOrigin), 0));
             }
             else
             {
                 _matrix = Matrix.Identity *
                           Matrix.CreateTranslation(
-                              new Vector3(-new Vector2(_position.X, _position.Y), 0)) *
+                              new Vector3(-_position, 0)) *
                           Matrix.CreateRotationZ(_angle) *
                           Matrix.CreateScale(new Vector3(_zoom, 1)) *
                           Matrix.CreateTranslation(
-                              new Vector3(new Vector2(_origin.X, _origin.Y), 0));
+                              new Vector3(_origin, 0));
                 BackdropMatrix = Matrix.Identity                           *
                                  Matrix.CreateTranslation(
-                                     new Vector3(-_origin.X, -_origin.Y, 0)) *
-                                 Matrix.CreateRotationZ(_angle)                                                  *
-                                 Matrix.CreateScale(new Vector3(_zoom, 1))                                       *
+                                     new Vector3(-backdropOrigin, 0)) *
+                                 Matrix.CreateRotationZ(_angle)            *
+                                 Matrix.CreateScale(new Vector3(_zoom, 1)) *
                                  Matrix.CreateTranslation(
-                                     new Vector3(_origin.X, _origin.Y, 0));
+                                     new Vector3(backdropOrigin, 0));
             }
 
             _inverse = Matrix.Invert(_matrix);

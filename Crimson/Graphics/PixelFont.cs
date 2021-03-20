@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -302,7 +303,7 @@ namespace Crimson
     /// A class to deal with rasterized fonts. This uses the data format provided by
     /// <a href="https://chevyray.itch.io/pixel-fonts">Chevy Ray</a>.
     /// </summary>
-    public class PixelFont
+    public class PixelFont : IDisposable, IFont
     {
         public string Face;
         public List<PixelFontSize> Sizes = new List<PixelFontSize>();
@@ -457,13 +458,21 @@ namespace Crimson
             scale *= baseSize / fontSize.Size;
             fontSize.Draw(text, position, justify, scale, color, edgeDepth, edgeColor, stroke, strokeColor);
         }
-        
+
         public Vector2 MeasureString(float baseSize, string text)
         {
             var scale = Vector2.One;
             var fontSize = Get(baseSize * Mathf.Max(scale.X, scale.Y));
             scale *= (baseSize / fontSize.Size);
             return fontSize.Measure(text) * scale;
+        }
+
+        public Vector2 MeasureChar(float baseSize, char ch)
+        {
+            var scale    = Vector2.One;
+            var fontSize = Get(baseSize * Mathf.Max(scale.X, scale.Y));
+            scale *= (baseSize / fontSize.Size);
+            return fontSize.Measure(ch) * scale;
         }
 
         public void Dispose()

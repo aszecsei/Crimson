@@ -276,7 +276,7 @@ namespace Crimson
     /// A class to deal with rasterized fonts. This uses the data format provided by
     /// <a href="https://www.angelcode.com/products/bmfont/">AngelCode BMFont</a>.
     /// </summary>
-    public class BmFont
+    public class BmFont : IDisposable, IFont
     {
         public  string               Face;
         public  List<BmFontSize>     Sizes            = new List<BmFontSize>();

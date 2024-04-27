@@ -19,9 +19,17 @@ namespace Crimson.YarnSpinnerPipeline
             {
                 context.Logger.LogMessage("Compiling Yarn program {0}", input.FileName);
 
-                var compilationStatus =
-                    Compiler.CompileString(input.Text, input.FileName, out var compiledProgram, out var stringTable);
-                if (compilationStatus == Status.SucceededUntaggedStrings)
+                var compilationJob = CompilationJob.CreateFromString(input.FileName, input.Text);
+                var compilationResult = Compiler.Compile(compilationJob);
+                if (compilationResult.Program == null)
+                {
+                    context.Logger.LogMessage("Yarn compilation failed.");
+                    foreach (var diagnostic in compilationResult.Diagnostics)
+                    {
+                        context.Logger.LogMessage(diagnostic.ToString());
+                    }
+                }
+                if (compilationResult.ContainsImplicitStringTags)
                 {
                     context.Logger.LogMessage("Yarn compilation includes untagged strings.");
                 }
@@ -32,7 +40,7 @@ namespace Crimson.YarnSpinnerPipeline
                 using (var outputStream = new Google.Protobuf.CodedOutputStream(memoryStream))
                 {
                     // Serialize the compiled program to memory
-                    compiledProgram.WriteTo(outputStream);
+                    compilationResult.Program.WriteTo(outputStream);
                     outputStream.Flush();
 
                     byte[] compiledBytes = memoryStream.ToArray();
@@ -49,7 +57,7 @@ namespace Crimson.YarnSpinnerPipeline
                         var configuration = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture);
 
                         var csv = new CsvHelper.CsvWriter(textWriter, configuration);
-                        var lines = stringTable.Select(x => new
+                        var lines = compilationResult.StringTable.Select(x => new
                         {
                             id = x.Key,
                             text = x.Value.text,
